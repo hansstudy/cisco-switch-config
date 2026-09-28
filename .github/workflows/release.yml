@@ -484,6 +484,8 @@ jobs:
           printf '#!/usr/bin/env bash\nexec pwsh "$@"\n' > "$SHIM_DIR/powershell"
           chmod +x "$SHIM_DIR/powershell"
           echo "$SHIM_DIR" >> "$GITHUB_PATH"
+          # The single quotes are deliberate: pwsh, not bash, expands $PSVersionTable.
+          # shellcheck disable=SC2016
           echo "::notice::In the release job 'powershell' runs pwsh $(pwsh -NoProfile -Command '$PSVersionTable.PSVersion.ToString()'). The Windows PowerShell 5.1 floor is proven by ci.yml's test-windows job, not here."
 
       # -- Step 2. Lint and the full test suite ---------------------------
@@ -531,7 +533,7 @@ jobs:
           SUBDIRS="$(find "$DIST_DIR" -mindepth 1 -type d)"
           if [ -n "$SUBDIRS" ]; then
             echo "::error::$DIST_DIR contains subdirectories; release assets must be flat files:"
-            printf '  %s\n' $SUBDIRS
+            printf '%s\n' "$SUBDIRS" | sed 's/^/  /'
             exit 1
           fi
           ARTIFACTS="$(cd "$DIST_DIR" && find . -maxdepth 1 -type f -printf '%P\n' | LC_ALL=C sort | jq -R -s -c 'split("\n") | map(select(length > 0))')"
