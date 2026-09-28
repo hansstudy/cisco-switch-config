@@ -22,8 +22,8 @@ which hardening controls a change crossed.
 ## Install
 
 ```
-/plugin marketplace add hansstudy/claude-plugins
-/plugin install cisco-switch-config@hansstudy-claude-plugins
+/plugin marketplace add hansstudy/cisco-switch-config
+/plugin install cisco-switch-config@hansstudy-cisco
 ```
 
 See [`docs/install.md`](docs/install.md) for the other two surfaces (a manual `.zip` install on

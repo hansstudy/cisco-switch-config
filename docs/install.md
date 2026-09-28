@@ -6,13 +6,7 @@ dependencies to install — the shipped engine is Python 3.11 standard library o
 
 ## 1. Claude Code — plugin marketplace (recommended)
 
-```
-/plugin marketplace add hansstudy/claude-plugins
-/plugin install cisco-switch-config@hansstudy-claude-plugins
-```
-
-This repository is also self-install-able as its own single-plugin marketplace, useful for
-testing a specific tagged version directly from this repo rather than the aggregate marketplace:
+This repository is its own single-plugin marketplace:
 
 ```
 /plugin marketplace add hansstudy/cisco-switch-config
