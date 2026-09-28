@@ -1,0 +1,142 @@
+{
+  "schema_version": 1,
+  "tool": "cisco-switch-config",
+  "version": "1.0.0-rc.1",
+  "tag": "v1.0.0-rc.1",
+  "artifact_kinds": ["skl"],
+  "checklist_version": 3,
+  "recorded_by": "hansstudy",
+  "recorded_at": "2026-09-28T02:13:05Z",
+  "results": [
+    {
+      "id": "G01-security-review",
+      "status": "pass",
+      "evidence": "docs/security-review.md - independent pre-release security review of the credential-handling surface (masking, egress guard, unsafe-calls scanner, shipped data, packaging); three finding classes remediated with regression tests, no credential-exposure finding open, three accepted residuals cross-referenced to docs/threat-model.md"
+    },
+    {
+      "id": "G02-secret-scan",
+      "status": "pass",
+      "evidence": "gitleaks 8.30.1 (release zip SHA-256 verified against the upstream checksums file) run as `gitleaks detect --source . --log-opts=\"--all\" --no-banner --exit-code 1` on 2026-09-28 at main c2738d0: 9 commits scanned (all refs, including open dependency-update branches), 'no leaks found', exit 0. GitHub API repos/hansstudy/cisco-switch-config security_and_analysis on 2026-09-28: secret_scanning enabled, secret_scanning_push_protection enabled. CI's secret-scan job (gitleaks-action) is green on every push but scans only the pushed range, so the full-history run above is the gate evidence."
+    },
+    {
+      "id": "G03-threat-model",
+      "status": "pass",
+      "evidence": "docs/threat-model.md (inputs and trust boundaries, the credential chokepoint, what masking does not cover, residual risks)"
+    },
+    {
+      "id": "G04-dependency-alerts",
+      "status": "pass",
+      "evidence": "gh api repos/hansstudy/cisco-switch-config/dependabot/alerts?state=open on 2026-09-28: 0 open alerts of any severity (so 0 High/Critical). Dependabot vulnerability alerts enabled (GET repos/.../vulnerability-alerts = 204). The only alert ever raised (pytest, medium, dev-only) is state 'fixed'. The shipped engine is Python standard library only."
+    },
+    {
+      "id": "G05-dependency-pinning",
+      "status": "pass",
+      "evidence": "grep -rhoE 'uses:[[:space:]]*[^[:space:]]+' .github/workflows/ | grep -vE '@[0-9a-f]{40}$' returns empty at c2738d0 (every uses: pinned to a 40-hex SHA); requirements-dev.txt carries exact == pins only (dev/test dependencies; nothing under skills/ imports them); the shipped skill has no runtime dependency to pin"
+    },
+    {
+      "id": "G06-content-provenance",
+      "status": "pass",
+      "evidence": "docs/content-provenance.md names every source class present (DISA STIG, NSA/CISA, Cisco vendor docs, CIS ID-only policy, Batfish/ntc-templates/NAPALM Apache-2.0 fixtures), its licence and use; its Statement section confirms no CIS Benchmark prose is copied (the 1.0.0 catalogue carries zero CIS references) and no GPL/AGPL dependency exists; NOTICE attributes the fixtures"
+    },
+    {
+      "id": "G07-least-privilege",
+      "status": "pass",
+      "evidence": "README.md 'Requirements' section: runs inside the invoking surface, Python 3.11+ standard library only, no credentials, no device access and no network connection of any kind; the tool never connects to a switch and reads only text the user provides"
+    },
+    {
+      "id": "G08-redaction",
+      "status": "fail",
+      "reason": "Pending: the tool produces audit reports, diffs and generated configs, so this gate applies. Ingest-time masking is covered by docs/security-review.md and the masking test suite, but the sample reports and screenshots being added to docs/ and README.md have not yet had a recorded redaction pass. Owner: Maintainer, once the screenshots/samples land."
+    },
+    {
+      "id": "G09-readme-complete",
+      "status": "fail",
+      "reason": "Pending: README.md follows the tier-1 shape, but its install one-liner (/plugin marketplace add hansstudy/claude-plugins) points at a marketplace repository that does not exist yet (GitHub returns not found on 2026-09-28), and no clean-profile transcript of the install has been recorded. Owner: Maintainer."
+    },
+    {
+      "id": "G10-changelog-entry",
+      "status": "fail",
+      "reason": "Pending: CHANGELOG.md has only an [Unreleased] section; there is no dated '## [1.0.0-rc.1] - YYYY-MM-DD' section. release.yml step 7 builds the GitHub Release notes from the section matching the tag's version, so the release would also fail there without it. Owner: Maintainer, on release day."
+    },
+    {
+      "id": "G11-semver-consistent",
+      "status": "na",
+      "reason": "Prerelease tag: no channel is published and the landing page is not updated for a prerelease, per the prerelease policy; there is no channel evidence to check version consistency against."
+    },
+    {
+      "id": "G12-screenshots-demo",
+      "status": "fail",
+      "reason": "Pending: screenshots and a demo GIF are being added to docs/ and README.md; they have not yet been reviewed and recorded as current and lab-data-only. Owner: Maintainer."
+    },
+    {
+      "id": "G13-docs-links",
+      "status": "fail",
+      "reason": "Pending: README.md links https://hans.study/tools/cisco-switch-config/, but that URL returns 404 on 2026-09-28, so the docs link does not resolve and the landing page cannot link back to the repo yet. This gate has no prerelease relaxation. Owner: site (landing page), then Maintainer to record."
+    },
+    {
+      "id": "G14-ci-built",
+      "status": "fail",
+      "reason": "Pending: no tag has been pushed and release.yml has not run; there is no Actions run to cite yet. Owner: automated (release.yml on the tag push), recorded by the Maintainer."
+    },
+    {
+      "id": "G15-sbom-published",
+      "status": "fail",
+      "reason": "Pending: release.yml step 4 publishes packaging/sbom/cisco-switch-config.cdx.json (sbom.generator manual) as cisco-switch-config-1.0.0-rc.1.cdx.json on the GitHub Release; not yet run. Owner: automated (release.yml), recorded by the Maintainer."
+    },
+    {
+      "id": "G16-sha256sums",
+      "status": "na",
+      "reason": "Prerelease tag: no channel is published and the landing page is not updated for a prerelease, per the prerelease policy; SHA256SUMS is verified against the GitHub Release alone, with no landing-page value to check it against."
+    },
+    {
+      "id": "G17-build-attestation",
+      "status": "fail",
+      "reason": "Pending: release.yml step 6 produces the Sigstore build-provenance attestation on the tag push; not yet run, so there is nothing to verify with gh attestation verify. Owner: automated (release.yml), recorded by the Maintainer."
+    },
+    {
+      "id": "G18-authenticode",
+      "status": "na",
+      "reason": "N/A - gate is tagged [bin] [mod] and this artifact is [skl], a Claude skill package to which Authenticode does not apply. Release ships Sigstore attestation, SHA256SUMS and verify instructions instead (docs/verify-downloads.md)."
+    },
+    {
+      "id": "G19-clean-install",
+      "status": "fail",
+      "reason": "Pending: no `claude plugin validate` run, clean-profile marketplace install, or skill-trigger transcript has been recorded, and the aggregate marketplace repository named in docs/install.md does not exist yet. Owner: Maintainer."
+    },
+    {
+      "id": "G20-telemetry-policy",
+      "status": "fail",
+      "reason": "Pending: README.md 'Telemetry' states no telemetry (the tool does not phone home or call any analytics endpoint), but the gate also requires the statement on the landing page, which is not live. Owner: site."
+    },
+    {
+      "id": "G21-support-statement",
+      "status": "fail",
+      "reason": "Pending: README.md 'Support' states 'There is no SLA.' with the engagement link, but the gate also requires the statement on the landing page, which is not live. Owner: site."
+    },
+    {
+      "id": "G22-licence-trademark",
+      "status": "pass",
+      "evidence": "LICENSE is the Apache License 2.0; NOTICE names Hans Study as copyright holder and attributes the Apache-2.0 fixtures; TRADEMARKS.md and README.md 'Trademark and CIS disclaimer' state the project is independent of and not affiliated with or endorsed by Cisco, CIS, DISA, NSA or CISA; docs/content-provenance.md is the provenance note"
+    },
+    {
+      "id": "G23-privacy-disclosure",
+      "status": "na",
+      "reason": "The tool transmits nothing anywhere: no telemetry, no network connection of any kind, and it never connects to a device (README.md Requirements and Telemetry; the AST-level unsafe-calls scan in packaging/verify_package.py denies networking in the shipped scripts)."
+    },
+    {
+      "id": "G25-landing-page-live",
+      "status": "na",
+      "reason": "Prerelease tag: no channel is published and the landing page is not updated for a prerelease, per the prerelease policy; the tool's existing landing page (if any) is unchanged by this release."
+    },
+    {
+      "id": "G26-release-blog-post",
+      "status": "fail",
+      "reason": "Pending: no release post has been published and this is not a patch release, so the 'patch release - no post' outcome does not apply. This gate has no prerelease relaxation. Owner: Maintainer (post), site (publishing)."
+    },
+    {
+      "id": "G27-cross-post-preflight",
+      "status": "fail",
+      "reason": "Pending: no dated sidebar-reading record exists for any target community, and no decision not to cross-post has been recorded. Owner: Maintainer."
+    }
+  ]
+}
