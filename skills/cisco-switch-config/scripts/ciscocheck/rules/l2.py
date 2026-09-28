@@ -48,8 +48,12 @@ def native_equals_access(cfg: "Config", ctx: "Context"):
     for iface in _trunk_interfaces(cfg):
         native, n = _native_vlan(cfg, iface)
         if native in access_vlans:
+            # The remediation moves the native VLAN OFF the colliding value, never back onto
+            # it: the engine cannot know a genuinely unused VLAN from this config alone, so
+            # the fix carries an explicit placeholder for the operator to fill in (never the
+            # observed `native` value, and never VLAN 1).
             yield ctx.finding(line=(n.line if n else iface.evidence_line),
-                              params={"interface": iface.name, "vlan": str(native)},
+                              params={"interface": iface.name, "vlan": _util.UNKNOWN_VLAN},
                               title_suffix=iface.name)
 
 
@@ -61,8 +65,11 @@ def access_vlan_1(cfg: "Config", ctx: "Context"):
         if n is not None and len(n.line.tokens) > 3 and n.line.tokens[3].isdigit():
             vlan = int(n.line.tokens[3])
         if vlan == 1:
+            # This check exists BECAUSE the port is on VLAN 1: the fix must move it to a
+            # dedicated, unused VLAN, never restate 1. The engine cannot know a safe target
+            # from this config alone, so the fix carries an explicit placeholder.
             yield ctx.finding(line=(n.line if n else iface.evidence_line),
-                              params={"interface": iface.name, "vlan": "1"},
+                              params={"interface": iface.name, "vlan": _util.UNKNOWN_VLAN},
                               title_suffix=iface.name)
 
 
@@ -131,8 +138,12 @@ def unused_port_wrong_vlan(cfg: "Config", ctx: "Context"):
         if n is not None and len(n.line.tokens) > 3 and n.line.tokens[3].isdigit():
             vlan = int(n.line.tokens[3])
         if n is None or vlan in active_vlans or vlan == 1:
+            # The fix parks the port in a dedicated, unused ("black-hole") VLAN -- never the
+            # observed value, which is by definition either live or VLAN 1 here. Which VLAN is
+            # genuinely unused is a judgment call (references/judgment-checks.md #13), so the
+            # fix carries an explicit placeholder rather than a guessed number.
             yield ctx.finding(line=(n.line if n else iface.evidence_line),
-                              params={"interface": iface.name, "vlan": str(vlan)},
+                              params={"interface": iface.name, "vlan": _util.UNKNOWN_VLAN},
                               role_source=iface.role_source, title_suffix=iface.name)
 
 
