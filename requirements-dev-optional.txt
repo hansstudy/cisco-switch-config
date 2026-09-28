@@ -5,5 +5,5 @@
 # adjacent tooling in dev only, never as a runtime or shipped dependency.
 #
 # Confirm these are current, non-yanked releases before cutting a release.
-netutils==1.10.0
+netutils==1.19.2
 hier_config==2.4.0
