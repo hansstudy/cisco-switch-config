@@ -55,8 +55,8 @@
     },
     {
       "id": "G10-changelog-entry",
-      "status": "fail",
-      "reason": "Pending: CHANGELOG.md has only an [Unreleased] section; there is no dated '## [1.0.0-rc.1] - YYYY-MM-DD' section. release.yml step 7 builds the GitHub Release notes from the section matching the tag's version, so the release would also fail there without it. Owner: Maintainer, on release day."
+      "status": "pass",
+      "evidence": "CHANGELOG.md '## [1.0.0-rc.1] - 2026-09-28' section (Keep a Changelog, dated, with compare and tag links); `node .github/workflows/scripts/changelog-section.mjs --version 1.0.0-rc.1` extracts it (exit 0), which is what release.yml step 7 uses for the release notes"
     },
     {
       "id": "G11-semver-consistent",

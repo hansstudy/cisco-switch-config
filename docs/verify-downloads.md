@@ -3,12 +3,15 @@
 This artifact is **not Authenticode-signed** — Authenticode is not applicable to a Claude skill
 `.zip` in the way it applies to a Windows executable, and no code-signing certificate is held for
 this project's downloadable artifacts in general (deferred until a tool shows traction). Every
-release instead ships:
+release instead ships, next to the skill `.zip`:
 
 - A `SHA256SUMS` file covering every release artifact, including the SBOM.
+- A CycloneDX SBOM, `cisco-switch-config-<version>.cdx.json`.
 - A [Sigstore](https://www.sigstore.dev/) build-provenance attestation
   (`actions/attest-build-provenance`), proving the artifact came out of a known GitHub Actions
-  build of a known commit, not a hand-uploaded file.
+  build of a known commit, not a hand-uploaded file. The attestation bundle is also attached to
+  the release as `cisco-switch-config-<version>.intoto.jsonl`; it is not listed in `SHA256SUMS`,
+  because it attests the files that `SHA256SUMS` covers.
 
 ## 1. Verify the checksum
 
