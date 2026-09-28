@@ -36,6 +36,22 @@ config for security issues." The skill also answers "generate a hardened baselin
 Catalyst access switch with VLANs 10/20/99" and "what changed between these two configs, and does
 it matter?"
 
+## Screenshots
+
+All of these are real runs of the CLI engine against the synthetic fixtures in
+`tests/fixtures/synthetic/`; nothing shown is a real device configuration.
+
+![Audit table output, severity filtered to critical](docs/screenshots/audit-table.png)
+*`--format table` against a deliberately unhardened fixture, filtered to critical findings.*
+
+![Masked configuration view with secrets redacted](docs/screenshots/masked-view.png)
+*`--format masked`: every secret-bearing line replaced with a `[REDACTED ...]` placeholder.*
+
+![Hardened baseline generated from a short spec](docs/screenshots/baseline-generation.png)
+*A hardened baseline generated from a VLAN spec, `REPLACE-ME` placeholders left for site secrets.*
+
+Demo recording: [`docs/screenshots/demo.gif`](docs/screenshots/demo.gif).
+
 ## Requirements
 
 - Runs entirely inside the invoking surface (Claude Code, claude.ai, or the Claude API's code
