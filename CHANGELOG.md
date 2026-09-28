@@ -38,6 +38,12 @@ Release candidate for 1.0.0, published as a GitHub prerelease only (no marketpla
   upload) and the API's skills endpoint. Python 3.11+ standard library only: no dependencies, no
   network access, no telemetry.
 
+### Fixed
+
+- CSC-L2-0002, CSC-L2-0003 and CSC-L2-0009 no longer suggest VLAN 1, or the VLAN that was just
+  flagged, as the fix; they now print a `<REPLACE-ME:vlan-id>` placeholder for the operator to
+  fill in.
+
 <!--
   On release: date the heading for the tag being released, then keep a fresh empty [Unreleased]
   section above it. release.yml reads the section for the tag being released to populate the

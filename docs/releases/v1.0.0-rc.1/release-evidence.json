@@ -51,7 +51,7 @@
     {
       "id": "G09-readme-complete",
       "status": "fail",
-      "reason": "Pending: README.md follows the tier-1 shape, but its install one-liner (/plugin marketplace add hansstudy/claude-plugins) points at a marketplace repository that does not exist yet (GitHub returns not found on 2026-09-28), and no clean-profile transcript of the install has been recorded. Owner: Maintainer."
+      "reason": "Pending: README.md follows the tier-1 shape and its install one-liner uses this repository's own marketplace (/plugin marketplace add hansstudy/cisco-switch-config), but no clean-profile transcript of the install has been recorded. Owner: Maintainer."
     },
     {
       "id": "G10-changelog-entry",
