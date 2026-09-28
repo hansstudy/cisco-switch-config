@@ -2,6 +2,6 @@
 # shipped engine is Python 3.11 standard library only. Exact pins, per the
 # dependency-pinning policy; confirm these are still current, non-yanked
 # releases before cutting a release.
-pytest==8.3.4
+pytest==9.0.3
 jsonschema==4.23.0
 pyyaml==6.0.2
