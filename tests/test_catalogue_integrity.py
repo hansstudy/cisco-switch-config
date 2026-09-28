@@ -156,6 +156,27 @@ def test_template_vars():
 
 
 # ---------------------------------------------------------------------------
+# A remediation line must never hand the operator VLAN 1 as a destination
+# ---------------------------------------------------------------------------
+
+_VLAN_1_DESTINATION_RE = re.compile(r"\bvlan 1\b", re.IGNORECASE)
+
+
+def test_no_check_suggests_vlan_1_as_a_destination():
+    """VLAN 1 is the one VLAN every hardening check in this family exists to move traffic
+    OFF of; no remediation line may hand it back as the fix. A check that cannot compute a
+    genuinely unused VLAN from the config alone (CSC-L2-0001, CSC-L2-0005) already uses an
+    explicit `<REPLACE-ME:...>` placeholder instead -- that is the only sanctioned way to
+    leave the destination for the operator to fill in."""
+    offenders = []
+    for check in _checks():
+        for line in check.get("remediation") or []:
+            if _VLAN_1_DESTINATION_RE.search(line):
+                offenders.append((check["id"], line))
+    assert not offenders, f"remediation suggests VLAN 1 as a destination: {offenders}"
+
+
+# ---------------------------------------------------------------------------
 # defaults_key must name a real key in defaults.json
 # ---------------------------------------------------------------------------
 

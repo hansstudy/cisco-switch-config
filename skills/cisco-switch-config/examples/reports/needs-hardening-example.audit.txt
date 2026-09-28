@@ -48,11 +48,11 @@ high      CSC-L2-0001    det     58  Native VLAN on a trunk is VLAN 1 - GigabitE
 high      CSC-L2-0002    det     54  Native VLAN equals an access VLAN in use - GigabitEthernet1/0/24
           evidence: interface GigabitEthernet1/0/24
           fix: interface GigabitEthernet1/0/24
-                switchport trunk native vlan 1
+                switchport trunk native vlan <REPLACE-ME:vlan-id>
 high      CSC-L2-0002    det     58  Native VLAN equals an access VLAN in use - GigabitEthernet1/0/25
           evidence: interface GigabitEthernet1/0/25
           fix: interface GigabitEthernet1/0/25
-                switchport trunk native vlan 1
+                switchport trunk native vlan <REPLACE-ME:vlan-id>
 high      CSC-LOG-0001   det      -  No `logging host` configured
           evidence: (not configured)
           fix: logging host <REPLACE-ME:host>
@@ -147,7 +147,7 @@ medium    CSC-IFC-0003   det     43  `ip proxy-arp` not disabled on a routed int
 medium    CSC-L2-0003    det     47  Access port assigned to VLAN 1 - GigabitEthernet1/0/1
           evidence: switchport access vlan 1
           fix: interface GigabitEthernet1/0/1
-                switchport access vlan 1
+                switchport access vlan <REPLACE-ME:vlan-id>
 medium    CSC-L2-0004    det     43  `interface Vlan1` not shut down
           evidence: interface Vlan1
           fix: interface Vlan1
@@ -296,7 +296,7 @@ low       CSC-IFC-0007   det      -  CDP left enabled globally
 low       CSC-L2-0009    heur    49  Unused port not parked in an unused VLAN - GigabitEthernet1/0/2
           evidence: interface GigabitEthernet1/0/2
           fix: interface GigabitEthernet1/0/2
-                switchport access vlan 1
+                switchport access vlan <REPLACE-ME:vlan-id>
 low       CSC-LOG-0002   det      -  Fewer than two syslog destinations
           evidence: (not configured)
           fix: logging host <REPLACE-ME:host>

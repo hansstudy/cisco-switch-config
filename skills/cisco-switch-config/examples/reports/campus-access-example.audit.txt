@@ -11,7 +11,7 @@ high      CSC-DHCP-0008  det      -  Dynamic ARP Inspection not enabled on snoop
 high      CSC-L2-0002    det     87  Native VLAN equals an access VLAN in use - TenGigabitEthernet1/1/1
           evidence: switchport trunk native vlan 999
           fix: interface TenGigabitEthernet1/1/1
-                switchport trunk native vlan 999
+                switchport trunk native vlan <REPLACE-ME:vlan-id>
 high      CSC-MGT-0002   det     14  HTTPS server not restricted by `ip http access-class`
           evidence: ip http secure-server
           fix: ip http access-class <REPLACE-ME:acl-name>
@@ -170,7 +170,7 @@ low       CSC-IFC-0006   heur    48  `ip verify unicast source reachable-via rx`
 low       CSC-L2-0009    heur    79  Unused port not parked in an unused VLAN - GigabitEthernet1/0/48
           evidence: interface GigabitEthernet1/0/48
           fix: interface GigabitEthernet1/0/48
-                switchport access vlan 1
+                switchport access vlan <REPLACE-ME:vlan-id>
 low       CSC-LOG-0002   det     96  Fewer than two syslog destinations
           evidence: logging host 198.51.100.30
           fix: logging host 198.51.100.30

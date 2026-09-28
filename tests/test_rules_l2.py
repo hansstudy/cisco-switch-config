@@ -1,6 +1,8 @@
 """Tests for ciscocheck.rules.l2 (L2 family, 14 checks)."""
 from __future__ import annotations
 
+import re
+
 import pytest
 
 from ciscocheck import registry
@@ -113,6 +115,50 @@ def test_l2_0009_excludes_svis():
     """L2-0009 is about physical unused ports; a shut, address-less SVI is not one."""
     findings = _fire("CSC-L2-0009", "interface Vlan1\n shutdown\n no ip address\n")
     assert not findings
+
+
+# CSC-L2-0002 (native VLAN collides with an access VLAN), CSC-L2-0003 (access port on
+# VLAN 1) and CSC-L2-0009 (unused port parked on VLAN 1 or a live VLAN) all fire *because*
+# a VLAN is already at a bad value. The engine cannot know a genuinely unused VLAN from the
+# config alone, so the fix must never restate that bad value (and must never say `vlan 1`,
+# the single worst possible destination): it must hand the operator an explicit
+# `<REPLACE-ME:...>` placeholder to fill in, the same convention CSC-L2-0001 already uses.
+_VLAN_1_DESTINATION_RE = re.compile(r"\bvlan 1\b", re.IGNORECASE)
+
+
+@pytest.mark.parametrize("check_id", ("CSC-L2-0002", "CSC-L2-0003", "CSC-L2-0009"))
+def test_vlan_destination_checks_never_suggest_vlan_1(check_id):
+    fire_text, _ = CASES[check_id]
+    findings = _fire(check_id, fire_text)
+    assert findings, f"{check_id} expected to fire on {fire_text!r}"
+    for f in findings:
+        rendered = "\n".join(f.remediation)
+        assert not _VLAN_1_DESTINATION_RE.search(rendered), (
+            f"{check_id} remediation suggests VLAN 1 as a destination: {f.remediation!r}")
+        assert "<REPLACE-ME:vlan-id>" in rendered, (
+            f"{check_id} remediation should carry an explicit vlan placeholder: "
+            f"{f.remediation!r}")
+
+
+@pytest.mark.parametrize("check_id", ("CSC-L2-0002", "CSC-L2-0003", "CSC-L2-0009"))
+def test_vlan_destination_checks_never_echo_the_observed_vlan(check_id):
+    """Regression guard: these checks must never bind `vlan` to the VLAN they just flagged
+    as bad (the original bug -- see CHANGELOG). Firing against a config whose offending
+    VLAN is a distinctive, non-1 number still must not leak that number into the fix."""
+    fire_text = {
+        "CSC-L2-0002": ("interface GigabitEthernet1/0/1\n switchport mode access\n"
+                        " switchport access vlan 77\n"
+                        "interface TenGigabitEthernet1/1/1\n switchport mode trunk\n"
+                        " switchport trunk native vlan 77\n"),
+        "CSC-L2-0003": "interface GigabitEthernet1/0/1\n switchport access vlan 1\n",
+        "CSC-L2-0009": "interface GigabitEthernet1/0/3\n shutdown\n switchport access vlan 1\n",
+    }[check_id]
+    findings = _fire(check_id, fire_text)
+    assert findings, f"{check_id} expected to fire on {fire_text!r}"
+    for f in findings:
+        assert f.params.get("vlan") == "<REPLACE-ME:vlan-id>", (
+            f"{check_id} bound `vlan` to {f.params.get('vlan')!r} instead of a placeholder")
+        assert "vlan 77" not in "\n".join(f.remediation)
 
 
 def test_module_ids_exist_in_catalogue():
