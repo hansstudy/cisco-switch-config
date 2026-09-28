@@ -1,0 +1,13 @@
+!
+enable algorithm-type scrypt secret <REPLACE-ME:enable-secret>
+username admin privilege 15 algorithm-type scrypt secret <REPLACE-ME:local-admin-secret>
+!
+aaa new-model
+$aaa_servers
+$aaa_groups
+aaa authentication login default $login_methods
+aaa authentication enable default $enable_methods
+aaa authorization console
+aaa authorization exec default $exec_methods
+aaa accounting exec default start-stop $acct_methods
+aaa accounting commands 15 default start-stop $acct_methods

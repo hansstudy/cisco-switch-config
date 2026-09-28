@@ -1,0 +1,10 @@
+[tool.pytest.ini_options]
+pythonpath = ["skills/cisco-switch-config/scripts"]
+testpaths  = ["tests"]
+addopts    = "-q --strict-markers"
+markers    = ["slow: takes more than a second"]
+filterwarnings = ["error"]
+
+# No build-system table, no packaging metadata: this repository is not a pip-installable
+# distribution, it is a skill directory plus a test harness. Adding packaging metadata would
+# imply an install path that does not exist on any of the three shipping surfaces.

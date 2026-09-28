@@ -1,0 +1,52 @@
+{
+  "version": 1,
+  "hostname": "ACC-SW-12",
+  "domain_name": "example.invalid",
+  "platform": "iosxe",
+  "role": "access",
+  "management": {
+    "vlan": 30,
+    "address": "192.0.2.30/24",
+    "gateway": "192.0.2.1",
+    "acl_name": "MGMT-ACCESS",
+    "allowed_sources": ["192.0.2.128/27", "198.51.100.0/28"]
+  },
+  "vlans": [
+    { "id": 10, "name": "DATA-A", "kind": "data" },
+    { "id": 11, "name": "DATA-B", "kind": "data" },
+    { "id": 20, "name": "VOICE", "kind": "voice" },
+    { "id": 30, "name": "MGMT", "kind": "mgmt" },
+    { "id": 999, "name": "PARKING", "kind": "unused" }
+  ],
+  "uplinks": [
+    { "interface": "TenGigabitEthernet1/1/1", "description": "uplink to DIST-01",
+      "allowed_vlans": [10, 11, 20, 30] },
+    { "interface": "TenGigabitEthernet1/1/2", "description": "uplink to DIST-02 (redundant)",
+      "allowed_vlans": [10, 11, 20, 30] }
+  ],
+  "access_ports": [
+    { "range": "GigabitEthernet1/0/1 - 24", "vlan": 10, "voice_vlan": 20,
+      "description": "user access, floor 1" },
+    { "range": "GigabitEthernet1/0/25 - 44", "vlan": 11, "voice_vlan": 20,
+      "description": "user access, floor 2" }
+  ],
+  "unused_ports": ["GigabitEthernet1/0/45 - 48"],
+  "stp": { "mode": "rapid-pvst", "root_priority": null },
+  "aaa": {
+    "tacacs_hosts": ["198.51.100.10", "198.51.100.11"],
+    "radius_hosts": [],
+    "group_name": "TACACS-GRP"
+  },
+  "snmp": { "v3_user": "monuser", "v3_group": "RO-GROUP" },
+  "ntp": { "servers": ["198.51.100.123", "198.51.100.124"], "key_id": 1 },
+  "logging": { "hosts": ["198.51.100.30", "198.51.100.31"], "trap_level": "informational" },
+  "banner": { "motd": "Authorized use only. All activity is monitored and recorded." },
+  "features": {
+    "dhcp_snooping": true,
+    "dai": true,
+    "port_security": true,
+    "storm_control": true,
+    "udld": true
+  },
+  "archive": { "path": "flash:archive" }
+}

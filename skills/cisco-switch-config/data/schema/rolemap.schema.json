@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hans.study/tools/cisco-switch-config/schema/rolemap.schema.json",
+  "title": "cisco-switch-config --role-map file",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version"
+  ],
+  "$defs": {
+    "role": {
+      "enum": [
+        "access",
+        "voice-access",
+        "trunk",
+        "uplink",
+        "management",
+        "routed",
+        "unused",
+        "unknown"
+      ]
+    }
+  },
+  "properties": {
+    "version": {
+      "const": 1
+    },
+    "roles": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/role"
+      },
+      "description": "Single interface names, any documented abbreviation"
+    },
+    "ranges": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/role"
+      },
+      "description": "Keys use the `interface range` grammar"
+    },
+    "management_vlan": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 4094
+    },
+    "vty_universe": {
+      "type": "array",
+      "items": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "minItems": 2,
+      "maxItems": 2
+    }
+  }
+}

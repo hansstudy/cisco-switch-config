@@ -1,0 +1,227 @@
+SEVERITY  CHECK          CONF  LINE  TITLE
+high      CSC-AAA-0007   det      -  `aaa accounting commands` absent for privilege 15
+          evidence: (not configured)
+          fix: aaa accounting commands 15 default start-stop group tacacs+
+high      CSC-DHCP-0008  det      -  Dynamic ARP Inspection not enabled on snooped VLANs - VLAN 10
+          evidence: (not configured)
+          fix: ip arp inspection vlan 10
+high      CSC-DHCP-0008  det      -  Dynamic ARP Inspection not enabled on snooped VLANs - VLAN 20
+          evidence: (not configured)
+          fix: ip arp inspection vlan 20
+high      CSC-L2-0002    det     87  Native VLAN equals an access VLAN in use - TenGigabitEthernet1/1/1
+          evidence: switchport trunk native vlan 999
+          fix: interface TenGigabitEthernet1/1/1
+                switchport trunk native vlan 999
+high      CSC-MGT-0002   det     14  HTTPS server not restricted by `ip http access-class`
+          evidence: ip http secure-server
+          fix: ip http access-class <REPLACE-ME:acl-name>
+high      CSC-SSH-0004   det      -  `ip ssh server algorithm encryption` permits a CBC or weak cipher
+          evidence: (not configured)
+          fix: ip ssh server algorithm encryption aes256-ctr aes192-ctr aes128-ctr
+high      CSC-VTY-0002   det    107  A vty line has no `access-class` restriction - vty 5 15
+          evidence: line vty 5 15
+          fix: line vty 5 15
+               access-class <REPLACE-ME:acl-name> in
+medium    CSC-AAA-0004   det      -  `aaa authentication enable default` absent
+          evidence: (not configured)
+          fix: aaa authentication enable default group tacacs+ enable
+medium    CSC-AAA-0006   det      -  `aaa authorization console` absent
+          evidence: (not configured)
+          fix: aaa authorization console
+medium    CSC-AAA-0008   det     24  Fewer than two TACACS+/RADIUS servers configured
+          evidence: tacacs server ISE1
+          fix: tacacs server ISE1
+medium    CSC-DHCP-0009  heur     -  DAI `validate src-mac dst-mac ip` not configured, or trust misplaced
+          evidence: (not configured)
+          fix: ip arp inspection validate src-mac dst-mac ip
+medium    CSC-IFC-0003   det     48  `ip proxy-arp` not disabled on a routed interface - Vlan30
+          evidence: interface Vlan30
+          fix: interface Vlan30
+                no ip proxy-arp
+medium    CSC-L2-0007    det     79  Port left at DTP dynamic (no explicit `switchport mode`) - GigabitEthernet1/0/48
+          evidence: interface GigabitEthernet1/0/48
+          fix: interface GigabitEthernet1/0/48
+                switchport mode access
+medium    CSC-L2-0010    heur    52  Port security not configured on an access port - GigabitEthernet1/0/1
+          evidence: interface GigabitEthernet1/0/1
+          fix: interface GigabitEthernet1/0/1
+                switchport port-security
+                switchport port-security maximum 2
+                switchport port-security violation restrict
+medium    CSC-L2-0010    heur    68  Port security not configured on an access port - GigabitEthernet1/0/3
+          evidence: interface GigabitEthernet1/0/3
+          fix: interface GigabitEthernet1/0/3
+                switchport port-security
+                switchport port-security maximum 2
+                switchport port-security violation restrict
+medium    CSC-L2-0012    heur    52  Storm control not configured on an access port - GigabitEthernet1/0/1
+          evidence: interface GigabitEthernet1/0/1
+          fix: interface GigabitEthernet1/0/1
+                storm-control broadcast level 20.00
+                storm-control action trap
+medium    CSC-L2-0012    heur    59  Storm control not configured on an access port - GigabitEthernet1/0/2
+          evidence: interface GigabitEthernet1/0/2
+          fix: interface GigabitEthernet1/0/2
+                storm-control broadcast level 20.00
+                storm-control action trap
+medium    CSC-L2-0012    heur    68  Storm control not configured on an access port - GigabitEthernet1/0/3
+          evidence: interface GigabitEthernet1/0/3
+          fix: interface GigabitEthernet1/0/3
+                storm-control broadcast level 20.00
+                storm-control action trap
+medium    CSC-LOG-0007   det      -  `archive` / `log config` not enabled
+          evidence: (not configured)
+          fix: archive
+                log config
+                 logging enable
+                 notify syslog
+medium    CSC-MGT-0008   det      -  `ip source-route` enabled
+          evidence: (not configured)
+          fix: no ip source-route
+medium    CSC-MGT-0011   det      -  `service call-home` enabled (phones home to Cisco)
+          evidence: (not configured)
+          fix: no service call-home
+medium    CSC-NTP-0003   det      -  `ntp authenticate` not enabled
+          evidence: (not configured)
+          fix: ntp authenticate
+medium    CSC-NTP-0004   det     91  An `ntp server` has no `key` binding
+          evidence: ntp server 198.51.100.123
+          fix: ntp server 198.51.100.123 key <REPLACE-ME:key-id>
+medium    CSC-RES-0001   det      -  No `boot system` statement, or a non-deterministic boot order
+          evidence: (not configured)
+          fix: boot system flash:<REPLACE-ME:image-filename>
+medium    CSC-RES-0003   det      -  `errdisable recovery cause` not configured for the common causes
+          evidence: (not configured)
+          fix: errdisable recovery cause bpduguard
+               errdisable recovery cause udld
+               errdisable recovery cause psecure-violation
+medium    CSC-SNMP-0009  det      -  `snmp ifmib ifindex persist` not configured
+          evidence: (not configured)
+          fix: snmp ifmib ifindex persist
+medium    CSC-SSH-0005   det      -  `ip ssh server algorithm mac` permits HMAC-SHA1 or MD5
+          evidence: (not configured)
+          fix: ip ssh server algorithm mac hmac-sha2-256 hmac-sha2-512
+medium    CSC-SSH-0006   det      -  `ip ssh server algorithm kex` permits a group-1/group-14-sha1 exchange
+          evidence: (not configured)
+          fix: ip ssh server algorithm kex diffie-hellman-group14-sha256 diffie-hellman-group-exchange-sha256
+medium    CSC-STP-0002   heur    59  PortFast not enabled on access ports - GigabitEthernet1/0/2
+          evidence: interface GigabitEthernet1/0/2
+          fix: interface GigabitEthernet1/0/2
+                spanning-tree portfast
+medium    CSC-STP-0002   heur    68  PortFast not enabled on access ports - GigabitEthernet1/0/3
+          evidence: interface GigabitEthernet1/0/3
+          fix: interface GigabitEthernet1/0/3
+                spanning-tree portfast
+medium    CSC-STP-0006   det      -  Loop Guard not enabled by default
+          evidence: (not configured)
+          fix: spanning-tree loopguard default
+medium    CSC-STP-0008   det      -  No explicit root bridge priority set for any VLAN - VLAN 10
+          evidence: (not configured)
+          fix: spanning-tree vlan 10 root primary
+medium    CSC-STP-0008   det      -  No explicit root bridge priority set for any VLAN - VLAN 20
+          evidence: (not configured)
+          fix: spanning-tree vlan 20 root primary
+medium    CSC-STP-0008   det      -  No explicit root bridge priority set for any VLAN - VLAN 30
+          evidence: (not configured)
+          fix: spanning-tree vlan 30 root primary
+medium    CSC-STP-0008   det      -  No explicit root bridge priority set for any VLAN - VLAN 999
+          evidence: (not configured)
+          fix: spanning-tree vlan 999 root primary
+medium    CSC-STP-0010   det      -  UDLD not enabled (`udld enable` / per-port aggressive)
+          evidence: (not configured)
+          fix: udld aggressive
+medium    CSC-VTY-0009   det      -  `login block-for` / `login quiet-mode` not configured
+          evidence: (not configured)
+          fix: login block-for 120 attempts 5 within 60
+               login on-failure log
+               login on-success log
+medium    CSC-VTY-0010   det      -  Login banner absent
+          evidence: (not configured)
+          fix: banner login ^C
+               <REPLACE-ME:authorized-use-notice>
+               ^C
+low       CSC-DHCP-0005  heur    52  `ip dhcp snooping limit rate` not set on access ports - GigabitEthernet1/0/1
+          evidence: interface GigabitEthernet1/0/1
+          fix: interface GigabitEthernet1/0/1
+                ip dhcp snooping limit rate 15
+low       CSC-DHCP-0005  heur    59  `ip dhcp snooping limit rate` not set on access ports - GigabitEthernet1/0/2
+          evidence: interface GigabitEthernet1/0/2
+          fix: interface GigabitEthernet1/0/2
+                ip dhcp snooping limit rate 15
+low       CSC-DHCP-0005  heur    68  `ip dhcp snooping limit rate` not set on access ports - GigabitEthernet1/0/3
+          evidence: interface GigabitEthernet1/0/3
+          fix: interface GigabitEthernet1/0/3
+                ip dhcp snooping limit rate 15
+low       CSC-DHCP-0006  det      -  `ip dhcp snooping database` not configured
+          evidence: (not configured)
+          fix: ip dhcp snooping database flash:dhcp-snooping.db
+low       CSC-DHCP-0007  det      -  `ip dhcp snooping information option` left enabled without `allow-untrusted` handling
+          evidence: (not configured)
+          fix: Confirm whether any untrusted port faces a relay that also inserts option 82, and set `ip dhcp snooping information option allow-untrusted` there if so.
+low       CSC-IFC-0004   det     48  `ip redirects` / `ip unreachables` not disabled on a routed interface - Vlan30
+          evidence: interface Vlan30
+          fix: interface Vlan30
+                no ip redirects
+                no ip unreachables
+low       CSC-IFC-0006   heur    48  `ip verify unicast source reachable-via rx` absent on a routed edge - Vlan30
+          evidence: interface Vlan30
+          fix: interface Vlan30
+                ip verify unicast source reachable-via rx
+low       CSC-L2-0009    heur    79  Unused port not parked in an unused VLAN - GigabitEthernet1/0/48
+          evidence: interface GigabitEthernet1/0/48
+          fix: interface GigabitEthernet1/0/48
+                switchport access vlan 1
+low       CSC-LOG-0002   det     96  Fewer than two syslog destinations
+          evidence: logging host 198.51.100.30
+          fix: logging host 198.51.100.30
+low       CSC-LOG-0005   det      -  `logging buffered` absent or below 16 KB
+          evidence: (not configured)
+          fix: logging buffered 32768 informational
+low       CSC-LOG-0006   det      -  `logging source-interface` not set to a stable interface
+          evidence: (not configured)
+          fix: logging source-interface Loopback0
+low       CSC-LOG-0009   det      -  `logging console` left enabled at a verbose level
+          evidence: (not configured)
+          fix: logging console critical
+low       CSC-MGT-0004   det      -  `service pad` enabled
+          evidence: (not configured)
+          fix: no service pad
+low       CSC-MGT-0006   det      -  `ip bootp server` enabled
+          evidence: (not configured)
+          fix: no ip bootp server
+low       CSC-MGT-0013   det      -  `ip domain-lookup` enabled with no `ip name-server`
+          evidence: (not configured)
+          fix: no ip domain-lookup
+low       CSC-NTP-0002   det     91  Fewer than two NTP sources
+          evidence: ntp server 198.51.100.123
+          fix: ntp server 198.51.100.123
+low       CSC-NTP-0007   det      -  `ntp source` not set to a stable interface
+          evidence: (not configured)
+          fix: ntp source Loopback0
+low       CSC-RES-0007   det      -  `redundancy mode sso` absent on a stack-capable platform
+          evidence: (not configured)
+          fix: redundancy
+                mode sso
+low       CSC-SNMP-0008  det      -  No `snmp-server enable traps` for link/config/auth events
+          evidence: (not configured)
+          fix: snmp-server enable traps snmp linkdown linkup
+               snmp-server enable traps config
+low       CSC-SSH-0008   det      -  `ip ssh time-out` above 60 seconds
+          evidence: (not configured)
+          fix: ip ssh time-out 60
+low       CSC-VTY-0008   det    103  `transport output` not restricted - vty 0 4
+          evidence: line vty 0 4
+          fix: line vty 0 4
+               transport output ssh
+low       CSC-VTY-0008   det    107  `transport output` not restricted - vty 5 15
+          evidence: line vty 5 15
+          fix: line vty 5 15
+               transport output ssh
+info      CSC-SNMP-0010  man     93  SNMPv3 user inventory cannot be audited from a running-config
+          evidence: snmp-server group MON-GRP v3 priv
+          fix: Run `show snmp user` on the device and confirm each user's auth/priv algorithms and group membership match policy.
+121 checks evaluated - 61 findings (7 high, 31 medium, 22 low, 1 info)
+platform iosxe (inferred-version) - skill 1.0.0 - catalogue 2026.09
+notes: 2  (run with --no-notes to hide)
+  CSC-SELF-0001      -  platform=iosxe source=inferred-version
+  CSC-SELF-0009      -  nesting=indent

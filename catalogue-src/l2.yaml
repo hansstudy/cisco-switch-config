@@ -1,0 +1,373 @@
+- id: CSC-L2-0001
+  title: Native VLAN on a trunk is VLAN 1
+  severity: high
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: value
+  subject:
+  - switchport trunk native vlan
+  rationale: VLAN 1 carries untagged control-plane traffic (CDP, VTP, PAgP/LACP) by default across every
+    trunk on the network; leaving it as the native VLAN makes VLAN-hopping via double tagging trivial
+    and mixes management-adjacent traffic with an ID every device assumes is present.
+  remediation:
+  - interface {interface}
+  - ' switchport trunk native vlan <REPLACE-ME:unused-vlan-id>'
+  params_required:
+  - interface
+  refs:
+  - authority: DISA-STIG
+    id: CISC-L2-000260
+    version: V2R5
+    url: https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_L2S/2/5
+- id: CSC-L2-0002
+  title: Native VLAN equals an access VLAN in use
+  severity: high
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: value
+  subject:
+  - switchport trunk native vlan
+  - switchport access vlan
+  rationale: If the trunk's native VLAN matches a VLAN also assigned to access ports elsewhere, double-tagged
+    frames only need to be tagged with the outer native VLAN and the inner target VLAN to hop between
+    them, since the native VLAN's tag is stripped on egress.
+  remediation:
+  - interface {interface}
+  - ' switchport trunk native vlan {vlan}'
+  params_required:
+  - interface
+  - vlan
+  refs:
+  - authority: DISA-STIG
+    id: CISC-L2-000260
+    version: V2R5
+    url: https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_L2S/2/5
+- id: CSC-L2-0003
+  title: Access port assigned to VLAN 1
+  severity: medium
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: value
+  subject:
+  - switchport access vlan
+  rationale: VLAN 1 is the default for every unconfigured port and every trunk's native VLAN, so an end
+    host placed there shares a broadcast domain with any device an installer forgot to assign, plus whatever
+    control-plane traffic rides untagged on VLAN 1 trunks nearby.
+  remediation:
+  - interface {interface}
+  - ' switchport access vlan {vlan}'
+  params_required:
+  - interface
+  - vlan
+  refs:
+  - authority: DISA-STIG
+    id: CISC-L2-000220
+    version: V2R5
+    url: https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_L2S/2/5
+- id: CSC-L2-0004
+  title: '`interface Vlan1` not shut down'
+  severity: medium
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: absent
+  subject:
+  - interface Vlan1
+  rationale: An active VLAN1 SVI gives the switch a management-reachable IP address on the same broadcast
+    domain every unconfigured port defaults into, which is exactly the segment an attacker plugging into
+    an unused jack lands on.
+  remediation:
+  - interface Vlan1
+  - ' shutdown'
+  - ' no ip address'
+  params_required: []
+  refs:
+  - authority: DISA-STIG
+    id: CISC-L2-000240
+    version: V2R5
+    url: https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_L2S/2/5
+- id: CSC-L2-0005
+  title: Trunk allowed-VLAN list is `all` rather than explicit
+  severity: medium
+  category: security
+  confidence: heuristic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: value
+  subject:
+  - switchport trunk allowed vlan
+  rationale: Carrying every VLAN across every trunk means a new VLAN added anywhere in the network propagates
+    to links that never needed it, and a compromised access switch can reach broadcast domains it has
+    no legitimate traffic for.
+  remediation:
+  - interface {interface}
+  - ' switchport trunk allowed vlan <REPLACE-ME:vlan-list>'
+  params_required:
+  - interface
+  refs:
+  - &id002
+    authority: Cisco
+    id: catalyst-3850-3650-best-practices-guide
+    version: null
+    url: https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst3850/software/release/16-1/best_practices_guide/BP_Cat3850/BP_overview.html
+- id: CSC-L2-0006
+  title: DTP not disabled (`switchport nonegotiate` absent on a trunk)
+  severity: medium
+  category: security
+  confidence: heuristic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: absent
+  subject:
+  - switchport nonegotiate
+  rationale: With DTP still negotiating, an attacker who connects a device configured to speak DTP can
+    potentially convince the switch port to become a trunk, gaining access to every VLAN the trunk is
+    allowed to carry.
+  remediation:
+  - interface {interface}
+  - ' switchport nonegotiate'
+  params_required:
+  - interface
+  refs:
+  - authority: DISA-STIG
+    id: CISC-L2-000200
+    version: V2R5
+    url: https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_L2S/2/5
+- id: CSC-L2-0007
+  title: Port left at DTP dynamic (no explicit `switchport mode`)
+  severity: medium
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: absent
+  subject:
+  - switchport mode
+  rationale: A port with no explicit mode defaults to `dynamic auto` or `dynamic desirable`, both of which
+    will negotiate into trunk mode if the far end asks; setting an explicit access/trunk mode removes
+    that ambiguity entirely.
+  remediation:
+  - interface {interface}
+  - ' switchport mode access'
+  params_required:
+  - interface
+  refs:
+  - authority: DISA-STIG
+    id: CISC-L2-000200
+    version: V2R5
+    url: https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_L2S/2/5
+- id: CSC-L2-0008
+  title: Unused port not shut down
+  severity: medium
+  category: security
+  confidence: heuristic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: absent
+  subject:
+  - shutdown
+  rationale: An unused but active port is a physical entry point to the network for anyone who can reach
+    the wiring closet or a patch panel, with none of the port-security or VLAN controls a provisioned
+    port would have.
+  remediation:
+  - interface {interface}
+  - ' shutdown'
+  params_required:
+  - interface
+  refs:
+  - &id001
+    authority: NSA
+    id: hardening-network-devices
+    version: null
+    url: https://media.defense.gov/2020/Aug/18/2002479461/-1/-1/0/HARDENING_NETWORK_DEVICES.PDF
+- id: CSC-L2-0009
+  title: Unused port not parked in an unused VLAN
+  severity: low
+  category: security
+  confidence: heuristic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: value
+  subject:
+  - switchport access vlan
+  rationale: Even a shut-down port retains its assigned VLAN in the configuration; leaving it on a production
+    VLAN means the moment someone re-enables it (intentionally or by mistake) it lands directly on live
+    user traffic instead of an isolated blackhole VLAN.
+  remediation:
+  - interface {interface}
+  - ' switchport access vlan {vlan}'
+  params_required:
+  - interface
+  - vlan
+  refs:
+  - *id001
+- id: CSC-L2-0010
+  title: Port security not configured on an access port
+  severity: medium
+  category: security
+  confidence: heuristic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: absent
+  subject:
+  - switchport port-security
+  rationale: Without port security, any number of MAC addresses can appear behind an access port, which
+    allows an attacker to attach an unmanaged switch or hub and multiply the number of devices with access
+    through that single jack.
+  remediation:
+  - interface {interface}
+  - ' switchport port-security'
+  - ' switchport port-security maximum 2'
+  - ' switchport port-security violation restrict'
+  params_required:
+  - interface
+  refs:
+  - *id002
+- id: CSC-L2-0011
+  title: Port security `maximum` above 3, or violation mode not restrict/shutdown
+  severity: low
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: value
+  subject:
+  - switchport port-security maximum
+  - switchport port-security violation
+  rationale: A high MAC maximum defeats much of the point of port security on a single-host access port,
+    and a `protect` violation mode silently drops offending traffic without logging or disabling the port,
+    leaving the event unnoticed.
+  remediation:
+  - interface {interface}
+  - ' switchport port-security maximum 2'
+  - ' switchport port-security violation restrict'
+  params_required:
+  - interface
+  refs:
+  - *id002
+- id: CSC-L2-0012
+  title: Storm control not configured on an access port
+  severity: medium
+  category: reliability
+  confidence: heuristic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: absent
+  subject:
+  - storm-control
+  rationale: Without storm control, a broadcast storm from a misbehaving NIC, a bridging loop, or a malicious
+    host can consume the port's and the switch's forwarding capacity, degrading service for every other
+    port sharing the same ASIC or backplane resource.
+  remediation:
+  - interface {interface}
+  - ' storm-control broadcast level 20.00'
+  - ' storm-control action trap'
+  params_required:
+  - interface
+  refs:
+  - *id002
+- id: CSC-L2-0013
+  title: VTP mode is server or client rather than transparent/off
+  severity: medium
+  category: reliability
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: value
+  subject:
+  - vtp mode
+  rationale: In server or client mode, any switch that joins the VTP domain with a higher revision number
+    can silently overwrite every switch's VLAN database, including deleting VLANs still in active use
+    — a well-documented cause of network-wide outages.
+  remediation:
+  - vtp mode transparent
+  params_required: []
+  refs:
+  - authority: DISA-STIG
+    id: CISC-L2-000030
+    version: V2R5
+    url: https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_L2S/2/5
+- id: CSC-L2-0014
+  title: VTP domain configured without a VTP password
+  severity: medium
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: absent
+  subject:
+  - vtp password
+  rationale: An unauthenticated VTP domain accepts VLAN database updates from any switch that joins it
+    with the same domain name, which is exactly the mechanism CSC-L2-0013 warns about; a password at minimum
+    requires an attacker to know it before injecting an update.
+  remediation:
+  - vtp password <REPLACE-ME:vtp-password>
+  params_required: []
+  refs:
+  - authority: DISA-STIG
+    id: CISC-L2-000030
+    version: V2R5
+    url: https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_L2S/2/5

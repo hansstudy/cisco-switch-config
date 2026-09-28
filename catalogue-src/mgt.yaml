@@ -1,0 +1,347 @@
+- id: CSC-MGT-0001
+  title: HTTP server enabled (`ip http server`)
+  severity: high
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: present
+  subject:
+  - ip http server
+  rationale: The HTTP management server transmits configuration and credential material without encryption
+    and has a long history of unauthenticated remote-code-execution advisories. A switch that only needs
+    SSH and console access gains nothing from also listening on TCP/80, so the service should stay off
+    unless a specific integration requires it.
+  remediation:
+  - no ip http server
+  params_required: []
+  refs:
+  - authority: DISA-STIG
+    id: CISC-ND-000470
+    version: V3R5
+    url: https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5
+- id: CSC-MGT-0002
+  title: HTTPS server not restricted by `ip http access-class`
+  severity: high
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: absent
+  subject:
+  - ip http secure-server
+  - ip http access-class
+  rationale: 'Even TLS-protected web management should not be reachable from arbitrary source addresses:
+    an access-class scopes the listener to the management subnet so a compromised host elsewhere on the
+    network cannot reach the device''s configuration UI.'
+  remediation:
+  - ip http access-class {acl_name}
+  params_required:
+  - acl_name
+  refs:
+  - &id001
+    authority: Cisco
+    id: ios-xe-software-hardening-guide
+    version: null
+    url: https://sec.cloudapps.cisco.com/security/center/resources/IOS_XE_hardening
+- id: CSC-MGT-0003
+  title: '`ip http secure-server` disabled while `ip http server` is enabled'
+  severity: medium
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: absent
+  subject:
+  - ip http secure-server
+  rationale: Running the plaintext HTTP listener without also enabling the TLS listener means any web-based
+    management session is fully readable on the wire. If web management is needed at all, the encrypted
+    form should be the one in use.
+  remediation:
+  - ip http secure-server
+  - no ip http server
+  params_required: []
+  refs:
+  - *id001
+- id: CSC-MGT-0004
+  title: '`service pad` enabled'
+  severity: low
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: present
+  subject:
+  - service pad
+  rationale: PAD (X.25 Packet Assembler/Disassembler) support is a legacy service with no role on a modern
+    campus switch. Leaving it enabled adds an unused listener and code path to the attack surface for
+    no operational benefit.
+  remediation:
+  - no service pad
+  params_required: []
+  refs:
+  - &id002
+    authority: Cisco
+    id: guide-to-harden-cisco-ios-devices
+    version: null
+    url: https://www.cisco.com/c/en/us/support/docs/ip/access-lists/13608-21.html
+- id: CSC-MGT-0005
+  title: TCP/UDP small servers enabled
+  severity: medium
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: present
+  subject:
+  - service tcp-small-servers
+  - service udp-small-servers
+  rationale: The small servers (echo, chargen, discard, daytime) are diagnostic holdovers that can be
+    abused for reflection and amplification traffic. They are not needed for normal switch operation and
+    should stay disabled.
+  remediation:
+  - no service tcp-small-servers
+  - no service udp-small-servers
+  params_required: []
+  refs:
+  - *id002
+- id: CSC-MGT-0006
+  title: '`ip bootp server` enabled'
+  severity: low
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: present
+  subject:
+  - ip bootp server
+  rationale: The BOOTP server lets the switch answer legacy boot-image requests from the network, a function
+    a campus access/distribution switch never performs. An enabled BOOTP responder is one more unauthenticated
+    service reachable from any attached segment.
+  remediation:
+  - no ip bootp server
+  params_required: []
+  refs:
+  - *id002
+- id: CSC-MGT-0007
+  title: '`ip finger` / `service finger` enabled'
+  severity: low
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: present
+  subject:
+  - ip finger
+  - service finger
+  rationale: Finger discloses logged-in user information to any unauthenticated requester, which is reconnaissance
+    value handed to an attacker for free. There is no operational reason to run it on a production switch.
+  remediation:
+  - no ip finger
+  - no service finger
+  params_required: []
+  refs:
+  - *id002
+- id: CSC-MGT-0008
+  title: '`ip source-route` enabled'
+  severity: medium
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: present
+  subject:
+  - ip source-route
+  rationale: Source-routed packets let the sender dictate the forwarding path, which can be used to bypass
+    topology-based access controls and to probe internal addressing. Modern networks have no legitimate
+    use for it on a switch's management or routed interfaces.
+  remediation:
+  - no ip source-route
+  params_required: []
+  refs:
+  - *id002
+- id: CSC-MGT-0009
+  title: '`service config` (network autoload) enabled'
+  severity: medium
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: present
+  subject:
+  - service config
+  rationale: Autoloading configuration from a network TFTP server on boot lets anyone who can spoof that
+    server (or intercept the boot-time broadcast) push an arbitrary configuration onto the device. Startup
+    configuration should come only from local NVRAM.
+  remediation:
+  - no service config
+  params_required: []
+  refs:
+  - *id002
+- id: CSC-MGT-0010
+  title: '`vstack` (Smart Install client) not disabled'
+  severity: critical
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: not-effectively-set
+  subject:
+  - vstack
+  rationale: The Smart Install client listens on TCP/4786 with no authentication and has been used in
+    the wild to pull running configuration, push a replacement startup-config, or reload the device outright.
+    Unless the switch is an active Smart Install director-managed client, the feature should be off.
+  remediation:
+  - no vstack
+  params_required: []
+  refs:
+  - authority: NSA
+    id: csa-cisco-smart-install-protocol-misuse
+    version: null
+    url: https://media.defense.gov/2019/Jul/16/2002157833/-1/-1/0/CSA-CISCO-SMART-INSTALL-PROTOCOL-MISUSE.PDF
+  - authority: CISA
+    id: ta18-106a
+    version: null
+    url: https://www.cisa.gov/news-events/alerts/TA18-106A
+  defaults_key: vstack
+- id: CSC-MGT-0011
+  title: '`service call-home` enabled (phones home to Cisco)'
+  severity: medium
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: present
+  subject:
+  - service call-home
+  - call-home
+  rationale: Call Home transmits inventory, crash and diagnostic data off-box to Cisco (or a configured
+    destination). On a network where outbound telemetry is not wanted, or where the destination has not
+    been reviewed, the feature should stay disabled.
+  remediation:
+  - no service call-home
+  params_required: []
+  refs:
+  - *id002
+- id: CSC-MGT-0012
+  title: '`netconf-yang` or `restconf` enabled without an access restriction'
+  severity: high
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: present
+  subject:
+  - netconf-yang
+  - restconf
+  rationale: NETCONF and RESTCONF are full programmatic configuration channels; enabling either without
+    a control-plane or interface ACL means any host that can reach the management address can attempt
+    to manage the switch, not merely observe it.
+  remediation:
+  - Restrict management access with a control-plane ACL or `ip http access-class` before enabling `restconf`/`netconf-yang`.
+  params_required: []
+  refs:
+  - authority: DISA-STIG
+    id: CISC-ND-000470
+    version: V3R5
+    url: https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5
+- id: CSC-MGT-0013
+  title: '`ip domain-lookup` enabled with no `ip name-server`'
+  severity: low
+  category: reliability
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: present
+  subject:
+  - ip domain-lookup
+  - ip name-server
+  rationale: With DNS lookups enabled but no resolver configured, every mistyped command at the CLI triggers
+    a lookup that has to time out before the prompt returns, which is a well-known operator annoyance
+    that also slows down scripted configuration.
+  remediation:
+  - no ip domain-lookup
+  params_required: []
+  refs:
+  - authority: Cisco
+    id: catalyst-3850-3650-best-practices-guide
+    version: null
+    url: https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst3850/software/release/16-1/best_practices_guide/BP_Cat3850/BP_overview.html
+- id: CSC-MGT-0014
+  title: Configuration references an undefined object
+  severity: medium
+  category: reliability
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: referential
+  subject:
+  - access-class
+  - ip access-group
+  - aaa group server
+  rationale: 'A command that names an ACL, server group or similar object which is never defined elsewhere
+    in the configuration has no effect at all: IOS silently treats the reference as a no-op rather than
+    rejecting the line, so the intended control is not applied.'
+  remediation:
+  - Define the referenced object, or remove the dangling reference.
+  params_required: []
+  refs:
+  - *id002
+  notes: Generic referential check; the engine excludes any (kind, name) pair already reported by CSC-VTY-0003,
+    CSC-SNMP-0005, CSC-NTP-0005 or CSC-AAA-0009.

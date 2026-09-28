@@ -1,0 +1,12 @@
+{
+  "fixture": "third-party/batfish/ios-crypto.cfg",
+  "platform": "ios",
+  "role_map": null,
+  "must_fire": [],
+  "must_not_fire": [],
+  "must_note": [],
+  "evidence_hints": {},
+  "max_critical": null,
+  "max_high": null,
+  "notes": "Single-feature grammar snippet (ISAKMP policies, ISAKMP PSKs, crypto keyrings, IPsec profile identities). No finding-count assertion; exists to prove the masker handles independently-authored ISAKMP PSK syntax (`crypto isakmp key ... address`) without leaking `psk1` / the type-6 key."
+}

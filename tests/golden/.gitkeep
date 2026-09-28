@@ -1,0 +1,7 @@
+This directory is reserved for future byte-exact golden-output fixtures, but no test currently
+reads from it: byte-exact golden JSON was rejected as a merge-conflict risk across independently
+maintained test files. Fixture expectations instead live in tests/fixtures/manifests/*.json,
+which are tolerant (id sets and substring hints) rather than byte-exact.
+
+Left empty (this .gitkeep only) rather than populated with content nothing consumes. If a future
+need for byte-exact golden output arises, populate it then.

@@ -1,0 +1,12 @@
+{
+  "fixture": "synthetic/traps/trap-h-snmpuser.cfg",
+  "platform": "iosxe",
+  "role_map": null,
+  "must_fire": ["CSC-SNMP-0010", "CSC-VTY-0001", "CSC-MGT-0010"],
+  "must_not_fire": ["CSC-SNMP-0006"],
+  "must_note": ["CSC-SELF-0001", "CSC-SELF-0006"],
+  "evidence_hints": { "CSC-SNMP-0010": ["MON-GRP"] },
+  "max_critical": 2,
+  "max_high": 17,
+  "notes": "must_not_fire CSC-SNMP-0006 (no v3 group with priv) because a priv group IS present. must_fire CSC-SNMP-0010, the manual-review extractor, is expected to surface MON-GRP for operator confirmation against `show snmp user` -- no rule may claim a presence/absence verdict about `snmp-server user` from this file. max_critical is 2, and CSC-VTY-0001 and CSC-MGT-0010 are both in must_fire, matching the real ruleset. This fixture configures no `line vty` at all, so the whole `vty 0 15` universe is assumed (CSC-SELF-0006 fires) and evaluated against the platform default (not SSH-only), so CSC-VTY-0001 correctly fires at `critical`. max_high is 17 (the real count, 12, plus a small headroom). This fixture also has no `version` line: with no version line, iosxe is treated as having vstack ON as a fail-safe, since an ambiguous or 3.x version cannot prove Smart Install is safely absent, unless `no vstack` is present -- which this fixture correctly does not have -- so CSC-MGT-0010 also correctly fires as critical. This is not fixed by adding a version line or `no vstack`: the no-version case is exactly what the fail-safe exists to catch."
+}

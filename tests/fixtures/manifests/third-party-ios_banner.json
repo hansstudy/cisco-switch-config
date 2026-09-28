@@ -1,0 +1,12 @@
+{
+  "fixture": "third-party/batfish/ios_banner.cfg",
+  "platform": "ios",
+  "role_map": null,
+  "must_fire": [],
+  "must_not_fire": [],
+  "must_note": [],
+  "evidence_hints": {},
+  "max_critical": null,
+  "max_high": null,
+  "notes": "Single-feature grammar snippet (banner delimiter forms only), not a full device config. This manifest only requires the run to complete without crashing or leaking; it makes no finding-count assertion."
+}

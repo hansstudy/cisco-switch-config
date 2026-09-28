@@ -1,0 +1,11 @@
+{
+  "fixture": "synthetic/campus-access-multivlan.cfg",
+  "platform": "iosxe",
+  "role_map": null,
+  "must_fire": ["CSC-L2-0009"],
+  "must_not_fire": ["CSC-MGT-0001", "CSC-SNMP-0001", "CSC-VTY-0001"],
+  "must_note": ["CSC-SELF-0001"],
+  "evidence_hints": {},
+  "max_critical": 0,
+  "max_high": 10
+}

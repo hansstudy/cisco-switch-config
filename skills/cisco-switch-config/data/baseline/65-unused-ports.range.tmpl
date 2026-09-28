@@ -1,0 +1,8 @@
+interface range $range
+ description UNUSED - parked and shut down
+ switchport mode access
+ switchport access vlan $parking_vlan
+ switchport nonegotiate
+ spanning-tree bpduguard enable
+ $cdp_port
+ shutdown

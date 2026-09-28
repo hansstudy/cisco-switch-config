@@ -1,0 +1,252 @@
+- id: CSC-SNMP-0001
+  title: SNMPv1/v2c community string configured
+  severity: high
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: present
+  subject:
+  - snmp-server community
+  rationale: SNMPv1/v2c authenticate with a community string sent in clear text and offer no message integrity
+    or encryption at all; anyone who can see the traffic can read or, for an RW community, rewrite the
+    device's configuration.
+  remediation:
+  - Remove the SNMPv1/v2c community-string configuration and migrate to SNMPv3 with `auth priv`.
+  params_required: []
+  refs:
+  - authority: DISA-STIG
+    id: CISC-ND-001130
+    version: V3R5
+    url: https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5
+- id: CSC-SNMP-0002
+  title: Community string is read-write (`RW`)
+  severity: critical
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: value
+  subject:
+  - snmp-server community
+  rationale: A read-write community lets anyone who obtains it push configuration changes over SNMP, which
+    combined with the protocol's lack of encryption makes an RW v1/v2c community one of the fastest routes
+    to full device compromise.
+  remediation:
+  - Remove the RW community; use SNMPv3 with a per-user `priv` credential instead.
+  params_required: []
+  refs:
+  - authority: DISA-STIG
+    id: CISC-ND-001130
+    version: V3R5
+    url: https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5
+- id: CSC-SNMP-0003
+  title: Community string matches a known default
+  severity: critical
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: value
+  subject:
+  - snmp-server community
+  rationale: Strings like `public` and `private` are the first values any scanner tries; a community that
+    matches a well-known default is equivalent to having no authentication at all.
+  remediation:
+  - Remove the default-named community and issue a unique, non-guessable value, or migrate to SNMPv3.
+  params_required: []
+  refs:
+  - authority: DISA-STIG
+    id: CISC-ND-001130
+    version: V3R5
+    url: https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5
+- id: CSC-SNMP-0004
+  title: Community string not restricted by an ACL
+  severity: high
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: absent
+  subject:
+  - snmp-server community
+  rationale: Without an ACL clause, an SNMPv1/v2c community is valid from any source address that can
+    reach the device, not just the network-management station it was issued for.
+  remediation:
+  - snmp-server community <REPLACE-ME:snmp-community> RO {acl_name}
+  params_required:
+  - acl_name
+  refs:
+  - authority: DISA-STIG
+    id: CISC-ND-001130
+    version: V3R5
+    url: https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5
+- id: CSC-SNMP-0005
+  title: Community ACL is referenced but undefined
+  severity: high
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: referential
+  subject:
+  - snmp-server community
+  rationale: If the ACL a community string names does not exist, IOS applies no restriction at all, so
+    the community is reachable from anywhere despite appearing to be scoped.
+  remediation:
+  - ip access-list standard {acl_name}
+  - ' permit <REPLACE-ME:management-subnet>'
+  params_required:
+  - acl_name
+  refs:
+  - authority: DISA-STIG
+    id: CISC-ND-001130
+    version: V3R5
+    url: https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5
+- id: CSC-SNMP-0006
+  title: No SNMPv3 group with `priv` configured
+  severity: high
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: absent
+  subject:
+  - snmp-server group
+  rationale: Without a `priv`-level v3 group, SNMP traffic is either unauthenticated, authenticated-but-unencrypted,
+    or falls back to v1/v2c entirely — none of which meets the confidentiality bar for a management protocol
+    carrying device state.
+  remediation:
+  - snmp-server group {group} v3 priv
+  params_required:
+  - group
+  refs:
+  - authority: DISA-STIG
+    id: CISC-ND-001140
+    version: V3R5
+    url: https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5
+- id: CSC-SNMP-0007
+  title: A configured SNMP trap/inform target uses v1/v2c instead of SNMPv3
+  severity: high
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: present
+  subject:
+  - snmp-server host
+  rationale: A trap/inform destination configured for v1/v2c sends the community string in every notification,
+    so even a device otherwise locked down to SNMPv3 for polling can still leak a usable credential through
+    its outbound traps.
+  remediation:
+  - snmp-server host {host} version 3 priv {group}
+  params_required:
+  - host
+  - group
+  refs:
+  - authority: DISA-STIG
+    id: CISC-ND-001130
+    version: V3R5
+    url: https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5
+- id: CSC-SNMP-0008
+  title: No `snmp-server enable traps` for link/config/auth events
+  severity: low
+  category: reliability
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: absent
+  subject:
+  - snmp-server enable traps
+  rationale: Without traps enabled for link state, configuration changes and authentication failures,
+    the network-management station has no push notification of these events and depends entirely on polling
+    to notice them, which is slower and easy to under-scope.
+  remediation:
+  - snmp-server enable traps snmp linkdown linkup
+  - snmp-server enable traps config
+  params_required: []
+  refs:
+  - &id001
+    authority: Cisco
+    id: catalyst-3850-3650-best-practices-guide
+    version: null
+    url: https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst3850/software/release/16-1/best_practices_guide/BP_Cat3850/BP_overview.html
+- id: CSC-SNMP-0009
+  title: '`snmp ifmib ifindex persist` not configured'
+  severity: medium
+  category: reliability
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: absent
+  subject:
+  - snmp ifmib ifindex persist
+  rationale: Without persistence, interface index numbers can be reassigned across a reload, which silently
+    breaks any NMS dashboard, threshold or automation keyed on ifIndex until it is manually re-mapped.
+  remediation:
+  - snmp ifmib ifindex persist
+  params_required: []
+  refs:
+  - *id001
+- id: CSC-SNMP-0010
+  title: SNMPv3 user inventory cannot be audited from a running-config
+  severity: info
+  category: security
+  confidence: manual-review
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: present
+  subject:
+  - snmp-server user
+  rationale: IOS never echoes SNMPv3 user credentials or their auth/priv algorithm choice back into `show
+    running-config`, so a static audit can confirm which v3 groups exist but cannot verify user-level
+    hygiene; that requires an interactive `show snmp user` on the device.
+  remediation:
+  - Run `show snmp user` on the device and confirm each user's auth/priv algorithms and group membership
+    match policy.
+  params_required: []
+  refs:
+  - authority: DISA-STIG
+    id: CISC-ND-001140
+    version: V3R5
+    url: https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5

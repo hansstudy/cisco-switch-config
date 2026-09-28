@@ -1,0 +1,6 @@
+!
+snmp-server group $v3_group v3 priv access $acl_name
+$snmp_user
+snmp-server enable traps snmp authentication linkdown linkup coldstart warmstart
+snmp-server enable traps config
+snmp ifmib ifindex persist

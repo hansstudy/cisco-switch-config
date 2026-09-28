@@ -1,0 +1,296 @@
+- id: CSC-AAA-0001
+  title: '`aaa new-model` not enabled'
+  severity: high
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: absent
+  subject:
+  - aaa new-model
+  rationale: Without `aaa new-model`, the device falls back to line-level passwords and cannot use TACACS+/RADIUS,
+    per-command authorization or accounting at all. It is the prerequisite for every other AAA control
+    in this catalogue.
+  remediation:
+  - aaa new-model
+  params_required: []
+  refs:
+  - authority: DISA-STIG
+    id: CISC-ND-000470
+    version: V3R5
+    url: https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5
+- id: CSC-AAA-0002
+  title: No `aaa authentication login` method list
+  severity: high
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: absent
+  subject:
+  - aaa authentication login
+  rationale: Without an explicit login method list, interactive access falls back to whatever the line
+    itself defines (often nothing, or a shared line password), which defeats per-user accountability entirely.
+  remediation:
+  - aaa authentication login default group tacacs+ local
+  params_required: []
+  refs:
+  - &id001
+    authority: Cisco
+    id: guide-to-harden-cisco-ios-devices
+    version: null
+    url: https://www.cisco.com/c/en/us/support/docs/ip/access-lists/13608-21.html
+- id: CSC-AAA-0003
+  title: Login method list has no local fallback
+  severity: medium
+  category: reliability
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: value
+  subject:
+  - aaa authentication login
+  rationale: If the only authentication method is a remote TACACS+/RADIUS group and that service becomes
+    unreachable, nobody can log in to the switch at all, including to fix the outage. A `local` fallback
+    keeps the device recoverable.
+  remediation:
+  - aaa authentication login default group tacacs+ local
+  params_required: []
+  refs:
+  - authority: DISA-STIG
+    id: CISC-ND-000490
+    version: V3R5
+    url: https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5
+- id: CSC-AAA-0004
+  title: '`aaa authentication enable default` absent'
+  severity: medium
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: absent
+  subject:
+  - aaa authentication enable default
+  rationale: Without this line, privileged-mode access is gated only by the shared `enable secret`, so
+    there is no per-user record of who escalated to privilege 15.
+  remediation:
+  - aaa authentication enable default group tacacs+ enable
+  params_required: []
+  refs:
+  - *id001
+- id: CSC-AAA-0005
+  title: '`aaa authorization exec` absent'
+  severity: medium
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: absent
+  subject:
+  - aaa authorization exec
+  rationale: Without exec authorization, any account that authenticates successfully gets an interactive
+    shell at whatever privilege the line grants, regardless of what the AAA server says that user is entitled
+    to.
+  remediation:
+  - aaa authorization exec default group tacacs+ local
+  params_required: []
+  refs:
+  - authority: DISA-STIG
+    id: CISC-ND-000470
+    version: V3R5
+    url: https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5
+- id: CSC-AAA-0006
+  title: '`aaa authorization console` absent'
+  severity: medium
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: absent
+  subject:
+  - aaa authorization console
+  rationale: By default IOS does not apply exec/command authorization to the console line even when `aaa
+    authorization exec` is configured elsewhere; `aaa authorization console` is what extends the same
+    policy to console sessions.
+  remediation:
+  - aaa authorization console
+  params_required: []
+  refs:
+  - *id001
+- id: CSC-AAA-0007
+  title: '`aaa accounting commands` absent for privilege 15'
+  severity: high
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: absent
+  subject:
+  - aaa accounting commands
+  rationale: Without command accounting at privilege 15, there is no audit trail of what a privileged
+    administrator actually typed, which matters both for incident response and for change-control review.
+  remediation:
+  - aaa accounting commands 15 default start-stop group tacacs+
+  params_required: []
+  refs:
+  - authority: DISA-STIG
+    id: CISC-ND-001410
+    version: V3R5
+    url: https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5
+- id: CSC-AAA-0008
+  title: Fewer than two TACACS+/RADIUS servers configured
+  severity: medium
+  category: reliability
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: value
+  subject:
+  - tacacs server
+  - radius server
+  rationale: 'A single authentication server is a single point of failure: if it is unreachable and there
+    is no local fallback in use, administrative access to the switch is lost along with it. Two independent
+    servers keep AAA available through a single outage.'
+  remediation:
+  - tacacs server {host}
+  params_required:
+  - host
+  refs:
+  - authority: DISA-STIG
+    id: CISC-ND-001370
+    version: V3R5
+    url: https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5
+- id: CSC-AAA-0009
+  title: AAA method list names an undefined server group
+  severity: high
+  category: reliability
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: referential
+  subject:
+  - aaa authentication
+  - aaa authorization
+  - aaa accounting
+  rationale: A method list that references a `group` name with no matching `aaa group server` definition
+    silently falls through to the next method in the list — often nothing — so the intended authentication
+    path never actually runs.
+  remediation:
+  - aaa group server tacacs+ {group}
+  params_required:
+  - group
+  refs:
+  - authority: DISA-STIG
+    id: CISC-ND-000470
+    version: V3R5
+    url: https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5
+- id: CSC-AAA-0010
+  title: Local user at privilege 15 with a type 0 or type 7 password
+  severity: critical
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: value
+  subject:
+  - username
+  rationale: Type 0 stores the password in clear text in the configuration and type 7 uses a Cisco proprietary
+    cipher that public tools reverse in milliseconds. A privilege-15 account protected this way is effectively
+    unprotected against anyone who can read the running configuration.
+  remediation:
+  - username <REPLACE-ME:local-username> algorithm-type sha256 secret <REPLACE-ME:local-user-secret>
+  params_required: []
+  refs:
+  - authority: DISA-STIG
+    id: CISC-ND-000550
+    version: V3R5
+    url: https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5
+- id: CSC-AAA-0011
+  title: '`enable-password` present, or `enable-secret` uses type 5 or weaker'
+  severity: high
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: value
+  subject:
+  - enable password
+  - enable secret
+  rationale: '`enable-password` stores its value with the same reversible cipher as type-7 passwords,
+    and type-5 MD5-crypt secrets are crackable offline at commodity speed. `enable-secret` with a type-8/9
+    (PBKDF2/scrypt) hash is the only form that resists offline attack.'
+  remediation:
+  - no enable password
+  - enable algorithm-type sha256 secret <REPLACE-ME:enable-secret>
+  params_required: []
+  refs:
+  - authority: CISA
+    id: best-practices-for-cisco-device-configuration
+    version: null
+    url: https://www.cisa.gov/news-events/alerts/2024/08/08/best-practices-cisco-device-configuration
+- id: CSC-AAA-0012
+  title: '`service password-encryption` not enabled'
+  severity: medium
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: absent
+  subject:
+  - service password-encryption
+  rationale: Without this line, every type-0 secret already present in the configuration (or added later
+    by a script or template) is stored and displayed in clear text rather than the weak-but-obscured type-7
+    form.
+  remediation:
+  - service password-encryption
+  params_required: []
+  refs:
+  - *id001

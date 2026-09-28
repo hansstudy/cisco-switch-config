@@ -1,0 +1,4124 @@
+{
+  "authorities": {
+    "CIS": {
+      "name": "CIS Benchmarks",
+      "url_base": null
+    },
+    "CISA": {
+      "name": "CISA guidance",
+      "url_base": "https://www.cisa.gov/"
+    },
+    "Cisco": {
+      "name": "Cisco hardening guidance",
+      "url_base": "https://sec.cloudapps.cisco.com/"
+    },
+    "DISA-STIG": {
+      "name": "DISA Cisco IOS-XE Switch STIG",
+      "url_base": "https://public.cyber.mil/stigs/"
+    },
+    "NIST": {
+      "name": "NIST SP 800-series",
+      "url_base": "https://csrc.nist.gov/"
+    },
+    "NSA": {
+      "name": "NSA cybersecurity guidance",
+      "url_base": "https://media.defense.gov/"
+    }
+  },
+  "catalogue_version": "2026.09",
+  "checks": [
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "id": "CSC-AAA-0001",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "Without `aaa new-model`, the device falls back to line-level passwords and cannot use TACACS+/RADIUS, per-command authorization or accounting at all. It is the prerequisite for every other AAA control in this catalogue.",
+      "refs": [
+        {
+          "authority": "DISA-STIG",
+          "id": "CISC-ND-000470",
+          "url": "https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5",
+          "version": "V3R5"
+        }
+      ],
+      "remediation": [
+        "aaa new-model"
+      ],
+      "severity": "high",
+      "subject": [
+        "aaa new-model"
+      ],
+      "test_kind": "absent",
+      "title": "`aaa new-model` not enabled"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "id": "CSC-AAA-0002",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "Without an explicit login method list, interactive access falls back to whatever the line itself defines (often nothing, or a shared line password), which defeats per-user accountability entirely.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "guide-to-harden-cisco-ios-devices",
+          "url": "https://www.cisco.com/c/en/us/support/docs/ip/access-lists/13608-21.html",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "aaa authentication login default group tacacs+ local"
+      ],
+      "severity": "high",
+      "subject": [
+        "aaa authentication login"
+      ],
+      "test_kind": "absent",
+      "title": "No `aaa authentication login` method list"
+    },
+    {
+      "category": "reliability",
+      "confidence": "deterministic",
+      "id": "CSC-AAA-0003",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "If the only authentication method is a remote TACACS+/RADIUS group and that service becomes unreachable, nobody can log in to the switch at all, including to fix the outage. A `local` fallback keeps the device recoverable.",
+      "refs": [
+        {
+          "authority": "DISA-STIG",
+          "id": "CISC-ND-000490",
+          "url": "https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5",
+          "version": "V3R5"
+        }
+      ],
+      "remediation": [
+        "aaa authentication login default group tacacs+ local"
+      ],
+      "severity": "medium",
+      "subject": [
+        "aaa authentication login"
+      ],
+      "test_kind": "value",
+      "title": "Login method list has no local fallback"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "id": "CSC-AAA-0004",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "Without this line, privileged-mode access is gated only by the shared `enable secret`, so there is no per-user record of who escalated to privilege 15.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "guide-to-harden-cisco-ios-devices",
+          "url": "https://www.cisco.com/c/en/us/support/docs/ip/access-lists/13608-21.html",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "aaa authentication enable default group tacacs+ enable"
+      ],
+      "severity": "medium",
+      "subject": [
+        "aaa authentication enable default"
+      ],
+      "test_kind": "absent",
+      "title": "`aaa authentication enable default` absent"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "id": "CSC-AAA-0005",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "Without exec authorization, any account that authenticates successfully gets an interactive shell at whatever privilege the line grants, regardless of what the AAA server says that user is entitled to.",
+      "refs": [
+        {
+          "authority": "DISA-STIG",
+          "id": "CISC-ND-000470",
+          "url": "https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5",
+          "version": "V3R5"
+        }
+      ],
+      "remediation": [
+        "aaa authorization exec default group tacacs+ local"
+      ],
+      "severity": "medium",
+      "subject": [
+        "aaa authorization exec"
+      ],
+      "test_kind": "absent",
+      "title": "`aaa authorization exec` absent"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "id": "CSC-AAA-0006",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "By default IOS does not apply exec/command authorization to the console line even when `aaa authorization exec` is configured elsewhere; `aaa authorization console` is what extends the same policy to console sessions.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "guide-to-harden-cisco-ios-devices",
+          "url": "https://www.cisco.com/c/en/us/support/docs/ip/access-lists/13608-21.html",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "aaa authorization console"
+      ],
+      "severity": "medium",
+      "subject": [
+        "aaa authorization console"
+      ],
+      "test_kind": "absent",
+      "title": "`aaa authorization console` absent"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "id": "CSC-AAA-0007",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "Without command accounting at privilege 15, there is no audit trail of what a privileged administrator actually typed, which matters both for incident response and for change-control review.",
+      "refs": [
+        {
+          "authority": "DISA-STIG",
+          "id": "CISC-ND-001410",
+          "url": "https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5",
+          "version": "V3R5"
+        }
+      ],
+      "remediation": [
+        "aaa accounting commands 15 default start-stop group tacacs+"
+      ],
+      "severity": "high",
+      "subject": [
+        "aaa accounting commands"
+      ],
+      "test_kind": "absent",
+      "title": "`aaa accounting commands` absent for privilege 15"
+    },
+    {
+      "category": "reliability",
+      "confidence": "deterministic",
+      "id": "CSC-AAA-0008",
+      "params_required": [
+        "host"
+      ],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "A single authentication server is a single point of failure: if it is unreachable and there is no local fallback in use, administrative access to the switch is lost along with it. Two independent servers keep AAA available through a single outage.",
+      "refs": [
+        {
+          "authority": "DISA-STIG",
+          "id": "CISC-ND-001370",
+          "url": "https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5",
+          "version": "V3R5"
+        }
+      ],
+      "remediation": [
+        "tacacs server {host}"
+      ],
+      "severity": "medium",
+      "subject": [
+        "tacacs server",
+        "radius server"
+      ],
+      "test_kind": "value",
+      "title": "Fewer than two TACACS+/RADIUS servers configured"
+    },
+    {
+      "category": "reliability",
+      "confidence": "deterministic",
+      "id": "CSC-AAA-0009",
+      "params_required": [
+        "group"
+      ],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "A method list that references a `group` name with no matching `aaa group server` definition silently falls through to the next method in the list — often nothing — so the intended authentication path never actually runs.",
+      "refs": [
+        {
+          "authority": "DISA-STIG",
+          "id": "CISC-ND-000470",
+          "url": "https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5",
+          "version": "V3R5"
+        }
+      ],
+      "remediation": [
+        "aaa group server tacacs+ {group}"
+      ],
+      "severity": "high",
+      "subject": [
+        "aaa authentication",
+        "aaa authorization",
+        "aaa accounting"
+      ],
+      "test_kind": "referential",
+      "title": "AAA method list names an undefined server group"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "id": "CSC-AAA-0010",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "Type 0 stores the password in clear text in the configuration and type 7 uses a Cisco proprietary cipher that public tools reverse in milliseconds. A privilege-15 account protected this way is effectively unprotected against anyone who can read the running configuration.",
+      "refs": [
+        {
+          "authority": "DISA-STIG",
+          "id": "CISC-ND-000550",
+          "url": "https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5",
+          "version": "V3R5"
+        }
+      ],
+      "remediation": [
+        "username <REPLACE-ME:local-username> algorithm-type sha256 secret <REPLACE-ME:local-user-secret>"
+      ],
+      "severity": "critical",
+      "subject": [
+        "username"
+      ],
+      "test_kind": "value",
+      "title": "Local user at privilege 15 with a type 0 or type 7 password"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "id": "CSC-AAA-0011",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "`enable-password` stores its value with the same reversible cipher as type-7 passwords, and type-5 MD5-crypt secrets are crackable offline at commodity speed. `enable-secret` with a type-8/9 (PBKDF2/scrypt) hash is the only form that resists offline attack.",
+      "refs": [
+        {
+          "authority": "CISA",
+          "id": "best-practices-for-cisco-device-configuration",
+          "url": "https://www.cisa.gov/news-events/alerts/2024/08/08/best-practices-cisco-device-configuration",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "no enable password",
+        "enable algorithm-type sha256 secret <REPLACE-ME:enable-secret>"
+      ],
+      "severity": "high",
+      "subject": [
+        "enable password",
+        "enable secret"
+      ],
+      "test_kind": "value",
+      "title": "`enable-password` present, or `enable-secret` uses type 5 or weaker"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "id": "CSC-AAA-0012",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "Without this line, every type-0 secret already present in the configuration (or added later by a script or template) is stored and displayed in clear text rather than the weak-but-obscured type-7 form.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "guide-to-harden-cisco-ios-devices",
+          "url": "https://www.cisco.com/c/en/us/support/docs/ip/access-lists/13608-21.html",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "service password-encryption"
+      ],
+      "severity": "medium",
+      "subject": [
+        "service password-encryption"
+      ],
+      "test_kind": "absent",
+      "title": "`service password-encryption` not enabled"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "id": "CSC-DHCP-0001",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "DHCP snooping is the prerequisite for Dynamic ARP Inspection and IP Source Guard alike; without it enabled globally, a rogue DHCP server anywhere on the access layer can hand out addresses, gateways and DNS servers of its choosing to any client.",
+      "refs": [
+        {
+          "authority": "DISA-STIG",
+          "id": "CISC-L2-000130",
+          "url": "https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_L2S/2/5",
+          "version": "V2R5"
+        }
+      ],
+      "remediation": [
+        "ip dhcp snooping"
+      ],
+      "severity": "high",
+      "subject": [
+        "ip dhcp snooping"
+      ],
+      "test_kind": "absent",
+      "title": "`ip dhcp snooping` not enabled globally"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "id": "CSC-DHCP-0002",
+      "params_required": [
+        "vlan"
+      ],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "Globally enabling snooping without naming any VLANs leaves every VLAN unprotected in practice, since the feature only inspects traffic on the VLANs explicitly listed.",
+      "refs": [
+        {
+          "authority": "DISA-STIG",
+          "id": "CISC-L2-000130",
+          "url": "https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_L2S/2/5",
+          "version": "V2R5"
+        }
+      ],
+      "remediation": [
+        "ip dhcp snooping vlan {vlan}"
+      ],
+      "severity": "high",
+      "subject": [
+        "ip dhcp snooping vlan"
+      ],
+      "test_kind": "absent",
+      "title": "DHCP snooping enabled but no VLAN list"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "id": "CSC-DHCP-0003",
+      "params_required": [
+        "vlan"
+      ],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "A VLAN carrying end-host traffic that is missing from the snooping VLAN list gets none of the rogue-server protection the feature is meant to provide on exactly the segment where end hosts request addresses.",
+      "refs": [
+        {
+          "authority": "DISA-STIG",
+          "id": "CISC-L2-000130",
+          "url": "https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_L2S/2/5",
+          "version": "V2R5"
+        }
+      ],
+      "remediation": [
+        "ip dhcp snooping vlan {vlan}"
+      ],
+      "severity": "high",
+      "subject": [
+        "ip dhcp snooping vlan",
+        "switchport access vlan"
+      ],
+      "test_kind": "referential",
+      "title": "An access VLAN is not covered by the snooping VLAN list"
+    },
+    {
+      "category": "reliability",
+      "confidence": "heuristic",
+      "id": "CSC-DHCP-0004",
+      "params_required": [
+        "interface"
+      ],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "Every port is untrusted by default once snooping is enabled, including the uplink toward the real DHCP server; without marking that uplink trusted, legitimate DHCP server replies arriving on it are dropped and clients cannot get addresses at all.",
+      "refs": [
+        {
+          "authority": "DISA-STIG",
+          "id": "CISC-L2-000130",
+          "url": "https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_L2S/2/5",
+          "version": "V2R5"
+        }
+      ],
+      "remediation": [
+        "interface {interface}",
+        " ip dhcp snooping trust"
+      ],
+      "severity": "high",
+      "subject": [
+        "ip dhcp snooping trust"
+      ],
+      "test_kind": "absent",
+      "title": "`ip dhcp snooping trust` missing on an uplink"
+    },
+    {
+      "category": "reliability",
+      "confidence": "heuristic",
+      "id": "CSC-DHCP-0005",
+      "params_required": [
+        "interface"
+      ],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "Without a rate limit, a single misbehaving or malicious host can flood DHCP messages fast enough to consume CPU on the snooping process, affecting every other port on the switch.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "catalyst-3850-3650-best-practices-guide",
+          "url": "https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst3850/software/release/16-1/best_practices_guide/BP_Cat3850/BP_overview.html",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "interface {interface}",
+        " ip dhcp snooping limit rate 15"
+      ],
+      "severity": "low",
+      "subject": [
+        "ip dhcp snooping limit rate"
+      ],
+      "test_kind": "absent",
+      "title": "`ip dhcp snooping limit rate` not set on access ports"
+    },
+    {
+      "category": "reliability",
+      "confidence": "deterministic",
+      "id": "CSC-DHCP-0006",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "Without a persistent bindings database, every DHCP snooping and IP Source Guard binding is lost on reload, leaving legitimate hosts without confirmed IP-to-port bindings until each one renews its lease.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "catalyst-3850-3650-best-practices-guide",
+          "url": "https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst3850/software/release/16-1/best_practices_guide/BP_Cat3850/BP_overview.html",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "ip dhcp snooping database flash:dhcp-snooping.db"
+      ],
+      "severity": "low",
+      "subject": [
+        "ip dhcp snooping database"
+      ],
+      "test_kind": "absent",
+      "title": "`ip dhcp snooping database` not configured"
+    },
+    {
+      "category": "reliability",
+      "confidence": "deterministic",
+      "id": "CSC-DHCP-0007",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "Option 82 insertion on an untrusted port that a downstream relay or switch also inserts into can cause the switch to drop the double-tagged packet outright unless `allow-untrusted` is explicitly reasoned about, silently breaking DHCP for hosts behind that device.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "catalyst-3850-3650-best-practices-guide",
+          "url": "https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst3850/software/release/16-1/best_practices_guide/BP_Cat3850/BP_overview.html",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "Confirm whether any untrusted port faces a relay that also inserts option 82, and set `ip dhcp snooping information option allow-untrusted` there if so."
+      ],
+      "severity": "low",
+      "subject": [
+        "ip dhcp snooping information option"
+      ],
+      "test_kind": "value",
+      "title": "`ip dhcp snooping information option` left enabled without `allow-untrusted` handling"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "id": "CSC-DHCP-0008",
+      "params_required": [
+        "vlan"
+      ],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "Without DAI, ARP spoofing within a VLAN is unopposed even though DHCP snooping is already tracking legitimate IP-to-MAC bindings; DAI is what actually uses that data to reject forged ARP replies.",
+      "refs": [
+        {
+          "authority": "DISA-STIG",
+          "id": "CISC-L2-000150",
+          "url": "https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_L2S/2/5",
+          "version": "V2R5"
+        }
+      ],
+      "remediation": [
+        "ip arp inspection vlan {vlan}"
+      ],
+      "severity": "high",
+      "subject": [
+        "ip arp inspection vlan"
+      ],
+      "test_kind": "absent",
+      "title": "Dynamic ARP Inspection not enabled on snooped VLANs"
+    },
+    {
+      "category": "security",
+      "confidence": "heuristic",
+      "id": "CSC-DHCP-0009",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "Without the additional `validate` checks, DAI only confirms the IP-to-MAC binding itself and not that the Ethernet and ARP header MACs agree, and a trusted port set on an access-facing interface exempts exactly the traffic DAI exists to inspect.",
+      "refs": [
+        {
+          "authority": "DISA-STIG",
+          "id": "CISC-L2-000150",
+          "url": "https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_L2S/2/5",
+          "version": "V2R5"
+        }
+      ],
+      "remediation": [
+        "ip arp inspection validate src-mac dst-mac ip"
+      ],
+      "severity": "medium",
+      "subject": [
+        "ip arp inspection validate",
+        "ip arp inspection trust"
+      ],
+      "test_kind": "value",
+      "title": "DAI `validate src-mac dst-mac ip` not configured, or trust misplaced"
+    },
+    {
+      "category": "reliability",
+      "confidence": "deterministic",
+      "id": "CSC-IFC-0001",
+      "params_required": [
+        "interface"
+      ],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "Hard-coding speed or duplex on one end of a link while the other end auto-negotiates is a classic cause of a duplex mismatch, which shows up as slow, intermittently-lossy traffic that is disproportionately hard to diagnose compared to how simple the fix is.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "catalyst-3850-3650-best-practices-guide",
+          "url": "https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst3850/software/release/16-1/best_practices_guide/BP_Cat3850/BP_overview.html",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "interface {interface}",
+        " speed auto",
+        " duplex auto"
+      ],
+      "severity": "medium",
+      "subject": [
+        "speed",
+        "duplex"
+      ],
+      "test_kind": "present",
+      "title": "Hard-coded `speed` or `duplex` on a copper access port"
+    },
+    {
+      "category": "reliability",
+      "confidence": "heuristic",
+      "id": "CSC-IFC-0002",
+      "params_required": [
+        "interface"
+      ],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "An undocumented trunk or uplink forces whoever is troubleshooting a topology issue months or years later to reverse-engineer what the other end of the link is from CDP/LLDP or physical tracing instead of reading it directly off the interface.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "catalyst-3850-3650-best-practices-guide",
+          "url": "https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst3850/software/release/16-1/best_practices_guide/BP_Cat3850/BP_overview.html",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "interface {interface}",
+        " description <REPLACE-ME:link-purpose>"
+      ],
+      "severity": "low",
+      "subject": [
+        "description"
+      ],
+      "test_kind": "absent",
+      "title": "Trunk or uplink has no `description`"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "defaults_key": "ip.proxy-arp",
+      "id": "CSC-IFC-0003",
+      "params_required": [
+        "interface"
+      ],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "Proxy ARP lets the switch answer ARP requests on behalf of hosts on a different subnet, which can be abused to redirect traffic through the device and also leaks internal topology information to anything on the local segment.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "ios-xe-software-hardening-guide",
+          "url": "https://sec.cloudapps.cisco.com/security/center/resources/IOS_XE_hardening",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "interface {interface}",
+        " no ip proxy-arp"
+      ],
+      "severity": "medium",
+      "subject": [
+        "ip proxy-arp"
+      ],
+      "test_kind": "not-effectively-set",
+      "title": "`ip proxy-arp` not disabled on a routed interface"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "defaults_key": "ip.redirects",
+      "id": "CSC-IFC-0004",
+      "params_required": [
+        "interface"
+      ],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "ICMP redirects and unreachables both hand an off-path attacker information about the network's routing and addressing, and redirects specifically can be used to alter a host's forwarding path without the host's administrator ever touching its routing table.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "ios-xe-software-hardening-guide",
+          "url": "https://sec.cloudapps.cisco.com/security/center/resources/IOS_XE_hardening",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "interface {interface}",
+        " no ip redirects",
+        " no ip unreachables"
+      ],
+      "severity": "low",
+      "subject": [
+        "ip redirects",
+        "ip unreachables"
+      ],
+      "test_kind": "not-effectively-set",
+      "title": "`ip redirects` / `ip unreachables` not disabled on a routed interface"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "id": "CSC-IFC-0005",
+      "params_required": [
+        "interface"
+      ],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "Directed broadcast forwarding lets a packet sent to a subnet's broadcast address from outside that subnet be flooded to every host on it, historically the mechanism behind smurf-style amplification attacks.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "ios-xe-software-hardening-guide",
+          "url": "https://sec.cloudapps.cisco.com/security/center/resources/IOS_XE_hardening",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "interface {interface}",
+        " no ip directed-broadcast"
+      ],
+      "severity": "high",
+      "subject": [
+        "ip directed-broadcast"
+      ],
+      "test_kind": "present",
+      "title": "`ip directed-broadcast` enabled"
+    },
+    {
+      "category": "security",
+      "confidence": "heuristic",
+      "id": "CSC-IFC-0006",
+      "params_required": [
+        "interface"
+      ],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "Without unicast RPF, the switch will happily forward a packet whose source address could not have arrived via the interface it actually came in on, which is exactly the spoofed-source traffic pattern used in reflection and amplification attacks.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "ios-xe-software-hardening-guide",
+          "url": "https://sec.cloudapps.cisco.com/security/center/resources/IOS_XE_hardening",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "interface {interface}",
+        " ip verify unicast source reachable-via rx"
+      ],
+      "severity": "low",
+      "subject": [
+        "ip verify unicast source"
+      ],
+      "test_kind": "absent",
+      "title": "`ip verify unicast source reachable-via rx` absent on a routed edge"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "defaults_key": "cdp.run",
+      "id": "CSC-IFC-0007",
+      "notes": "Does not fire when any interface carries `switchport voice vlan`; see CSC-IFC-0008, which covers that case instead.",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "CDP announces the device's platform, IOS version and hostname to anything on the connected segment, which is reconnaissance value handed to an attacker for free on any port that does not specifically need CDP for phone provisioning.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "guide-to-harden-cisco-ios-devices",
+          "url": "https://www.cisco.com/c/en/us/support/docs/ip/access-lists/13608-21.html",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "no cdp run"
+      ],
+      "severity": "low",
+      "subject": [
+        "cdp run"
+      ],
+      "test_kind": "not-effectively-set",
+      "title": "CDP left enabled globally"
+    },
+    {
+      "category": "reliability",
+      "confidence": "heuristic",
+      "id": "CSC-IFC-0008",
+      "notes": "Fires instead of CSC-IFC-0007 when voice VLANs are present; the correct posture is per-interface `no cdp enable` on non-voice ports, not a global `no cdp run`.",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "Cisco IP phones use CDP (or LLDP-MED) to learn their voice VLAN and power negotiation parameters from the switch; disabling CDP globally on a switch that also serves voice ports breaks phone provisioning rather than just reducing reconnaissance exposure.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "catalyst-3850-3650-best-practices-guide",
+          "url": "https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst3850/software/release/16-1/best_practices_guide/BP_Cat3850/BP_overview.html",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "interface <REPLACE-ME:non-voice-interface>",
+        " no cdp enable"
+      ],
+      "severity": "medium",
+      "subject": [
+        "switchport voice vlan",
+        "cdp enable"
+      ],
+      "test_kind": "present",
+      "title": "CDP disabled on a switch carrying `switchport voice vlan`"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "id": "CSC-L2-0001",
+      "params_required": [
+        "interface"
+      ],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "VLAN 1 carries untagged control-plane traffic (CDP, VTP, PAgP/LACP) by default across every trunk on the network; leaving it as the native VLAN makes VLAN-hopping via double tagging trivial and mixes management-adjacent traffic with an ID every device assumes is present.",
+      "refs": [
+        {
+          "authority": "DISA-STIG",
+          "id": "CISC-L2-000260",
+          "url": "https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_L2S/2/5",
+          "version": "V2R5"
+        }
+      ],
+      "remediation": [
+        "interface {interface}",
+        " switchport trunk native vlan <REPLACE-ME:unused-vlan-id>"
+      ],
+      "severity": "high",
+      "subject": [
+        "switchport trunk native vlan"
+      ],
+      "test_kind": "value",
+      "title": "Native VLAN on a trunk is VLAN 1"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "id": "CSC-L2-0002",
+      "params_required": [
+        "interface",
+        "vlan"
+      ],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "If the trunk's native VLAN matches a VLAN also assigned to access ports elsewhere, double-tagged frames only need to be tagged with the outer native VLAN and the inner target VLAN to hop between them, since the native VLAN's tag is stripped on egress.",
+      "refs": [
+        {
+          "authority": "DISA-STIG",
+          "id": "CISC-L2-000260",
+          "url": "https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_L2S/2/5",
+          "version": "V2R5"
+        }
+      ],
+      "remediation": [
+        "interface {interface}",
+        " switchport trunk native vlan {vlan}"
+      ],
+      "severity": "high",
+      "subject": [
+        "switchport trunk native vlan",
+        "switchport access vlan"
+      ],
+      "test_kind": "value",
+      "title": "Native VLAN equals an access VLAN in use"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "id": "CSC-L2-0003",
+      "params_required": [
+        "interface",
+        "vlan"
+      ],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "VLAN 1 is the default for every unconfigured port and every trunk's native VLAN, so an end host placed there shares a broadcast domain with any device an installer forgot to assign, plus whatever control-plane traffic rides untagged on VLAN 1 trunks nearby.",
+      "refs": [
+        {
+          "authority": "DISA-STIG",
+          "id": "CISC-L2-000220",
+          "url": "https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_L2S/2/5",
+          "version": "V2R5"
+        }
+      ],
+      "remediation": [
+        "interface {interface}",
+        " switchport access vlan {vlan}"
+      ],
+      "severity": "medium",
+      "subject": [
+        "switchport access vlan"
+      ],
+      "test_kind": "value",
+      "title": "Access port assigned to VLAN 1"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "id": "CSC-L2-0004",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "An active VLAN1 SVI gives the switch a management-reachable IP address on the same broadcast domain every unconfigured port defaults into, which is exactly the segment an attacker plugging into an unused jack lands on.",
+      "refs": [
+        {
+          "authority": "DISA-STIG",
+          "id": "CISC-L2-000240",
+          "url": "https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_L2S/2/5",
+          "version": "V2R5"
+        }
+      ],
+      "remediation": [
+        "interface Vlan1",
+        " shutdown",
+        " no ip address"
+      ],
+      "severity": "medium",
+      "subject": [
+        "interface Vlan1"
+      ],
+      "test_kind": "absent",
+      "title": "`interface Vlan1` not shut down"
+    },
+    {
+      "category": "security",
+      "confidence": "heuristic",
+      "id": "CSC-L2-0005",
+      "params_required": [
+        "interface"
+      ],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "Carrying every VLAN across every trunk means a new VLAN added anywhere in the network propagates to links that never needed it, and a compromised access switch can reach broadcast domains it has no legitimate traffic for.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "catalyst-3850-3650-best-practices-guide",
+          "url": "https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst3850/software/release/16-1/best_practices_guide/BP_Cat3850/BP_overview.html",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "interface {interface}",
+        " switchport trunk allowed vlan <REPLACE-ME:vlan-list>"
+      ],
+      "severity": "medium",
+      "subject": [
+        "switchport trunk allowed vlan"
+      ],
+      "test_kind": "value",
+      "title": "Trunk allowed-VLAN list is `all` rather than explicit"
+    },
+    {
+      "category": "security",
+      "confidence": "heuristic",
+      "id": "CSC-L2-0006",
+      "params_required": [
+        "interface"
+      ],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "With DTP still negotiating, an attacker who connects a device configured to speak DTP can potentially convince the switch port to become a trunk, gaining access to every VLAN the trunk is allowed to carry.",
+      "refs": [
+        {
+          "authority": "DISA-STIG",
+          "id": "CISC-L2-000200",
+          "url": "https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_L2S/2/5",
+          "version": "V2R5"
+        }
+      ],
+      "remediation": [
+        "interface {interface}",
+        " switchport nonegotiate"
+      ],
+      "severity": "medium",
+      "subject": [
+        "switchport nonegotiate"
+      ],
+      "test_kind": "absent",
+      "title": "DTP not disabled (`switchport nonegotiate` absent on a trunk)"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "id": "CSC-L2-0007",
+      "params_required": [
+        "interface"
+      ],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "A port with no explicit mode defaults to `dynamic auto` or `dynamic desirable`, both of which will negotiate into trunk mode if the far end asks; setting an explicit access/trunk mode removes that ambiguity entirely.",
+      "refs": [
+        {
+          "authority": "DISA-STIG",
+          "id": "CISC-L2-000200",
+          "url": "https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_L2S/2/5",
+          "version": "V2R5"
+        }
+      ],
+      "remediation": [
+        "interface {interface}",
+        " switchport mode access"
+      ],
+      "severity": "medium",
+      "subject": [
+        "switchport mode"
+      ],
+      "test_kind": "absent",
+      "title": "Port left at DTP dynamic (no explicit `switchport mode`)"
+    },
+    {
+      "category": "security",
+      "confidence": "heuristic",
+      "id": "CSC-L2-0008",
+      "params_required": [
+        "interface"
+      ],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "An unused but active port is a physical entry point to the network for anyone who can reach the wiring closet or a patch panel, with none of the port-security or VLAN controls a provisioned port would have.",
+      "refs": [
+        {
+          "authority": "NSA",
+          "id": "hardening-network-devices",
+          "url": "https://media.defense.gov/2020/Aug/18/2002479461/-1/-1/0/HARDENING_NETWORK_DEVICES.PDF",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "interface {interface}",
+        " shutdown"
+      ],
+      "severity": "medium",
+      "subject": [
+        "shutdown"
+      ],
+      "test_kind": "absent",
+      "title": "Unused port not shut down"
+    },
+    {
+      "category": "security",
+      "confidence": "heuristic",
+      "id": "CSC-L2-0009",
+      "params_required": [
+        "interface",
+        "vlan"
+      ],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "Even a shut-down port retains its assigned VLAN in the configuration; leaving it on a production VLAN means the moment someone re-enables it (intentionally or by mistake) it lands directly on live user traffic instead of an isolated blackhole VLAN.",
+      "refs": [
+        {
+          "authority": "NSA",
+          "id": "hardening-network-devices",
+          "url": "https://media.defense.gov/2020/Aug/18/2002479461/-1/-1/0/HARDENING_NETWORK_DEVICES.PDF",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "interface {interface}",
+        " switchport access vlan {vlan}"
+      ],
+      "severity": "low",
+      "subject": [
+        "switchport access vlan"
+      ],
+      "test_kind": "value",
+      "title": "Unused port not parked in an unused VLAN"
+    },
+    {
+      "category": "security",
+      "confidence": "heuristic",
+      "id": "CSC-L2-0010",
+      "params_required": [
+        "interface"
+      ],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "Without port security, any number of MAC addresses can appear behind an access port, which allows an attacker to attach an unmanaged switch or hub and multiply the number of devices with access through that single jack.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "catalyst-3850-3650-best-practices-guide",
+          "url": "https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst3850/software/release/16-1/best_practices_guide/BP_Cat3850/BP_overview.html",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "interface {interface}",
+        " switchport port-security",
+        " switchport port-security maximum 2",
+        " switchport port-security violation restrict"
+      ],
+      "severity": "medium",
+      "subject": [
+        "switchport port-security"
+      ],
+      "test_kind": "absent",
+      "title": "Port security not configured on an access port"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "id": "CSC-L2-0011",
+      "params_required": [
+        "interface"
+      ],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "A high MAC maximum defeats much of the point of port security on a single-host access port, and a `protect` violation mode silently drops offending traffic without logging or disabling the port, leaving the event unnoticed.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "catalyst-3850-3650-best-practices-guide",
+          "url": "https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst3850/software/release/16-1/best_practices_guide/BP_Cat3850/BP_overview.html",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "interface {interface}",
+        " switchport port-security maximum 2",
+        " switchport port-security violation restrict"
+      ],
+      "severity": "low",
+      "subject": [
+        "switchport port-security maximum",
+        "switchport port-security violation"
+      ],
+      "test_kind": "value",
+      "title": "Port security `maximum` above 3, or violation mode not restrict/shutdown"
+    },
+    {
+      "category": "reliability",
+      "confidence": "heuristic",
+      "id": "CSC-L2-0012",
+      "params_required": [
+        "interface"
+      ],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "Without storm control, a broadcast storm from a misbehaving NIC, a bridging loop, or a malicious host can consume the port's and the switch's forwarding capacity, degrading service for every other port sharing the same ASIC or backplane resource.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "catalyst-3850-3650-best-practices-guide",
+          "url": "https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst3850/software/release/16-1/best_practices_guide/BP_Cat3850/BP_overview.html",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "interface {interface}",
+        " storm-control broadcast level 20.00",
+        " storm-control action trap"
+      ],
+      "severity": "medium",
+      "subject": [
+        "storm-control"
+      ],
+      "test_kind": "absent",
+      "title": "Storm control not configured on an access port"
+    },
+    {
+      "category": "reliability",
+      "confidence": "deterministic",
+      "id": "CSC-L2-0013",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "In server or client mode, any switch that joins the VTP domain with a higher revision number can silently overwrite every switch's VLAN database, including deleting VLANs still in active use — a well-documented cause of network-wide outages.",
+      "refs": [
+        {
+          "authority": "DISA-STIG",
+          "id": "CISC-L2-000030",
+          "url": "https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_L2S/2/5",
+          "version": "V2R5"
+        }
+      ],
+      "remediation": [
+        "vtp mode transparent"
+      ],
+      "severity": "medium",
+      "subject": [
+        "vtp mode"
+      ],
+      "test_kind": "value",
+      "title": "VTP mode is server or client rather than transparent/off"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "id": "CSC-L2-0014",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "An unauthenticated VTP domain accepts VLAN database updates from any switch that joins it with the same domain name, which is exactly the mechanism CSC-L2-0013 warns about; a password at minimum requires an attacker to know it before injecting an update.",
+      "refs": [
+        {
+          "authority": "DISA-STIG",
+          "id": "CISC-L2-000030",
+          "url": "https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_L2S/2/5",
+          "version": "V2R5"
+        }
+      ],
+      "remediation": [
+        "vtp password <REPLACE-ME:vtp-password>"
+      ],
+      "severity": "medium",
+      "subject": [
+        "vtp password"
+      ],
+      "test_kind": "absent",
+      "title": "VTP domain configured without a VTP password"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "id": "CSC-LOG-0001",
+      "params_required": [
+        "host"
+      ],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "With no remote syslog destination, the only record of events is the local buffer, which is lost on reload and is also the first thing an attacker with configuration access would clear to cover their tracks.",
+      "refs": [
+        {
+          "authority": "DISA-STIG",
+          "id": "CISC-ND-001450",
+          "url": "https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5",
+          "version": "V3R5"
+        }
+      ],
+      "remediation": [
+        "logging host {host}"
+      ],
+      "severity": "high",
+      "subject": [
+        "logging host"
+      ],
+      "test_kind": "absent",
+      "title": "No `logging host` configured"
+    },
+    {
+      "category": "reliability",
+      "confidence": "deterministic",
+      "id": "CSC-LOG-0002",
+      "params_required": [
+        "host"
+      ],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "A single syslog server is a single point of failure for the device's entire audit trail; if it is down during an incident, nothing sent during that window is recoverable.",
+      "refs": [
+        {
+          "authority": "DISA-STIG",
+          "id": "CISC-ND-001450",
+          "url": "https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5",
+          "version": "V3R5"
+        }
+      ],
+      "remediation": [
+        "logging host {host}"
+      ],
+      "severity": "low",
+      "subject": [
+        "logging host"
+      ],
+      "test_kind": "value",
+      "title": "Fewer than two syslog destinations"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "id": "CSC-LOG-0003",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "A trap level coarser than `informational` (6) drops routine but security-relevant events — interface state changes, ACL denies, login successes and failures — before they ever reach the syslog server.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "guide-to-harden-cisco-ios-devices",
+          "url": "https://www.cisco.com/c/en/us/support/docs/ip/access-lists/13608-21.html",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "logging trap informational"
+      ],
+      "severity": "medium",
+      "subject": [
+        "logging trap"
+      ],
+      "test_kind": "value",
+      "title": "`logging trap` level below `informational`"
+    },
+    {
+      "category": "reliability",
+      "confidence": "deterministic",
+      "id": "CSC-LOG-0004",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "Log entries without a full, timezone-qualified timestamp are difficult to correlate against other systems during an investigation, especially across daylight-saving transitions or when servers and network gear are not in the same timezone.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "guide-to-harden-cisco-ios-devices",
+          "url": "https://www.cisco.com/c/en/us/support/docs/ip/access-lists/13608-21.html",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "service timestamps log datetime msec localtime show-timezone"
+      ],
+      "severity": "medium",
+      "subject": [
+        "service timestamps log"
+      ],
+      "test_kind": "absent",
+      "title": "`service timestamps log datetime msec localtime show-timezone` absent"
+    },
+    {
+      "category": "reliability",
+      "confidence": "deterministic",
+      "id": "CSC-LOG-0005",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "A small local buffer wraps within minutes on a busy switch, so by the time an operator opens a session to investigate, the events that would explain what happened have already been overwritten.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "catalyst-3850-3650-best-practices-guide",
+          "url": "https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst3850/software/release/16-1/best_practices_guide/BP_Cat3850/BP_overview.html",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "logging buffered 32768 informational"
+      ],
+      "severity": "low",
+      "subject": [
+        "logging buffered"
+      ],
+      "test_kind": "value",
+      "title": "`logging buffered` absent or below 16 KB"
+    },
+    {
+      "category": "reliability",
+      "confidence": "deterministic",
+      "id": "CSC-LOG-0006",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "Without a fixed source interface, the address a syslog message appears to come from can change with the active uplink or routing table, which breaks source-address filtering and per-device grouping on the log-collection side.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "catalyst-3850-3650-best-practices-guide",
+          "url": "https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst3850/software/release/16-1/best_practices_guide/BP_Cat3850/BP_overview.html",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "logging source-interface Loopback0"
+      ],
+      "severity": "low",
+      "subject": [
+        "logging source-interface"
+      ],
+      "test_kind": "absent",
+      "title": "`logging source-interface` not set to a stable interface"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "id": "CSC-LOG-0007",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "Without configuration-change logging, there is no record of who changed what and when on the device itself; the archive feature timestamps and attributes each change as it happens.",
+      "refs": [
+        {
+          "authority": "DISA-STIG",
+          "id": "CISC-ND-001410",
+          "url": "https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5",
+          "version": "V3R5"
+        }
+      ],
+      "remediation": [
+        "archive",
+        " log config",
+        "  logging enable",
+        "  notify syslog"
+      ],
+      "severity": "medium",
+      "subject": [
+        "archive",
+        "log config"
+      ],
+      "test_kind": "absent",
+      "title": "`archive` / `log config` not enabled"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "id": "CSC-LOG-0008",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "Without `hidekeys`, the change-logging archive stores the literal secret values typed during a configuration change, which turns an audit feature into a second place secrets leak from.",
+      "refs": [
+        {
+          "authority": "DISA-STIG",
+          "id": "CISC-ND-001410",
+          "url": "https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5",
+          "version": "V3R5"
+        }
+      ],
+      "remediation": [
+        "archive",
+        " log config",
+        "  hidekeys"
+      ],
+      "severity": "high",
+      "subject": [
+        "log config",
+        "hidekeys"
+      ],
+      "test_kind": "absent",
+      "title": "`archive log config` missing `hidekeys`"
+    },
+    {
+      "category": "reliability",
+      "confidence": "deterministic",
+      "defaults_key": "logging.console",
+      "id": "CSC-LOG-0009",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "Console logging at `debugging` can flood an active terminal session with output during a busy period, to the point that typed commands are hard to see and CPU spent formatting console messages competes with the operator's own troubleshooting.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "catalyst-3850-3650-best-practices-guide",
+          "url": "https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst3850/software/release/16-1/best_practices_guide/BP_Cat3850/BP_overview.html",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "logging console critical"
+      ],
+      "severity": "low",
+      "subject": [
+        "logging console"
+      ],
+      "test_kind": "not-effectively-set",
+      "title": "`logging console` left enabled at a verbose level"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "id": "CSC-MGT-0001",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "The HTTP management server transmits configuration and credential material without encryption and has a long history of unauthenticated remote-code-execution advisories. A switch that only needs SSH and console access gains nothing from also listening on TCP/80, so the service should stay off unless a specific integration requires it.",
+      "refs": [
+        {
+          "authority": "DISA-STIG",
+          "id": "CISC-ND-000470",
+          "url": "https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5",
+          "version": "V3R5"
+        }
+      ],
+      "remediation": [
+        "no ip http server"
+      ],
+      "severity": "high",
+      "subject": [
+        "ip http server"
+      ],
+      "test_kind": "present",
+      "title": "HTTP server enabled (`ip http server`)"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "id": "CSC-MGT-0002",
+      "params_required": [
+        "acl_name"
+      ],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "Even TLS-protected web management should not be reachable from arbitrary source addresses: an access-class scopes the listener to the management subnet so a compromised host elsewhere on the network cannot reach the device's configuration UI.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "ios-xe-software-hardening-guide",
+          "url": "https://sec.cloudapps.cisco.com/security/center/resources/IOS_XE_hardening",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "ip http access-class {acl_name}"
+      ],
+      "severity": "high",
+      "subject": [
+        "ip http secure-server",
+        "ip http access-class"
+      ],
+      "test_kind": "absent",
+      "title": "HTTPS server not restricted by `ip http access-class`"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "id": "CSC-MGT-0003",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "Running the plaintext HTTP listener without also enabling the TLS listener means any web-based management session is fully readable on the wire. If web management is needed at all, the encrypted form should be the one in use.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "ios-xe-software-hardening-guide",
+          "url": "https://sec.cloudapps.cisco.com/security/center/resources/IOS_XE_hardening",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "ip http secure-server",
+        "no ip http server"
+      ],
+      "severity": "medium",
+      "subject": [
+        "ip http secure-server"
+      ],
+      "test_kind": "absent",
+      "title": "`ip http secure-server` disabled while `ip http server` is enabled"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "id": "CSC-MGT-0004",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "PAD (X.25 Packet Assembler/Disassembler) support is a legacy service with no role on a modern campus switch. Leaving it enabled adds an unused listener and code path to the attack surface for no operational benefit.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "guide-to-harden-cisco-ios-devices",
+          "url": "https://www.cisco.com/c/en/us/support/docs/ip/access-lists/13608-21.html",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "no service pad"
+      ],
+      "severity": "low",
+      "subject": [
+        "service pad"
+      ],
+      "test_kind": "present",
+      "title": "`service pad` enabled"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "id": "CSC-MGT-0005",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "The small servers (echo, chargen, discard, daytime) are diagnostic holdovers that can be abused for reflection and amplification traffic. They are not needed for normal switch operation and should stay disabled.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "guide-to-harden-cisco-ios-devices",
+          "url": "https://www.cisco.com/c/en/us/support/docs/ip/access-lists/13608-21.html",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "no service tcp-small-servers",
+        "no service udp-small-servers"
+      ],
+      "severity": "medium",
+      "subject": [
+        "service tcp-small-servers",
+        "service udp-small-servers"
+      ],
+      "test_kind": "present",
+      "title": "TCP/UDP small servers enabled"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "id": "CSC-MGT-0006",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "The BOOTP server lets the switch answer legacy boot-image requests from the network, a function a campus access/distribution switch never performs. An enabled BOOTP responder is one more unauthenticated service reachable from any attached segment.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "guide-to-harden-cisco-ios-devices",
+          "url": "https://www.cisco.com/c/en/us/support/docs/ip/access-lists/13608-21.html",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "no ip bootp server"
+      ],
+      "severity": "low",
+      "subject": [
+        "ip bootp server"
+      ],
+      "test_kind": "present",
+      "title": "`ip bootp server` enabled"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "id": "CSC-MGT-0007",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "Finger discloses logged-in user information to any unauthenticated requester, which is reconnaissance value handed to an attacker for free. There is no operational reason to run it on a production switch.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "guide-to-harden-cisco-ios-devices",
+          "url": "https://www.cisco.com/c/en/us/support/docs/ip/access-lists/13608-21.html",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "no ip finger",
+        "no service finger"
+      ],
+      "severity": "low",
+      "subject": [
+        "ip finger",
+        "service finger"
+      ],
+      "test_kind": "present",
+      "title": "`ip finger` / `service finger` enabled"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "id": "CSC-MGT-0008",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "Source-routed packets let the sender dictate the forwarding path, which can be used to bypass topology-based access controls and to probe internal addressing. Modern networks have no legitimate use for it on a switch's management or routed interfaces.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "guide-to-harden-cisco-ios-devices",
+          "url": "https://www.cisco.com/c/en/us/support/docs/ip/access-lists/13608-21.html",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "no ip source-route"
+      ],
+      "severity": "medium",
+      "subject": [
+        "ip source-route"
+      ],
+      "test_kind": "present",
+      "title": "`ip source-route` enabled"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "id": "CSC-MGT-0009",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "Autoloading configuration from a network TFTP server on boot lets anyone who can spoof that server (or intercept the boot-time broadcast) push an arbitrary configuration onto the device. Startup configuration should come only from local NVRAM.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "guide-to-harden-cisco-ios-devices",
+          "url": "https://www.cisco.com/c/en/us/support/docs/ip/access-lists/13608-21.html",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "no service config"
+      ],
+      "severity": "medium",
+      "subject": [
+        "service config"
+      ],
+      "test_kind": "present",
+      "title": "`service config` (network autoload) enabled"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "defaults_key": "vstack",
+      "id": "CSC-MGT-0010",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "The Smart Install client listens on TCP/4786 with no authentication and has been used in the wild to pull running configuration, push a replacement startup-config, or reload the device outright. Unless the switch is an active Smart Install director-managed client, the feature should be off.",
+      "refs": [
+        {
+          "authority": "NSA",
+          "id": "csa-cisco-smart-install-protocol-misuse",
+          "url": "https://media.defense.gov/2019/Jul/16/2002157833/-1/-1/0/CSA-CISCO-SMART-INSTALL-PROTOCOL-MISUSE.PDF",
+          "version": null
+        },
+        {
+          "authority": "CISA",
+          "id": "ta18-106a",
+          "url": "https://www.cisa.gov/news-events/alerts/TA18-106A",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "no vstack"
+      ],
+      "severity": "critical",
+      "subject": [
+        "vstack"
+      ],
+      "test_kind": "not-effectively-set",
+      "title": "`vstack` (Smart Install client) not disabled"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "id": "CSC-MGT-0011",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "Call Home transmits inventory, crash and diagnostic data off-box to Cisco (or a configured destination). On a network where outbound telemetry is not wanted, or where the destination has not been reviewed, the feature should stay disabled.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "guide-to-harden-cisco-ios-devices",
+          "url": "https://www.cisco.com/c/en/us/support/docs/ip/access-lists/13608-21.html",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "no service call-home"
+      ],
+      "severity": "medium",
+      "subject": [
+        "service call-home",
+        "call-home"
+      ],
+      "test_kind": "present",
+      "title": "`service call-home` enabled (phones home to Cisco)"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "id": "CSC-MGT-0012",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "NETCONF and RESTCONF are full programmatic configuration channels; enabling either without a control-plane or interface ACL means any host that can reach the management address can attempt to manage the switch, not merely observe it.",
+      "refs": [
+        {
+          "authority": "DISA-STIG",
+          "id": "CISC-ND-000470",
+          "url": "https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5",
+          "version": "V3R5"
+        }
+      ],
+      "remediation": [
+        "Restrict management access with a control-plane ACL or `ip http access-class` before enabling `restconf`/`netconf-yang`."
+      ],
+      "severity": "high",
+      "subject": [
+        "netconf-yang",
+        "restconf"
+      ],
+      "test_kind": "present",
+      "title": "`netconf-yang` or `restconf` enabled without an access restriction"
+    },
+    {
+      "category": "reliability",
+      "confidence": "deterministic",
+      "id": "CSC-MGT-0013",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "With DNS lookups enabled but no resolver configured, every mistyped command at the CLI triggers a lookup that has to time out before the prompt returns, which is a well-known operator annoyance that also slows down scripted configuration.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "catalyst-3850-3650-best-practices-guide",
+          "url": "https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst3850/software/release/16-1/best_practices_guide/BP_Cat3850/BP_overview.html",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "no ip domain-lookup"
+      ],
+      "severity": "low",
+      "subject": [
+        "ip domain-lookup",
+        "ip name-server"
+      ],
+      "test_kind": "present",
+      "title": "`ip domain-lookup` enabled with no `ip name-server`"
+    },
+    {
+      "category": "reliability",
+      "confidence": "deterministic",
+      "id": "CSC-MGT-0014",
+      "notes": "Generic referential check; the engine excludes any (kind, name) pair already reported by CSC-VTY-0003, CSC-SNMP-0005, CSC-NTP-0005 or CSC-AAA-0009.",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "A command that names an ACL, server group or similar object which is never defined elsewhere in the configuration has no effect at all: IOS silently treats the reference as a no-op rather than rejecting the line, so the intended control is not applied.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "guide-to-harden-cisco-ios-devices",
+          "url": "https://www.cisco.com/c/en/us/support/docs/ip/access-lists/13608-21.html",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "Define the referenced object, or remove the dangling reference."
+      ],
+      "severity": "medium",
+      "subject": [
+        "access-class",
+        "ip access-group",
+        "aaa group server"
+      ],
+      "test_kind": "referential",
+      "title": "Configuration references an undefined object"
+    },
+    {
+      "category": "reliability",
+      "confidence": "deterministic",
+      "id": "CSC-NTP-0001",
+      "params_required": [
+        "host"
+      ],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "Without an external time source, the switch's clock drifts freely, which breaks certificate validity checks, log correlation and any time-based ACL or scheduling feature in use.",
+      "refs": [
+        {
+          "authority": "DISA-STIG",
+          "id": "CISC-ND-001030",
+          "url": "https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5",
+          "version": "V3R5"
+        }
+      ],
+      "remediation": [
+        "ntp server {host}"
+      ],
+      "severity": "medium",
+      "subject": [
+        "ntp server"
+      ],
+      "test_kind": "absent",
+      "title": "No `ntp server` configured"
+    },
+    {
+      "category": "reliability",
+      "confidence": "deterministic",
+      "id": "CSC-NTP-0002",
+      "params_required": [
+        "host"
+      ],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "A single time source cannot be cross-checked for sanity by the NTP algorithm and is a single point of failure for the device's clock if that source becomes unreachable or starts serving bad time.",
+      "refs": [
+        {
+          "authority": "DISA-STIG",
+          "id": "CISC-ND-001030",
+          "url": "https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5",
+          "version": "V3R5"
+        }
+      ],
+      "remediation": [
+        "ntp server {host}"
+      ],
+      "severity": "low",
+      "subject": [
+        "ntp server"
+      ],
+      "test_kind": "value",
+      "title": "Fewer than two NTP sources"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "id": "CSC-NTP-0003",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "Without authentication, the switch accepts time updates from any host that can reach it on UDP/123, which lets an attacker skew the clock to undermine certificate validation and confuse log timelines.",
+      "refs": [
+        {
+          "authority": "DISA-STIG",
+          "id": "CISC-ND-001150",
+          "url": "https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5",
+          "version": "V3R5"
+        }
+      ],
+      "remediation": [
+        "ntp authenticate"
+      ],
+      "severity": "medium",
+      "subject": [
+        "ntp authenticate"
+      ],
+      "test_kind": "absent",
+      "title": "`ntp authenticate` not enabled"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "id": "CSC-NTP-0004",
+      "params_required": [
+        "host",
+        "key_id"
+      ],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "An `ntp server` line with no `key` clause accepts unauthenticated time from that peer even when `ntp authenticate` is globally enabled, which quietly defeats the authentication for that specific source.",
+      "refs": [
+        {
+          "authority": "DISA-STIG",
+          "id": "CISC-ND-001150",
+          "url": "https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5",
+          "version": "V3R5"
+        }
+      ],
+      "remediation": [
+        "ntp server {host} key {key_id}"
+      ],
+      "severity": "medium",
+      "subject": [
+        "ntp server"
+      ],
+      "test_kind": "absent",
+      "title": "An `ntp server` has no `key` binding"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "id": "CSC-NTP-0005",
+      "params_required": [
+        "key_id"
+      ],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "A key id referenced by a server line but never marked trusted is never actually used to validate that peer's packets, so the association behaves as if authentication were off for it.",
+      "refs": [
+        {
+          "authority": "DISA-STIG",
+          "id": "CISC-ND-001150",
+          "url": "https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5",
+          "version": "V3R5"
+        }
+      ],
+      "remediation": [
+        "ntp trusted-key {key_id}"
+      ],
+      "severity": "medium",
+      "subject": [
+        "ntp trusted-key"
+      ],
+      "test_kind": "referential",
+      "title": "An `ntp server ... key N` has no matching `ntp trusted-key N`"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "id": "CSC-NTP-0006",
+      "params_required": [
+        "key_id"
+      ],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "MD5 is cryptographically broken for collision resistance and is markedly weaker than the SHA1/SHA2 options IOS also supports for the same command; a stronger algorithm costs nothing extra to configure.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "guide-to-harden-cisco-ios-devices",
+          "url": "https://www.cisco.com/c/en/us/support/docs/ip/access-lists/13608-21.html",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "ntp authentication-key {key_id} sha1 <REPLACE-ME:ntp-key>"
+      ],
+      "severity": "low",
+      "subject": [
+        "ntp authentication-key"
+      ],
+      "test_kind": "value",
+      "title": "NTP authentication key uses MD5 rather than SHA1/SHA2"
+    },
+    {
+      "category": "reliability",
+      "confidence": "deterministic",
+      "id": "CSC-NTP-0007",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "Without a fixed source interface, the address NTP packets originate from can change with the active uplink, which breaks any authentication-key or ACL scoping keyed to a specific source address on the server side.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "catalyst-3850-3650-best-practices-guide",
+          "url": "https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst3850/software/release/16-1/best_practices_guide/BP_Cat3850/BP_overview.html",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "ntp source Loopback0"
+      ],
+      "severity": "low",
+      "subject": [
+        "ntp source"
+      ],
+      "test_kind": "absent",
+      "title": "`ntp source` not set to a stable interface"
+    },
+    {
+      "category": "reliability",
+      "confidence": "deterministic",
+      "id": "CSC-RES-0001",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "Without an explicit boot list, the device falls back to whatever image ROMMON finds first, which after a flash reorganization or a partially completed upgrade may not be the image the operator believes is running.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "catalyst-3850-3650-best-practices-guide",
+          "url": "https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst3850/software/release/16-1/best_practices_guide/BP_Cat3850/BP_overview.html",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "boot system flash:<REPLACE-ME:image-filename>"
+      ],
+      "severity": "medium",
+      "subject": [
+        "boot system"
+      ],
+      "test_kind": "absent",
+      "title": "No `boot system` statement, or a non-deterministic boot order"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "id": "CSC-RES-0002",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "A network boot source (TFTP/FTP/HTTP) means the device's boot image depends on that server being reachable and trustworthy at every reload; anyone who can spoof or compromise it can hand the switch an arbitrary image at boot time.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "guide-to-harden-cisco-ios-devices",
+          "url": "https://www.cisco.com/c/en/us/support/docs/ip/access-lists/13608-21.html",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "boot system flash:<REPLACE-ME:image-filename>"
+      ],
+      "severity": "high",
+      "subject": [
+        "boot system"
+      ],
+      "test_kind": "present",
+      "title": "`boot system` names an image over a network URL"
+    },
+    {
+      "category": "reliability",
+      "confidence": "deterministic",
+      "id": "CSC-RES-0003",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "Without automatic recovery, a port err-disabled by BPDU Guard, UDLD or a security violation stays down until an operator manually notices and re-enables it, turning a transient event into an extended outage for whatever was connected.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "recover-errdisable-port-state",
+          "url": "https://www.cisco.com/c/en/us/support/docs/lan-switching/spanning-tree-protocol/69980-errdisable-recovery.html",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "errdisable recovery cause bpduguard",
+        "errdisable recovery cause udld",
+        "errdisable recovery cause psecure-violation"
+      ],
+      "severity": "medium",
+      "subject": [
+        "errdisable recovery cause"
+      ],
+      "test_kind": "absent",
+      "title": "`errdisable recovery cause` not configured for the common causes"
+    },
+    {
+      "category": "reliability",
+      "confidence": "deterministic",
+      "id": "CSC-RES-0004",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "A very short recovery interval can re-enable a port into the same fault condition repeatedly before the underlying issue clears, generating a flap loop instead of giving the condition time to resolve.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "recover-errdisable-port-state",
+          "url": "https://www.cisco.com/c/en/us/support/docs/lan-switching/spanning-tree-protocol/69980-errdisable-recovery.html",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "errdisable recovery interval 300"
+      ],
+      "severity": "low",
+      "subject": [
+        "errdisable recovery interval"
+      ],
+      "test_kind": "value",
+      "title": "`errdisable recovery interval` below 300 seconds"
+    },
+    {
+      "category": "reliability",
+      "confidence": "manual-review",
+      "id": "CSC-RES-0005",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "`switch N priority P` is set in privileged EXEC mode, not configuration mode, and is stored outside the running-config, so a static audit can see from other `switch N ...` lines that a stack exists but cannot see, let alone judge, the priority actually assigned to any member.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "campus-network-high-availability-design-guide",
+          "url": "https://www.cisco.com/c/en/us/td/docs/solutions/Enterprise/Campus/HA_campus_DG/hacampusdg.html",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "Operator step, run in privileged EXEC on the stack (this is not a configuration-mode command and is never stored in running-config): `switch <N> priority <P>` for each member, then confirm with `show switch`."
+      ],
+      "severity": "medium",
+      "subject": [
+        "switch"
+      ],
+      "test_kind": "present",
+      "title": "Stack member priority cannot be verified from a config file (`switch N priority`)"
+    },
+    {
+      "category": "reliability",
+      "confidence": "deterministic",
+      "id": "CSC-RES-0006",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "This check applies only to stacked systems. Without a persistent stack MAC, losing the original master member changes the stack's system MAC address, which can re-trigger DHCP on every downstream device that keys off the gateway's MAC and can break certain licensing or ACL rules bound to it.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "campus-network-high-availability-design-guide",
+          "url": "https://www.cisco.com/c/en/us/td/docs/solutions/Enterprise/Campus/HA_campus_DG/hacampusdg.html",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "stack-mac persistent timer 0"
+      ],
+      "severity": "medium",
+      "subject": [
+        "stack-mac persistent timer"
+      ],
+      "test_kind": "absent",
+      "title": "Stack MAC persistence not configured (`stack-mac persistent timer`)"
+    },
+    {
+      "category": "reliability",
+      "confidence": "deterministic",
+      "id": "CSC-RES-0007",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "Without SSO, a control-plane failover on redundant supervisor/stack hardware causes a full reload of the data plane instead of a stateful switchover, turning a supervisor fault into a full outage rather than a brief interruption.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "campus-network-high-availability-design-guide",
+          "url": "https://www.cisco.com/c/en/us/td/docs/solutions/Enterprise/Campus/HA_campus_DG/hacampusdg.html",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "redundancy",
+        " mode sso"
+      ],
+      "severity": "low",
+      "subject": [
+        "redundancy",
+        "mode sso"
+      ],
+      "test_kind": "absent",
+      "title": "`redundancy mode sso` absent on a stack-capable platform"
+    },
+    {
+      "category": "reliability",
+      "confidence": "deterministic",
+      "defaults_key": "ip.device-tracking",
+      "id": "CSC-RES-0008",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "The default device-tracking probe interval and count can generate enough ARP probe traffic on a large access-layer deployment to be mistaken for a duplicate-IP condition or to add measurable load; tuning the probe parameters is a common but easy to overlook step after enabling the security features that depend on it.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "catalyst-3850-3650-best-practices-guide",
+          "url": "https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst3850/software/release/16-1/best_practices_guide/BP_Cat3850/BP_overview.html",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "ip device tracking probe delay 10",
+        "ip device tracking probe interval 30"
+      ],
+      "severity": "medium",
+      "subject": [
+        "ip device tracking"
+      ],
+      "test_kind": "not-effectively-set",
+      "title": "`ip device tracking` probe defaults left in place (duplicate-IP symptoms)"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "id": "CSC-SNMP-0001",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "SNMPv1/v2c authenticate with a community string sent in clear text and offer no message integrity or encryption at all; anyone who can see the traffic can read or, for an RW community, rewrite the device's configuration.",
+      "refs": [
+        {
+          "authority": "DISA-STIG",
+          "id": "CISC-ND-001130",
+          "url": "https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5",
+          "version": "V3R5"
+        }
+      ],
+      "remediation": [
+        "Remove the SNMPv1/v2c community-string configuration and migrate to SNMPv3 with `auth priv`."
+      ],
+      "severity": "high",
+      "subject": [
+        "snmp-server community"
+      ],
+      "test_kind": "present",
+      "title": "SNMPv1/v2c community string configured"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "id": "CSC-SNMP-0002",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "A read-write community lets anyone who obtains it push configuration changes over SNMP, which combined with the protocol's lack of encryption makes an RW v1/v2c community one of the fastest routes to full device compromise.",
+      "refs": [
+        {
+          "authority": "DISA-STIG",
+          "id": "CISC-ND-001130",
+          "url": "https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5",
+          "version": "V3R5"
+        }
+      ],
+      "remediation": [
+        "Remove the RW community; use SNMPv3 with a per-user `priv` credential instead."
+      ],
+      "severity": "critical",
+      "subject": [
+        "snmp-server community"
+      ],
+      "test_kind": "value",
+      "title": "Community string is read-write (`RW`)"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "id": "CSC-SNMP-0003",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "Strings like `public` and `private` are the first values any scanner tries; a community that matches a well-known default is equivalent to having no authentication at all.",
+      "refs": [
+        {
+          "authority": "DISA-STIG",
+          "id": "CISC-ND-001130",
+          "url": "https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5",
+          "version": "V3R5"
+        }
+      ],
+      "remediation": [
+        "Remove the default-named community and issue a unique, non-guessable value, or migrate to SNMPv3."
+      ],
+      "severity": "critical",
+      "subject": [
+        "snmp-server community"
+      ],
+      "test_kind": "value",
+      "title": "Community string matches a known default"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "id": "CSC-SNMP-0004",
+      "params_required": [
+        "acl_name"
+      ],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "Without an ACL clause, an SNMPv1/v2c community is valid from any source address that can reach the device, not just the network-management station it was issued for.",
+      "refs": [
+        {
+          "authority": "DISA-STIG",
+          "id": "CISC-ND-001130",
+          "url": "https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5",
+          "version": "V3R5"
+        }
+      ],
+      "remediation": [
+        "snmp-server community <REPLACE-ME:snmp-community> RO {acl_name}"
+      ],
+      "severity": "high",
+      "subject": [
+        "snmp-server community"
+      ],
+      "test_kind": "absent",
+      "title": "Community string not restricted by an ACL"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "id": "CSC-SNMP-0005",
+      "params_required": [
+        "acl_name"
+      ],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "If the ACL a community string names does not exist, IOS applies no restriction at all, so the community is reachable from anywhere despite appearing to be scoped.",
+      "refs": [
+        {
+          "authority": "DISA-STIG",
+          "id": "CISC-ND-001130",
+          "url": "https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5",
+          "version": "V3R5"
+        }
+      ],
+      "remediation": [
+        "ip access-list standard {acl_name}",
+        " permit <REPLACE-ME:management-subnet>"
+      ],
+      "severity": "high",
+      "subject": [
+        "snmp-server community"
+      ],
+      "test_kind": "referential",
+      "title": "Community ACL is referenced but undefined"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "id": "CSC-SNMP-0006",
+      "params_required": [
+        "group"
+      ],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "Without a `priv`-level v3 group, SNMP traffic is either unauthenticated, authenticated-but-unencrypted, or falls back to v1/v2c entirely — none of which meets the confidentiality bar for a management protocol carrying device state.",
+      "refs": [
+        {
+          "authority": "DISA-STIG",
+          "id": "CISC-ND-001140",
+          "url": "https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5",
+          "version": "V3R5"
+        }
+      ],
+      "remediation": [
+        "snmp-server group {group} v3 priv"
+      ],
+      "severity": "high",
+      "subject": [
+        "snmp-server group"
+      ],
+      "test_kind": "absent",
+      "title": "No SNMPv3 group with `priv` configured"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "id": "CSC-SNMP-0007",
+      "params_required": [
+        "host",
+        "group"
+      ],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "A trap/inform destination configured for v1/v2c sends the community string in every notification, so even a device otherwise locked down to SNMPv3 for polling can still leak a usable credential through its outbound traps.",
+      "refs": [
+        {
+          "authority": "DISA-STIG",
+          "id": "CISC-ND-001130",
+          "url": "https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5",
+          "version": "V3R5"
+        }
+      ],
+      "remediation": [
+        "snmp-server host {host} version 3 priv {group}"
+      ],
+      "severity": "high",
+      "subject": [
+        "snmp-server host"
+      ],
+      "test_kind": "present",
+      "title": "A configured SNMP trap/inform target uses v1/v2c instead of SNMPv3"
+    },
+    {
+      "category": "reliability",
+      "confidence": "deterministic",
+      "id": "CSC-SNMP-0008",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "Without traps enabled for link state, configuration changes and authentication failures, the network-management station has no push notification of these events and depends entirely on polling to notice them, which is slower and easy to under-scope.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "catalyst-3850-3650-best-practices-guide",
+          "url": "https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst3850/software/release/16-1/best_practices_guide/BP_Cat3850/BP_overview.html",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "snmp-server enable traps snmp linkdown linkup",
+        "snmp-server enable traps config"
+      ],
+      "severity": "low",
+      "subject": [
+        "snmp-server enable traps"
+      ],
+      "test_kind": "absent",
+      "title": "No `snmp-server enable traps` for link/config/auth events"
+    },
+    {
+      "category": "reliability",
+      "confidence": "deterministic",
+      "id": "CSC-SNMP-0009",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "Without persistence, interface index numbers can be reassigned across a reload, which silently breaks any NMS dashboard, threshold or automation keyed on ifIndex until it is manually re-mapped.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "catalyst-3850-3650-best-practices-guide",
+          "url": "https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst3850/software/release/16-1/best_practices_guide/BP_Cat3850/BP_overview.html",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "snmp ifmib ifindex persist"
+      ],
+      "severity": "medium",
+      "subject": [
+        "snmp ifmib ifindex persist"
+      ],
+      "test_kind": "absent",
+      "title": "`snmp ifmib ifindex persist` not configured"
+    },
+    {
+      "category": "security",
+      "confidence": "manual-review",
+      "id": "CSC-SNMP-0010",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "IOS never echoes SNMPv3 user credentials or their auth/priv algorithm choice back into `show running-config`, so a static audit can confirm which v3 groups exist but cannot verify user-level hygiene; that requires an interactive `show snmp user` on the device.",
+      "refs": [
+        {
+          "authority": "DISA-STIG",
+          "id": "CISC-ND-001140",
+          "url": "https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5",
+          "version": "V3R5"
+        }
+      ],
+      "remediation": [
+        "Run `show snmp user` on the device and confirm each user's auth/priv algorithms and group membership match policy."
+      ],
+      "severity": "info",
+      "subject": [
+        "snmp-server user"
+      ],
+      "test_kind": "present",
+      "title": "SNMPv3 user inventory cannot be audited from a running-config"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "defaults_key": "ip.ssh.version",
+      "id": "CSC-SSH-0001",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "SSHv1 has known cryptographic weaknesses (including a CRC-32 integrity flaw) that were fixed by the SSHv2 redesign; leaving version negotiation open lets an older or downgrade-capable client fall back to the weaker protocol.",
+      "refs": [
+        {
+          "authority": "DISA-STIG",
+          "id": "CISC-ND-000470",
+          "url": "https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5",
+          "version": "V3R5"
+        }
+      ],
+      "remediation": [
+        "ip ssh version 2"
+      ],
+      "severity": "high",
+      "subject": [
+        "ip ssh version"
+      ],
+      "test_kind": "not-effectively-set",
+      "title": "`ip ssh version 2` not enforced"
+    },
+    {
+      "category": "reliability",
+      "confidence": "deterministic",
+      "id": "CSC-SSH-0002",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "SSH cannot start at all without a host key, and generating one requires `ip domain-name` to already be set; a switch missing either prerequisite falls back to an unencrypted management transport by default without an obvious error to the operator.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "guide-to-harden-cisco-ios-devices",
+          "url": "https://www.cisco.com/c/en/us/support/docs/ip/access-lists/13608-21.html",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "ip domain-name <REPLACE-ME:domain-name>",
+        "crypto key generate rsa modulus 2048"
+      ],
+      "severity": "high",
+      "subject": [
+        "crypto key generate",
+        "ip domain-name"
+      ],
+      "test_kind": "absent",
+      "title": "No RSA/EC key generated (`crypto key` / `ip domain-name` prerequisites absent)"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "defaults_key": "ip.ssh.dh-min-size",
+      "id": "CSC-SSH-0003",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "A Diffie-Hellman modulus below 2048 bits is within reach of well-resourced offline attacks against the key-exchange, weakening the confidentiality the SSH session is supposed to provide.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "ios-xe-software-hardening-guide",
+          "url": "https://sec.cloudapps.cisco.com/security/center/resources/IOS_XE_hardening",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "ip ssh dh min size 2048"
+      ],
+      "severity": "medium",
+      "subject": [
+        "ip ssh dh min size"
+      ],
+      "test_kind": "not-effectively-set",
+      "title": "`ip ssh dh min size` below 2048"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "defaults_key": null,
+      "id": "CSC-SSH-0004",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "CBC-mode ciphers are vulnerable to padding-oracle style attacks against SSH and have been superseded by AEAD/CTR modes; restricting the offered cipher list to modern algorithms removes the weaker options from ever being negotiated.",
+      "refs": [
+        {
+          "authority": "NSA",
+          "id": "ctr-network-infrastructure-security-guide",
+          "url": "https://media.defense.gov/2022/Jun/15/2003018261/-1/-1/0/CTR_NSA_NETWORK_INFRASTRUCTURE_SECURITY_GUIDE_20220615.PDF",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "ip ssh server algorithm encryption aes256-ctr aes192-ctr aes128-ctr"
+      ],
+      "severity": "high",
+      "subject": [
+        "ip ssh server algorithm encryption"
+      ],
+      "test_kind": "not-effectively-set",
+      "title": "`ip ssh server algorithm encryption` permits a CBC or weak cipher"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "defaults_key": null,
+      "id": "CSC-SSH-0005",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "HMAC-MD5 and, to a lesser extent, HMAC-SHA1 offer weaker collision resistance than the SHA2-based MAC options IOS also supports, so permitting them widens the set of algorithms an attacker can try to downgrade a session to.",
+      "refs": [
+        {
+          "authority": "NSA",
+          "id": "ctr-network-infrastructure-security-guide",
+          "url": "https://media.defense.gov/2022/Jun/15/2003018261/-1/-1/0/CTR_NSA_NETWORK_INFRASTRUCTURE_SECURITY_GUIDE_20220615.PDF",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "ip ssh server algorithm mac hmac-sha2-256 hmac-sha2-512"
+      ],
+      "severity": "medium",
+      "subject": [
+        "ip ssh server algorithm mac"
+      ],
+      "test_kind": "not-effectively-set",
+      "title": "`ip ssh server algorithm mac` permits HMAC-SHA1 or MD5"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "defaults_key": null,
+      "id": "CSC-SSH-0006",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "The 1024-bit group-1 exchange is considered breakable by a sufficiently resourced attacker, and group-14-sha1 pairs an adequate group with an outdated hash; restricting to group-14-sha256 or group-exchange forms avoids both weaknesses.",
+      "refs": [
+        {
+          "authority": "NSA",
+          "id": "ctr-network-infrastructure-security-guide",
+          "url": "https://media.defense.gov/2022/Jun/15/2003018261/-1/-1/0/CTR_NSA_NETWORK_INFRASTRUCTURE_SECURITY_GUIDE_20220615.PDF",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "ip ssh server algorithm kex diffie-hellman-group14-sha256 diffie-hellman-group-exchange-sha256"
+      ],
+      "severity": "medium",
+      "subject": [
+        "ip ssh server algorithm kex"
+      ],
+      "test_kind": "not-effectively-set",
+      "title": "`ip ssh server algorithm kex` permits a group-1/group-14-sha1 exchange"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "defaults_key": "ip.ssh.authentication-retries",
+      "id": "CSC-SSH-0007",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "A high retry count gives a password-guessing attempt more tries per connection before the session is dropped, which is a small but free improvement to close.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "guide-to-harden-cisco-ios-devices",
+          "url": "https://www.cisco.com/c/en/us/support/docs/ip/access-lists/13608-21.html",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "ip ssh authentication-retries 3"
+      ],
+      "severity": "low",
+      "subject": [
+        "ip ssh authentication-retries"
+      ],
+      "test_kind": "not-effectively-set",
+      "title": "`ip ssh authentication-retries` above 3"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "defaults_key": "ip.ssh.time-out",
+      "id": "CSC-SSH-0008",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "A long negotiation timeout lets a client hold open a half-established SSH session longer than necessary, which is a minor but easily avoided contributor to session-table exhaustion under a connection flood.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "guide-to-harden-cisco-ios-devices",
+          "url": "https://www.cisco.com/c/en/us/support/docs/ip/access-lists/13608-21.html",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "ip ssh time-out 60"
+      ],
+      "severity": "low",
+      "subject": [
+        "ip ssh time-out"
+      ],
+      "test_kind": "not-effectively-set",
+      "title": "`ip ssh time-out` above 60 seconds"
+    },
+    {
+      "category": "security",
+      "confidence": "manual-review",
+      "id": "CSC-SSH-0009",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "A running-config audit can see that a trustpoint exists and enumerate its declared enrollment method, but it cannot validate certificate chain trust or expiry from configuration text alone; that requires an interactive `show crypto pki certificate` on the device.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "ios-xe-software-hardening-guide",
+          "url": "https://sec.cloudapps.cisco.com/security/center/resources/IOS_XE_hardening",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "Run `show crypto pki certificate <trustpoint>` and confirm the issuer chain is trusted and unexpired."
+      ],
+      "severity": "info",
+      "subject": [
+        "crypto pki trustpoint",
+        "crypto pki certificate chain"
+      ],
+      "test_kind": "present",
+      "title": "Self-signed or expired-issuer trustpoint used for management"
+    },
+    {
+      "category": "reliability",
+      "confidence": "deterministic",
+      "defaults_key": "spanning-tree.mode",
+      "id": "CSC-STP-0001",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "Legacy PVST converges on the order of 30-50 seconds per topology change, while Rapid-PVST/MST converge in roughly a second on a well-designed topology; on a campus network that difference is the gap between a link flap being invisible and being an outage.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "catalyst-3850-3650-best-practices-guide",
+          "url": "https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst3850/software/release/16-1/best_practices_guide/BP_Cat3850/BP_overview.html",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "spanning-tree mode rapid-pvst"
+      ],
+      "severity": "medium",
+      "subject": [
+        "spanning-tree mode"
+      ],
+      "test_kind": "not-effectively-set",
+      "title": "`spanning-tree mode` is PVST rather than Rapid-PVST or MST"
+    },
+    {
+      "category": "reliability",
+      "confidence": "heuristic",
+      "id": "CSC-STP-0002",
+      "params_required": [
+        "interface"
+      ],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "Without PortFast, an access port runs the full listening/learning cycle every time an end host's NIC comes up, delaying DHCP and adding tens of seconds to boot-time network availability for no protective benefit on a port with no other switch attached.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "catalyst-3850-3650-best-practices-guide",
+          "url": "https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst3850/software/release/16-1/best_practices_guide/BP_Cat3850/BP_overview.html",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "interface {interface}",
+        " spanning-tree portfast"
+      ],
+      "severity": "medium",
+      "subject": [
+        "spanning-tree portfast"
+      ],
+      "test_kind": "absent",
+      "title": "PortFast not enabled on access ports"
+    },
+    {
+      "category": "reliability",
+      "confidence": "deterministic",
+      "defaults_key": "spanning-tree.portfast.bpduguard.default",
+      "id": "CSC-STP-0003",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "A PortFast port skips STP's normal loop-detection states, so if someone plugs in a switch or hub instead of an end host, BPDU Guard is what shuts the port down before a loop can form; without it enabled by default, every individual PortFast port must be protected by hand.",
+      "refs": [
+        {
+          "authority": "DISA-STIG",
+          "id": "CISC-L2-000100",
+          "url": "https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_L2S/2/5",
+          "version": "V2R5"
+        }
+      ],
+      "remediation": [
+        "spanning-tree portfast bpduguard default"
+      ],
+      "severity": "high",
+      "subject": [
+        "spanning-tree portfast bpduguard default"
+      ],
+      "test_kind": "not-effectively-set",
+      "title": "BPDU Guard is not enabled by default on PortFast ports"
+    },
+    {
+      "category": "security",
+      "confidence": "heuristic",
+      "id": "CSC-STP-0004",
+      "params_required": [
+        "interface"
+      ],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "A PortFast port with BPDU Guard explicitly disabled (or never inherited) will keep forwarding if a rogue switch is attached, letting that switch participate in the spanning-tree topology and potentially become root.",
+      "refs": [
+        {
+          "authority": "DISA-STIG",
+          "id": "CISC-L2-000100",
+          "url": "https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_L2S/2/5",
+          "version": "V2R5"
+        }
+      ],
+      "remediation": [
+        "interface {interface}",
+        " spanning-tree bpduguard enable"
+      ],
+      "severity": "high",
+      "subject": [
+        "spanning-tree bpduguard"
+      ],
+      "test_kind": "absent",
+      "title": "BPDU Guard missing on an individual access port"
+    },
+    {
+      "category": "reliability",
+      "confidence": "heuristic",
+      "id": "CSC-STP-0005",
+      "params_required": [
+        "interface"
+      ],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "Without Root Guard, a misconfigured or rogue switch attached downstream that advertises a superior BPDU can become the new root bridge for the whole topology, pulling traffic paths through a device never intended to carry them.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "enhance-stp-with-root-guard",
+          "url": "https://www.cisco.com/c/en/us/support/docs/lan-switching/spanning-tree-protocol/10588-74.html",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "interface {interface}",
+        " spanning-tree guard root"
+      ],
+      "severity": "medium",
+      "subject": [
+        "spanning-tree guard root"
+      ],
+      "test_kind": "absent",
+      "title": "Root Guard absent on ports facing another switch"
+    },
+    {
+      "category": "reliability",
+      "confidence": "deterministic",
+      "defaults_key": "spanning-tree.loopguard.default",
+      "id": "CSC-STP-0006",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "Loop Guard prevents a port from transitioning to forwarding when it stops receiving BPDUs due to a unidirectional link failure rather than an actual topology change, which is exactly the failure mode that otherwise causes an undetected bridging loop.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "understand-stp-loop-guard-and-udld",
+          "url": "https://www.cisco.com/c/en/us/support/docs/lan-switching/spanning-tree-protocol-stp-8021d/218321-configure-stp-with-loop-guard-and-bpdu-s.html",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "spanning-tree loopguard default"
+      ],
+      "severity": "medium",
+      "subject": [
+        "spanning-tree loopguard default"
+      ],
+      "test_kind": "not-effectively-set",
+      "title": "Loop Guard not enabled by default"
+    },
+    {
+      "category": "reliability",
+      "confidence": "deterministic",
+      "id": "CSC-STP-0007",
+      "params_required": [
+        "interface"
+      ],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "BPDU filtering stops the port from sending or processing BPDUs at all, which removes STP's loop-detection on that port entirely rather than merely adjusting timers; a loop formed through a filtered port will not be caught by spanning tree.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "catalyst-3850-3650-best-practices-guide",
+          "url": "https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst3850/software/release/16-1/best_practices_guide/BP_Cat3850/BP_overview.html",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "interface {interface}",
+        " no spanning-tree bpdufilter"
+      ],
+      "severity": "high",
+      "subject": [
+        "spanning-tree bpdufilter"
+      ],
+      "test_kind": "present",
+      "title": "`spanning-tree bpdufilter` enabled (hides loops)"
+    },
+    {
+      "category": "reliability",
+      "confidence": "deterministic",
+      "id": "CSC-STP-0008",
+      "params_required": [
+        "vlan"
+      ],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "Leaving root election to the default priority means the root bridge is whichever switch happens to have the lowest MAC address, which can silently become an access switch with no uplink capacity to be the network's root.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "catalyst-3850-3650-best-practices-guide",
+          "url": "https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst3850/software/release/16-1/best_practices_guide/BP_Cat3850/BP_overview.html",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "spanning-tree vlan {vlan} root primary"
+      ],
+      "severity": "medium",
+      "subject": [
+        "spanning-tree vlan",
+        "spanning-tree mst"
+      ],
+      "test_kind": "absent",
+      "title": "No explicit root bridge priority set for any VLAN"
+    },
+    {
+      "category": "reliability",
+      "confidence": "manual-review",
+      "id": "CSC-STP-0009",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "A single switch's configuration only shows its own claimed priority, not the priorities advertised by its neighbors, so whether it is actually well-placed as root or secondary root for a VLAN can only be judged by comparing configurations across the topology.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "catalyst-3850-3650-best-practices-guide",
+          "url": "https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst3850/software/release/16-1/best_practices_guide/BP_Cat3850/BP_overview.html",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "Compare `spanning-tree vlan <x> root primary/secondary` placement across all switches in the topology, not from a single device's configuration."
+      ],
+      "severity": "info",
+      "subject": [
+        "spanning-tree vlan"
+      ],
+      "test_kind": "present",
+      "title": "Root bridge placement cannot be judged from one config"
+    },
+    {
+      "category": "reliability",
+      "confidence": "deterministic",
+      "defaults_key": "udld",
+      "id": "CSC-STP-0010",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "A unidirectional fibre or copper link failure can leave a port's link light up while traffic only flows one way, which spanning tree alone cannot always detect; UDLD aggressive mode err-disables such a port before it causes a loop or black-holed traffic.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "understand-stp-loop-guard-and-udld",
+          "url": "https://www.cisco.com/c/en/us/support/docs/lan-switching/spanning-tree-protocol-stp-8021d/218321-configure-stp-with-loop-guard-and-bpdu-s.html",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "udld aggressive"
+      ],
+      "severity": "medium",
+      "subject": [
+        "udld"
+      ],
+      "test_kind": "not-effectively-set",
+      "title": "UDLD not enabled (`udld enable` / per-port aggressive)"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "id": "CSC-VTY-0001",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "Telnet and rlogin carry credentials and session content in clear text over the network. A vty that permits anything other than SSH gives any on-path observer a working set of administrative credentials the next time someone logs in.",
+      "refs": [
+        {
+          "authority": "DISA-STIG",
+          "id": "CISC-ND-000470",
+          "url": "https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5",
+          "version": "V3R5"
+        }
+      ],
+      "remediation": [
+        "transport input ssh"
+      ],
+      "severity": "critical",
+      "subject": [
+        "line vty",
+        "transport input"
+      ],
+      "test_kind": "present",
+      "title": "A vty line accepts a non-SSH transport"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "id": "CSC-VTY-0002",
+      "params_required": [
+        "line_range",
+        "acl_name"
+      ],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "An unrestricted vty accepts SSH connection attempts from any address that can route to the switch, turning every reachable host on the network into a potential source of credential-guessing or exploit traffic against the management plane.",
+      "refs": [
+        {
+          "authority": "DISA-STIG",
+          "id": "CISC-ND-000470",
+          "url": "https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5",
+          "version": "V3R5"
+        }
+      ],
+      "remediation": [
+        "line vty {line_range}",
+        "access-class {acl_name} in"
+      ],
+      "severity": "high",
+      "subject": [
+        "line vty",
+        "access-class"
+      ],
+      "test_kind": "absent",
+      "title": "A vty line has no `access-class` restriction"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "id": "CSC-VTY-0003",
+      "params_required": [
+        "acl_name"
+      ],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "IOS does not reject a reference to a nonexistent ACL; it simply has nothing to enforce, so a vty line that appears to be restricted is in fact open to any source address.",
+      "refs": [
+        {
+          "authority": "DISA-STIG",
+          "id": "CISC-ND-000470",
+          "url": "https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5",
+          "version": "V3R5"
+        }
+      ],
+      "remediation": [
+        "ip access-list standard {acl_name}",
+        " permit <REPLACE-ME:management-subnet>"
+      ],
+      "severity": "high",
+      "subject": [
+        "access-class"
+      ],
+      "test_kind": "referential",
+      "title": "`access-class` names an undefined ACL"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "id": "CSC-VTY-0004",
+      "params_required": [
+        "line_range"
+      ],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "`exec-timeout 0 0` disables session idle timeout entirely, and a long timeout leaves an unattended privileged session open far longer than an operator is likely to be present to notice it being misused.",
+      "refs": [
+        {
+          "authority": "DISA-STIG",
+          "id": "CISC-ND-000720",
+          "url": "https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5",
+          "version": "V3R5"
+        }
+      ],
+      "remediation": [
+        "line vty {line_range}",
+        "exec-timeout 10 0"
+      ],
+      "severity": "medium",
+      "subject": [
+        "line vty",
+        "exec-timeout"
+      ],
+      "test_kind": "value",
+      "title": "A vty line has `exec-timeout 0 0` or a timeout above 10 minutes"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "id": "CSC-VTY-0005",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "A line-level password is shared by everyone who logs in through that line, which means there is no per-user identity, no way to revoke one person's access without changing it for everyone, and no accounting trail of who actually connected. This applies equally to a vty line and to the console line - either one left on a shared local password has the same accountability gap.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "guide-to-harden-cisco-ios-devices",
+          "url": "https://www.cisco.com/c/en/us/support/docs/ip/access-lists/13608-21.html",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "Under the affected line (see the evidence line above for the exact `line vty <range>` or `line con 0` selector), replace the local password with AAA",
+        "no password",
+        "login authentication default"
+      ],
+      "severity": "high",
+      "subject": [
+        "line vty",
+        "line con",
+        "password"
+      ],
+      "test_kind": "present",
+      "title": "A line carries a local `password` instead of using AAA"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "id": "CSC-VTY-0006",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "The AUX port is rarely used on a campus access switch but stays live by default, accepting an EXEC session over whatever is plugged into it. Disabling EXEC and input removes a management path nobody is expecting to be there.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "guide-to-harden-cisco-ios-devices",
+          "url": "https://www.cisco.com/c/en/us/support/docs/ip/access-lists/13608-21.html",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "line aux 0",
+        "no exec",
+        "transport input none"
+      ],
+      "severity": "high",
+      "subject": [
+        "line aux 0"
+      ],
+      "test_kind": "absent",
+      "title": "`line aux 0` not disabled (`no exec` / `transport input none`)"
+    },
+    {
+      "category": "reliability",
+      "confidence": "deterministic",
+      "id": "CSC-VTY-0007",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "Without an idle timeout the console stays logged in indefinitely if an operator walks away, and without `logging synchronous` asynchronous log output interleaves with typed commands, which is a routine source of fat-fingered changes during a live incident.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "catalyst-3850-3650-best-practices-guide",
+          "url": "https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst3850/software/release/16-1/best_practices_guide/BP_Cat3850/BP_overview.html",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "line con 0",
+        "exec-timeout 10 0",
+        "logging synchronous"
+      ],
+      "severity": "medium",
+      "subject": [
+        "line con 0"
+      ],
+      "test_kind": "absent",
+      "title": "`line con 0` has no `exec-timeout` or `logging synchronous`"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "defaults_key": "line.transport-output",
+      "id": "CSC-VTY-0008",
+      "params_required": [
+        "line_range"
+      ],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "An unrestricted `transport output` lets a session on the switch be used to originate outbound Telnet/SSH connections from the device itself, which is occasionally used to pivot into segments the operator's own workstation cannot reach directly.",
+      "refs": [
+        {
+          "authority": "Cisco",
+          "id": "guide-to-harden-cisco-ios-devices",
+          "url": "https://www.cisco.com/c/en/us/support/docs/ip/access-lists/13608-21.html",
+          "version": null
+        }
+      ],
+      "remediation": [
+        "line vty {line_range}",
+        "transport output ssh"
+      ],
+      "severity": "low",
+      "subject": [
+        "line vty",
+        "transport output"
+      ],
+      "test_kind": "not-effectively-set",
+      "title": "`transport output` not restricted"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "id": "CSC-VTY-0009",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "Without a block-for quiet period, an attacker can attempt logins at whatever rate the CPU allows; pairing it with `login on-failure log` and `login on-success log` also gives the operator a record of the attempt once it is blocked.",
+      "refs": [
+        {
+          "authority": "DISA-STIG",
+          "id": "CISC-ND-000150",
+          "url": "https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5",
+          "version": "V3R5"
+        }
+      ],
+      "remediation": [
+        "login block-for 120 attempts 5 within 60",
+        "login on-failure log",
+        "login on-success log"
+      ],
+      "severity": "medium",
+      "subject": [
+        "login block-for",
+        "login on-failure",
+        "login on-success"
+      ],
+      "test_kind": "absent",
+      "title": "`login block-for` / `login quiet-mode` not configured"
+    },
+    {
+      "category": "security",
+      "confidence": "deterministic",
+      "id": "CSC-VTY-0010",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "Absent a login banner, an unauthorized user who reaches a login prompt can later argue they had no notice that access was restricted or monitored, which weakens the legal position of any subsequent action taken against them.",
+      "refs": [
+        {
+          "authority": "DISA-STIG",
+          "id": "CISC-ND-000470",
+          "url": "https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5",
+          "version": "V3R5"
+        }
+      ],
+      "remediation": [
+        "banner login ^C",
+        "<REPLACE-ME:authorized-use-notice>",
+        "^C"
+      ],
+      "severity": "medium",
+      "subject": [
+        "banner login",
+        "banner motd"
+      ],
+      "test_kind": "absent",
+      "title": "Login banner absent"
+    },
+    {
+      "category": "security",
+      "confidence": "heuristic",
+      "id": "CSC-VTY-0011",
+      "params_required": [],
+      "platforms": [
+        "ios",
+        "iosxe"
+      ],
+      "profiles": [
+        "campus",
+        "stig"
+      ],
+      "rationale": "A banner that only says something like \"Welcome\" carries none of the notice, consent or monitoring language that gives an authorized-use banner its legal weight; the keywords the extractor looks for (authorized, monitor, consent, prosecute) are a proxy for that content, not a guarantee of it.",
+      "refs": [
+        {
+          "authority": "DISA-STIG",
+          "id": "CISC-ND-000470",
+          "url": "https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5",
+          "version": "V3R5"
+        }
+      ],
+      "remediation": [
+        "Rewrite the banner to state that access is restricted to authorized users, that use is monitored, and that unauthorized use may be prosecuted."
+      ],
+      "severity": "low",
+      "subject": [
+        "banner login",
+        "banner motd"
+      ],
+      "test_kind": "value",
+      "title": "Login banner content is trivial or omits the required elements"
+    }
+  ],
+  "version": 1
+}

@@ -1,0 +1,278 @@
+# template-version: 4
+# ---------------------------------------------------------------------------
+# validate-skill.yml - validate a Claude skill package before it is offered.
+#
+# There is no signing mechanism for skills, so the repository is the trust
+# boundary: branch protection, tag protection and 2FA are the controls.
+# This workflow is therefore the only automated gate between a
+# tag and a marketplace entry, which is why the structural checks below run
+# unconditionally and are not delegated to an external tool.
+#
+# No secret is used by this workflow. The `release` environment applies,
+# because a passing run is what clears an entry for the public
+# marketplace repository.
+#
+# TAG VALIDATION. Because this workflow is
+# dispatchable it will check out whatever ref it is handed, so it proves the tag
+# is exactly v<MAJOR>.<MINOR>.<PATCH>, resolves through refs/tags, is the commit
+# that is checked out, and already has a GitHub Release, before it certifies
+# anything.
+#
+# PINNING. Every action reference in this file is a full 40-hex commit SHA with
+# its release tag in a trailing comment, per the dependency-pinning rule and AC4b.
+# SHAs were resolved
+# on 2026-09-14 from:
+#   https://api.github.com/repos/actions/checkout/tags
+#   https://api.github.com/repos/actions/setup-node/tags
+# ---------------------------------------------------------------------------
+
+name: validate-skill
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        description: 'SemVer version without the leading v, for example 1.2.0'
+        required: true
+        type: string
+      tag:
+        description: 'Release tag, for example v1.2.0'
+        required: true
+        type: string
+      skill_dir:
+        description: 'Directory holding SKILL.md. Empty means derive it.'
+        required: false
+        type: string
+        default: ''
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'SemVer version without the leading v, for example 1.2.0'
+        required: true
+        type: string
+      tag:
+        description: 'Release tag, for example v1.2.0'
+        required: true
+        type: string
+      skill_dir:
+        description: 'Directory holding SKILL.md. Empty means derive it.'
+        required: false
+        type: string
+        default: ''
+
+permissions: {}
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  validate:
+    name: validate the skill package
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: release
+    permissions:
+      contents: read
+    env:
+      VERSION: ${{ inputs.version }}
+      TAG: ${{ inputs.tag }}
+      SKILL_DIR_IN: ${{ inputs.skill_dir }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.tag }}
+          fetch-depth: 0          # tags must be present locally for the check below
+          persist-credentials: false
+
+      - name: Verify the release tag before anything is certified
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if ! printf '%s' "$TAG" | grep -qE '^v[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "::error::'$TAG' is not a release tag. This channel publishes only"
+            echo "::error::v<MAJOR>.<MINOR>.<PATCH>. A prerelease ships as a GitHub Release only."
+            exit 1
+          fi
+          if [ "v${VERSION}" != "$TAG" ]; then
+            echo "::error::the version input '$VERSION' does not match the tag '$TAG'"
+            exit 1
+          fi
+          TAG_COMMIT="$(git rev-parse --verify --quiet "refs/tags/${TAG}^{commit}" || true)"
+          if [ -z "$TAG_COMMIT" ]; then
+            echo "::error::'$TAG' does not resolve through refs/tags in this repository."
+            echo "::error::A branch name or a commit SHA is not a release; refusing to certify it."
+            exit 1
+          fi
+          if [ "$(git rev-parse HEAD)" != "$TAG_COMMIT" ]; then
+            echo "::error::the checked-out commit is not the commit tagged $TAG"
+            exit 1
+          fi
+          if ! gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "::error::no GitHub Release exists for $TAG. release.yml publishes the release"
+            echo "::error::first, and no channel is ever published ahead of it."
+            exit 1
+          fi
+          echo "$TAG verified: it is a tag, HEAD is the tagged commit, and its release is published."
+
+      - name: Resolve the skill directory
+        id: resolve
+        run: |
+          set -euo pipefail
+          # Single-line step outputs go through put(), which refuses a line break
+          # a forged second line could set an output this step never intended.
+          put() {
+            case "$2" in
+              *$'\n'*|*$'\r'*) echo "::error::the value for '$1' contains a line break"; exit 1 ;;
+            esac
+            printf '%s=%s\n' "$1" "$2" >> "$GITHUB_OUTPUT"
+          }
+
+          SKILL_DIR="$SKILL_DIR_IN"
+          if [ -z "$SKILL_DIR" ] && command -v yq >/dev/null 2>&1 && [ -f .github/release-config.yml ]; then
+            v="$(yq '.publish.claude_skill_dir' .github/release-config.yml)"; [ "$v" = "null" ] && v=""
+            SKILL_DIR="$v"
+          fi
+          if [ -z "$SKILL_DIR" ]; then
+            mapfile -t FOUND < <(find . -maxdepth 3 -name SKILL.md -not -path './node_modules/*' -not -path './.git/*' | LC_ALL=C sort)
+            if [ "${#FOUND[@]}" -ne 1 ]; then
+              echo "::error::found ${#FOUND[@]} SKILL.md files; set publish.claude_skill_dir in"
+              echo "::error::.github/release-config.yml or pass skill_dir."
+              printf '  %s\n' "${FOUND[@]}"
+              exit 1
+            fi
+            SKILL_DIR="$(dirname "${FOUND[0]}")"
+          fi
+          # The directory name can come from a dispatch input or from the repo
+          # tree, and it is later printed and used in paths, so its shape is
+          # checked rather than assumed.
+          # path-rule: relpath   (tested by scripts/test-path-rule.mjs)
+          if ! printf '%s' "$SKILL_DIR" | grep -qE '^(\.|(\./)?[A-Za-z0-9_][A-Za-z0-9._-]*(/[A-Za-z0-9_][A-Za-z0-9._-]*)*)$'; then
+            echo "::error::skill directory '$SKILL_DIR' is not a relative path (no leading /, no .. segment)"
+            exit 1
+          fi
+          [ -f "${SKILL_DIR}/SKILL.md" ] || { echo "::error::${SKILL_DIR}/SKILL.md does not exist"; exit 1; }
+          put skill_dir "$SKILL_DIR"
+          echo "skill_dir=$SKILL_DIR"
+
+      - name: Structural checks (always run, no external tool)
+        env:
+          SKILL_DIR: ${{ steps.resolve.outputs.skill_dir }}
+        run: |
+          set -euo pipefail
+          SKILL="${SKILL_DIR}/SKILL.md"
+          # Resolve through the filesystem, not the string: a single-skill repo
+          # keeps SKILL.md at the root, so SKILL_DIR is "." and basename "." is
+          # ".". The directory that must equal the skill name is then the
+          # checkout itself, which is named after the repository, which must match
+          # the skill name too.
+          DIRNAME="$(basename "$(cd "$SKILL_DIR" && pwd -P)")"
+          fail=0
+
+          # Read the name from the YAML frontmatter block at the top of SKILL.md.
+          strip() { sed -e 's/^[\x27"]//' -e 's/[\x27"]$//' -e 's/[[:space:]]*$//'; }
+          NAME="$(awk 'NR==1 && $0 != "---" { exit } NR>1 && $0 == "---" { exit } /^name:[[:space:]]*/ { sub(/^name:[[:space:]]*/, ""); print; exit }' "$SKILL" | strip)"
+          if [ -z "$NAME" ]; then
+            echo "::error::$SKILL has no 'name' in its frontmatter"
+            fail=1
+          else
+            # Naming convention: lowercase-hyphen, <= 64 chars, must not contain
+            # 'claude' or 'anthropic', and must match its directory.
+            if ! printf '%s' "$NAME" | grep -qE '^[a-z0-9]+(-[a-z0-9]+)*$'; then
+              echo "::error::skill name is not lowercase-hyphen"; fail=1
+            fi
+            if [ "${#NAME}" -gt 64 ]; then
+              echo "::error::skill name is ${#NAME} characters; the limit is 64"; fail=1
+            fi
+            if printf '%s' "$NAME" | grep -qiE 'claude|anthropic'; then
+              echo "::error::skill name must not contain 'claude' or 'anthropic'"; fail=1
+            fi
+            if [ "$NAME" != "$DIRNAME" ]; then
+              echo "::error::the skill name does not match its directory '$DIRNAME'"; fail=1
+            fi
+          fi
+
+          DESCRIPTION="$(awk 'NR==1 && $0 != "---" { exit } NR>1 && $0 == "---" { exit } /^description:[[:space:]]*/ { sub(/^description:[[:space:]]*/, ""); print; exit }' "$SKILL" | strip)"
+          if [ -z "$DESCRIPTION" ]; then
+            echo "::error::$SKILL has no 'description' in its frontmatter; without it the skill never triggers"
+            fail=1
+          fi
+
+          # If the repo carries a plugin manifest, its version must match the tag (gate 11).
+          PLUGIN_JSON=".claude-plugin/plugin.json"
+          if [ -f "$PLUGIN_JSON" ]; then
+            jq -e . "$PLUGIN_JSON" >/dev/null || { echo "::error::$PLUGIN_JSON does not parse as JSON"; exit 1; }
+            PV="$(jq -r '.version // empty' "$PLUGIN_JSON")"
+            if [ -n "$PV" ] && [ "$PV" != "$VERSION" ]; then
+              echo "::error::$PLUGIN_JSON version is '$PV' but the release is '$VERSION' (gate 11)"
+              fail=1
+            fi
+            PN="$(jq -r '.name // empty' "$PLUGIN_JSON")"
+            if [ -n "$PN" ] && [ -n "$NAME" ] && [ "$PN" != "$NAME" ]; then
+              echo "::error::$PLUGIN_JSON name does not match the skill name in SKILL.md"
+              fail=1
+            fi
+          fi
+
+          [ "$fail" -eq 0 ] || exit 1
+          printf 'Structural checks passed for %s\n' "$NAME"
+
+      - name: Does this repo pin Node dependencies?
+        id: node_pins
+        run: |
+          set -euo pipefail
+          if [ -f package-lock.json ] && [ -f .nvmrc ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        if: steps.node_pins.outputs.present == 'true'
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Run the Claude CLI plugin validator, when the repo pins one
+        if: steps.node_pins.outputs.present == 'true'
+        env:
+          SKILL_DIR: ${{ steps.resolve.outputs.skill_dir }}
+        run: |
+          set -euo pipefail
+          npm ci
+          if ! npx --no-install claude --version >/dev/null 2>&1; then
+            echo "::warning::the Claude CLI is not in this repo's dependencies; skipping 'claude plugin validate'."
+            exit 0
+          fi
+          npx --no-install claude plugin validate .
+
+      - name: Note why the CLI validator did not run
+        if: steps.node_pins.outputs.present != 'true'
+        run: |
+          set -euo pipefail
+          echo "::warning::this repo pins no Node dependencies (.nvmrc plus package-lock.json), so"
+          echo "::warning::'claude plugin validate' was not run. To enable it, add @anthropic-ai/claude-code"
+          echo "::warning::to devDependencies at an exact version and commit the lockfile."
+          echo "::warning::The structural checks above ran regardless and are the blocking gate."
+
+      - name: Record the outcome on the job summary
+        if: always()
+        env:
+          SKILL_DIR: ${{ steps.resolve.outputs.skill_dir }}
+          JOB_STATUS: ${{ job.status }}
+        run: |
+          set -euo pipefail
+          # Values reach this script through env: and are referenced as quoted
+          # shell variables. Nothing interpolates a GitHub expression into the
+          # script body.
+          {
+            echo "### Claude skill"
+            echo ""
+            echo "- directory: ${SKILL_DIR:-unresolved}"
+            echo "- version: ${VERSION}"
+            echo "- result: ${JOB_STATUS}"
+            echo ""
+            echo "Skills carry no signature. The repository is the trust boundary:"
+            echo "branch protection, tag protection on v*, and 2FA on the account."
+          } >> "$GITHUB_STEP_SUMMARY"

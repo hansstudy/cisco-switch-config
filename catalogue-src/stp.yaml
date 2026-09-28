@@ -1,0 +1,252 @@
+- id: CSC-STP-0001
+  title: '`spanning-tree mode` is PVST rather than Rapid-PVST or MST'
+  severity: medium
+  category: reliability
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: not-effectively-set
+  subject:
+  - spanning-tree mode
+  rationale: Legacy PVST converges on the order of 30-50 seconds per topology change, while Rapid-PVST/MST
+    converge in roughly a second on a well-designed topology; on a campus network that difference is the
+    gap between a link flap being invisible and being an outage.
+  remediation:
+  - spanning-tree mode rapid-pvst
+  params_required: []
+  refs:
+  - &id001
+    authority: Cisco
+    id: catalyst-3850-3650-best-practices-guide
+    version: null
+    url: https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst3850/software/release/16-1/best_practices_guide/BP_Cat3850/BP_overview.html
+  defaults_key: spanning-tree.mode
+- id: CSC-STP-0002
+  title: PortFast not enabled on access ports
+  severity: medium
+  category: reliability
+  confidence: heuristic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: absent
+  subject:
+  - spanning-tree portfast
+  rationale: Without PortFast, an access port runs the full listening/learning cycle every time an end
+    host's NIC comes up, delaying DHCP and adding tens of seconds to boot-time network availability for
+    no protective benefit on a port with no other switch attached.
+  remediation:
+  - interface {interface}
+  - ' spanning-tree portfast'
+  params_required:
+  - interface
+  refs:
+  - *id001
+- id: CSC-STP-0003
+  title: BPDU Guard is not enabled by default on PortFast ports
+  severity: high
+  category: reliability
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: not-effectively-set
+  subject:
+  - spanning-tree portfast bpduguard default
+  rationale: A PortFast port skips STP's normal loop-detection states, so if someone plugs in a switch
+    or hub instead of an end host, BPDU Guard is what shuts the port down before a loop can form; without
+    it enabled by default, every individual PortFast port must be protected by hand.
+  remediation:
+  - spanning-tree portfast bpduguard default
+  params_required: []
+  refs:
+  - authority: DISA-STIG
+    id: CISC-L2-000100
+    version: V2R5
+    url: https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_L2S/2/5
+  defaults_key: spanning-tree.portfast.bpduguard.default
+- id: CSC-STP-0004
+  title: BPDU Guard missing on an individual access port
+  severity: high
+  category: security
+  confidence: heuristic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: absent
+  subject:
+  - spanning-tree bpduguard
+  rationale: A PortFast port with BPDU Guard explicitly disabled (or never inherited) will keep forwarding
+    if a rogue switch is attached, letting that switch participate in the spanning-tree topology and potentially
+    become root.
+  remediation:
+  - interface {interface}
+  - ' spanning-tree bpduguard enable'
+  params_required:
+  - interface
+  refs:
+  - authority: DISA-STIG
+    id: CISC-L2-000100
+    version: V2R5
+    url: https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_L2S/2/5
+- id: CSC-STP-0005
+  title: Root Guard absent on ports facing another switch
+  severity: medium
+  category: reliability
+  confidence: heuristic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: absent
+  subject:
+  - spanning-tree guard root
+  rationale: Without Root Guard, a misconfigured or rogue switch attached downstream that advertises a
+    superior BPDU can become the new root bridge for the whole topology, pulling traffic paths through
+    a device never intended to carry them.
+  remediation:
+  - interface {interface}
+  - ' spanning-tree guard root'
+  params_required:
+  - interface
+  refs:
+  - authority: Cisco
+    id: enhance-stp-with-root-guard
+    version: null
+    url: https://www.cisco.com/c/en/us/support/docs/lan-switching/spanning-tree-protocol/10588-74.html
+- id: CSC-STP-0006
+  title: Loop Guard not enabled by default
+  severity: medium
+  category: reliability
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: not-effectively-set
+  subject:
+  - spanning-tree loopguard default
+  rationale: Loop Guard prevents a port from transitioning to forwarding when it stops receiving BPDUs
+    due to a unidirectional link failure rather than an actual topology change, which is exactly the failure
+    mode that otherwise causes an undetected bridging loop.
+  remediation:
+  - spanning-tree loopguard default
+  params_required: []
+  refs:
+  - &id002
+    authority: Cisco
+    id: understand-stp-loop-guard-and-udld
+    version: null
+    url: https://www.cisco.com/c/en/us/support/docs/lan-switching/spanning-tree-protocol-stp-8021d/218321-configure-stp-with-loop-guard-and-bpdu-s.html
+  defaults_key: spanning-tree.loopguard.default
+- id: CSC-STP-0007
+  title: '`spanning-tree bpdufilter` enabled (hides loops)'
+  severity: high
+  category: reliability
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: present
+  subject:
+  - spanning-tree bpdufilter
+  rationale: BPDU filtering stops the port from sending or processing BPDUs at all, which removes STP's
+    loop-detection on that port entirely rather than merely adjusting timers; a loop formed through a
+    filtered port will not be caught by spanning tree.
+  remediation:
+  - interface {interface}
+  - ' no spanning-tree bpdufilter'
+  params_required:
+  - interface
+  refs:
+  - *id001
+- id: CSC-STP-0008
+  title: No explicit root bridge priority set for any VLAN
+  severity: medium
+  category: reliability
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: absent
+  subject:
+  - spanning-tree vlan
+  - spanning-tree mst
+  rationale: Leaving root election to the default priority means the root bridge is whichever switch happens
+    to have the lowest MAC address, which can silently become an access switch with no uplink capacity
+    to be the network's root.
+  remediation:
+  - spanning-tree vlan {vlan} root primary
+  params_required:
+  - vlan
+  refs:
+  - *id001
+- id: CSC-STP-0009
+  title: Root bridge placement cannot be judged from one config
+  severity: info
+  category: reliability
+  confidence: manual-review
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: present
+  subject:
+  - spanning-tree vlan
+  rationale: A single switch's configuration only shows its own claimed priority, not the priorities advertised
+    by its neighbors, so whether it is actually well-placed as root or secondary root for a VLAN can only
+    be judged by comparing configurations across the topology.
+  remediation:
+  - Compare `spanning-tree vlan <x> root primary/secondary` placement across all switches in the topology,
+    not from a single device's configuration.
+  params_required: []
+  refs:
+  - *id001
+- id: CSC-STP-0010
+  title: UDLD not enabled (`udld enable` / per-port aggressive)
+  severity: medium
+  category: reliability
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: not-effectively-set
+  subject:
+  - udld
+  rationale: A unidirectional fibre or copper link failure can leave a port's link light up while traffic
+    only flows one way, which spanning tree alone cannot always detect; UDLD aggressive mode err-disables
+    such a port before it causes a loop or black-holed traffic.
+  remediation:
+  - udld aggressive
+  params_required: []
+  refs:
+  - *id002
+  defaults_key: udld

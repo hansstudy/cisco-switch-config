@@ -1,0 +1,10 @@
+interface $interface
+ description $description
+ switchport trunk native vlan $native_vlan
+ switchport trunk allowed vlan $allowed_vlans
+ switchport mode trunk
+ switchport nonegotiate
+ $dhcp_trust
+ $dai_trust
+ $udld_port
+ $channel_group

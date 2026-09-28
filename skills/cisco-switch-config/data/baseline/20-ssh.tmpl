@@ -1,0 +1,10 @@
+!
+crypto key generate rsa modulus 4096
+ip ssh version 2
+ip ssh time-out 60
+ip ssh authentication-retries 3
+ip ssh dh min size 4096
+ip ssh source-interface Vlan$mgmt_vlan
+ip ssh server algorithm encryption $ssh_encryption
+ip ssh server algorithm mac $ssh_mac
+$ssh_kex

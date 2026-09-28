@@ -1,0 +1,12 @@
+{
+  "fixture": "synthetic/subject-coverage.cfg",
+  "platform": "iosxe",
+  "role_map": null,
+  "must_fire": ["CSC-IFC-0001", "CSC-MGT-0012"],
+  "must_not_fire": ["CSC-IFC-0007", "CSC-VTY-0009", "CSC-SSH-0002", "CSC-RES-0006", "CSC-STP-0008"],
+  "must_note": ["CSC-SELF-0001"],
+  "evidence_hints": {},
+  "max_critical": 1,
+  "max_high": 18,
+  "notes": "Subject-coverage fixture. IFC-0001: hard-coded speed/duplex on a copper access port. MGT-0012: netconf-yang/restconf with no access restriction. IFC-0007 quiet (no cdp run), VTY-0009 quiet (login block-for present), SSH-0002 quiet (domain name + key generation present). Ceilings are the real counts (1 critical: CSC-VTY-0001 on the unconfigured vty range; 15 high) plus headroom. Also included, to close subject-coverage gaps found by test_contract_reconciliation.py: `interface Vlan10` -> `ip access-group MGT-VLAN-ACL in` (CSC-MGT-0014's corrected subject `ip access-group`), `switch 1 provision C9300-48P` + `stack-mac persistent timer 0` (CSC-RES-0006's corrected subject, gated on stack evidence -- `switch 1 provision` is that evidence), and `spanning-tree mst configuration` / `spanning-tree mst 0 priority 4096` (CSC-STP-0008's corrected subject). must_not_fire CSC-RES-0006 and CSC-STP-0008 confirms both lines are the compliant form (the check exists to catch their *absence*), so subject coverage is proven without also asserting a finding that isn't there. Collateral, expected, not separately asserted here: the added stack evidence also satisfies `switch`-present (CSC-RES-0005, medium, an extractor-style manual-review note, not a hard verdict) and makes the platform read as stack-capable, so CSC-RES-0007 (`redundancy mode sso` absent, low) now also fires; the added `ip access-group MGT-VLAN-ACL` names an ACL nothing in this fixture defines, so CSC-MGT-0014 (medium) fires once for that and once for a pre-existing undefined `vlan 10` reference. None of these three raise the critical or high count (1 and 15 respectively, both still within the existing ceilings), so no ceiling change was needed."
+}

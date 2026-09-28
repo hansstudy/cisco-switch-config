@@ -1,0 +1,12 @@
+{
+  "fixture": "synthetic/traps/trap-i-paste.cfg",
+  "platform": "iosxe",
+  "role_map": null,
+  "must_fire": ["CSC-VTY-0001", "CSC-MGT-0010"],
+  "must_not_fire": ["CSC-SNMP-0002"],
+  "must_note": ["CSC-SELF-0003", "CSC-SELF-0006"],
+  "evidence_hints": {},
+  "max_critical": 2,
+  "max_high": 20,
+  "notes": "CSC-SELF-0003 fires once, class `pager artefact`, for the --More-- splice repaired inside the snmp-server community line before masking sees it. must_not_fire CSC-SNMP-0002 (community RW) because the repaired community line is RO. The BOM, CRLF endings, build/size banners, prompt echo and post-`end` trailing text must all be stripped or otherwise tolerated without aborting the run (exit 2 is reserved for empty/non-Cisco input). max_critical is 2, and CSC-VTY-0001 and CSC-MGT-0010 are both in must_fire, matching the real ruleset. This fixture configures `line vty 0 4` with `transport input ssh` (compliant), but never mentions `vty 5 15`; that sub-range is assumed (CSC-SELF-0006 fires) and evaluated against the platform default (not SSH-only), so CSC-VTY-0001 correctly fires at `critical` on the assumed range. max_high is 20 (the real count, 15, plus a small headroom). This fixture also has no `version` line: with no version line, iosxe is treated as having vstack ON as a fail-safe, since an ambiguous or 3.x version cannot prove Smart Install is safely absent, unless `no vstack` is present -- which this fixture correctly does not have -- so CSC-MGT-0010 also correctly fires as critical. This is not fixed by adding a version line or `no vstack`: the no-version case is exactly what the fail-safe exists to catch."
+}

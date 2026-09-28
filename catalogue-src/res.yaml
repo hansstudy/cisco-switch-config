@@ -1,0 +1,200 @@
+- id: CSC-RES-0001
+  title: No `boot system` statement, or a non-deterministic boot order
+  severity: medium
+  category: reliability
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: absent
+  subject:
+  - boot system
+  rationale: Without an explicit boot list, the device falls back to whatever image ROMMON finds first,
+    which after a flash reorganization or a partially completed upgrade may not be the image the operator
+    believes is running.
+  remediation:
+  - boot system flash:<REPLACE-ME:image-filename>
+  params_required: []
+  refs:
+  - &id003
+    authority: Cisco
+    id: catalyst-3850-3650-best-practices-guide
+    version: null
+    url: https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst3850/software/release/16-1/best_practices_guide/BP_Cat3850/BP_overview.html
+- id: CSC-RES-0002
+  title: '`boot system` names an image over a network URL'
+  severity: high
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: present
+  subject:
+  - boot system
+  rationale: A network boot source (TFTP/FTP/HTTP) means the device's boot image depends on that server
+    being reachable and trustworthy at every reload; anyone who can spoof or compromise it can hand the
+    switch an arbitrary image at boot time.
+  remediation:
+  - boot system flash:<REPLACE-ME:image-filename>
+  params_required: []
+  refs:
+  - authority: Cisco
+    id: guide-to-harden-cisco-ios-devices
+    version: null
+    url: https://www.cisco.com/c/en/us/support/docs/ip/access-lists/13608-21.html
+- id: CSC-RES-0003
+  title: '`errdisable recovery cause` not configured for the common causes'
+  severity: medium
+  category: reliability
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: absent
+  subject:
+  - errdisable recovery cause
+  rationale: Without automatic recovery, a port err-disabled by BPDU Guard, UDLD or a security violation
+    stays down until an operator manually notices and re-enables it, turning a transient event into an
+    extended outage for whatever was connected.
+  remediation:
+  - errdisable recovery cause bpduguard
+  - errdisable recovery cause udld
+  - errdisable recovery cause psecure-violation
+  params_required: []
+  refs:
+  - &id001
+    authority: Cisco
+    id: recover-errdisable-port-state
+    version: null
+    url: https://www.cisco.com/c/en/us/support/docs/lan-switching/spanning-tree-protocol/69980-errdisable-recovery.html
+- id: CSC-RES-0004
+  title: '`errdisable recovery interval` below 300 seconds'
+  severity: low
+  category: reliability
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: value
+  subject:
+  - errdisable recovery interval
+  rationale: A very short recovery interval can re-enable a port into the same fault condition repeatedly
+    before the underlying issue clears, generating a flap loop instead of giving the condition time to
+    resolve.
+  remediation:
+  - errdisable recovery interval 300
+  params_required: []
+  refs:
+  - *id001
+- id: CSC-RES-0005
+  title: Stack member priority cannot be verified from a config file (`switch N priority`)
+  severity: medium
+  category: reliability
+  confidence: manual-review
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: present
+  subject:
+  - switch
+  rationale: '`switch N priority P` is set in privileged EXEC mode, not configuration mode, and is stored
+    outside the running-config, so a static audit can see from other `switch N ...` lines that a stack
+    exists but cannot see, let alone judge, the priority actually assigned to any member.'
+  remediation:
+  - 'Operator step, run in privileged EXEC on the stack (this is not a configuration-mode command and is
+    never stored in running-config): `switch <N> priority <P>` for each member, then confirm with `show
+    switch`.'
+  params_required: []
+  refs:
+  - &id002
+    authority: Cisco
+    id: campus-network-high-availability-design-guide
+    version: null
+    url: https://www.cisco.com/c/en/us/td/docs/solutions/Enterprise/Campus/HA_campus_DG/hacampusdg.html
+- id: CSC-RES-0006
+  title: Stack MAC persistence not configured (`stack-mac persistent timer`)
+  severity: medium
+  category: reliability
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: absent
+  subject:
+  - stack-mac persistent timer
+  rationale: This check applies only to stacked systems. Without a persistent stack MAC, losing the original
+    master member changes the stack's system MAC address, which can re-trigger DHCP on every downstream
+    device that keys off the gateway's MAC and can break certain licensing or ACL rules bound to it.
+  remediation:
+  - stack-mac persistent timer 0
+  params_required: []
+  refs:
+  - *id002
+- id: CSC-RES-0007
+  title: '`redundancy mode sso` absent on a stack-capable platform'
+  severity: low
+  category: reliability
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: absent
+  subject:
+  - redundancy
+  - mode sso
+  rationale: Without SSO, a control-plane failover on redundant supervisor/stack hardware causes a full
+    reload of the data plane instead of a stateful switchover, turning a supervisor fault into a full
+    outage rather than a brief interruption.
+  remediation:
+  - redundancy
+  - ' mode sso'
+  params_required: []
+  refs:
+  - *id002
+- id: CSC-RES-0008
+  title: '`ip device tracking` probe defaults left in place (duplicate-IP symptoms)'
+  severity: medium
+  category: reliability
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: not-effectively-set
+  subject:
+  - ip device tracking
+  rationale: The default device-tracking probe interval and count can generate enough ARP probe traffic
+    on a large access-layer deployment to be mistaken for a duplicate-IP condition or to add measurable
+    load; tuning the probe parameters is a common but easy to overlook step after enabling the security
+    features that depend on it.
+  remediation:
+  - ip device tracking probe delay 10
+  - ip device tracking probe interval 30
+  params_required: []
+  refs:
+  - *id003
+  defaults_key: ip.device-tracking

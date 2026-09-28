@@ -1,0 +1,14 @@
+{
+  "fixture": "synthetic/ios15-catalyst.cfg",
+  "platform": "ios",
+  "role_map": null,
+  "must_fire": ["CSC-SNMP-0001", "CSC-MGT-0010"],
+  "must_not_fire": ["CSC-MGT-0001", "CSC-VTY-0001", "CSC-SNMP-0004"],
+  "must_note": ["CSC-SELF-0001"],
+  "evidence_hints": {
+    "CSC-SNMP-0001": ["snmp-server community [REDACTED snmp-community, 22 chars] RO 88"]
+  },
+  "max_critical": 1,
+  "max_high": 10,
+  "notes": "CSC-SNMP-0001's evidence_hint must not be the raw secret substring, since that can never appear in evidence.text under the mask-on-ingest invariant. It is set to the actual masked form. max_critical is 1 and CSC-MGT-0010 is in must_fire: its catalogue title is '`vstack` (Smart Install client) not disabled' (test_kind `not-effectively-set`, defaults_key `vstack`); data/defaults.json gives classic IOS a default of `state: on` for vstack (Smart Install was on-by-default before it was patched), and this fixture never configures `no vstack`, so the finding is real and correctly `critical`. 1 is the real, confirmed-correct critical count."
+}

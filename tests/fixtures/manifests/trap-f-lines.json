@@ -1,0 +1,12 @@
+{
+  "fixture": "synthetic/traps/trap-f-lines.cfg",
+  "platform": "iosxe",
+  "role_map": null,
+  "must_fire": ["CSC-VTY-0001"],
+  "must_not_fire": ["CSC-SNMP-0010", "CSC-L2-0008", "CSC-VTY-0004"],
+  "must_note": ["CSC-SELF-0006"],
+  "evidence_hints": {},
+  "max_critical": 1,
+  "max_high": 18,
+  "notes": "must_not_fire CSC-VTY-0004: its catalogue title is 'A vty line has `exec-timeout 0 0` or a timeout above 10 minutes'. The assumed `vty 5 15` sub-range (line vty 0-4 is hardened; 5-15 is never configured) is evaluated against data/defaults.json's own `line.exec-timeout` default, which is `10 0` -- exactly 10 minutes, neither `0 0` nor above the 10-minute ceiling -- so the rule correctly does not fire on the assumed range. The `CSC-VTY-0001` evidence_hint (`line vty 5 15`) is absent on purpose: a failing *assumed* sub-range is an absence finding (`evidence.anchor == \"absent\"`, `evidence.text == \"\"`, confirmed against the real engine) -- there is no line to quote, by design, so no substring hint can ever match here. max_critical is 1 (the real count, CSC-VTY-0001) and max_high is 18 (the real count, 13, plus a small headroom), matching the finalized ruleset."
+}

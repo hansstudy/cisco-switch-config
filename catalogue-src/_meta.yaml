@@ -1,0 +1,20 @@
+catalogue_version: '2026.09'
+authorities:
+  DISA-STIG:
+    name: DISA Cisco IOS-XE Switch STIG
+    url_base: https://public.cyber.mil/stigs/
+  CIS:
+    name: CIS Benchmarks
+    url_base: null
+  Cisco:
+    name: Cisco hardening guidance
+    url_base: https://sec.cloudapps.cisco.com/
+  NSA:
+    name: NSA cybersecurity guidance
+    url_base: https://media.defense.gov/
+  CISA:
+    name: CISA guidance
+    url_base: https://www.cisa.gov/
+  NIST:
+    name: NIST SP 800-series
+    url_base: https://csrc.nist.gov/

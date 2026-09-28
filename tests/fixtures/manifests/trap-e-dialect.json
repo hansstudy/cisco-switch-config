@@ -1,0 +1,12 @@
+{
+  "fixture": "synthetic/traps/trap-e-dialect.cfg",
+  "platform": "iosxe",
+  "role_map": null,
+  "must_fire": ["CSC-VTY-0001"],
+  "must_not_fire": ["CSC-STP-0003"],
+  "must_note": ["CSC-SELF-0001", "CSC-SELF-0006"],
+  "evidence_hints": {},
+  "max_critical": 1,
+  "max_high": 17,
+  "notes": "must_not_fire CSC-STP-0003 (BPDU Guard not default) proves ctx.dialect.matches() recognises the IOS-XE `spanning-tree portfast edge bpduguard default` surface form, not just the classic-IOS `spanning-tree portfast bpduguard default` spelling. max_critical is 1 and CSC-VTY-0001 is in must_fire, matching the real ruleset. This fixture configures no `line vty` at all, so both the 0-4 and 5-15 sub-ranges are assumed (CSC-SELF-0006 fires) and evaluated against the platform default; the default vty transport is not SSH-only, so CSC-VTY-0001 correctly fires at `critical` on the whole `vty 0 15` universe. 1 is the real, confirmed-correct critical count. max_high is 17 (the real count, 12, plus a small headroom)."
+}

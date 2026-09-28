@@ -1,0 +1,12 @@
+interface range $range
+ description $description
+ switchport mode access
+ switchport access vlan $vlan
+ $voice_vlan
+ switchport nonegotiate
+ $portfast
+ spanning-tree bpduguard enable
+$port_security
+$storm_control
+ $dhcp_rate
+ $cdp_port

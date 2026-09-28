@@ -1,0 +1,12 @@
+{
+  "fixture": "synthetic/traps/trap-a-banners.cfg",
+  "platform": "iosxe",
+  "role_map": null,
+  "must_fire": [],
+  "must_not_fire": ["CSC-AAA-0011"],
+  "must_note": ["CSC-SELF-0005"],
+  "evidence_hints": {},
+  "max_critical": null,
+  "max_high": null,
+  "notes": "must_not_fire CSC-AAA-0011 (enable password present) proves the `enable password` text inside the `banner exec` body is never structurally parsed as a real command -- it is masked banner-body text only. Exactly one CSC-SELF-0005 fires, for the deliberately-unterminated final banner login block."
+}

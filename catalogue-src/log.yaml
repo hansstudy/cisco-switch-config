@@ -1,0 +1,224 @@
+- id: CSC-LOG-0001
+  title: No `logging host` configured
+  severity: high
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: absent
+  subject:
+  - logging host
+  rationale: With no remote syslog destination, the only record of events is the local buffer, which is
+    lost on reload and is also the first thing an attacker with configuration access would clear to cover
+    their tracks.
+  remediation:
+  - logging host {host}
+  params_required:
+  - host
+  refs:
+  - authority: DISA-STIG
+    id: CISC-ND-001450
+    version: V3R5
+    url: https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5
+- id: CSC-LOG-0002
+  title: Fewer than two syslog destinations
+  severity: low
+  category: reliability
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: value
+  subject:
+  - logging host
+  rationale: A single syslog server is a single point of failure for the device's entire audit trail;
+    if it is down during an incident, nothing sent during that window is recoverable.
+  remediation:
+  - logging host {host}
+  params_required:
+  - host
+  refs:
+  - authority: DISA-STIG
+    id: CISC-ND-001450
+    version: V3R5
+    url: https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5
+- id: CSC-LOG-0003
+  title: '`logging trap` level below `informational`'
+  severity: medium
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: value
+  subject:
+  - logging trap
+  rationale: A trap level coarser than `informational` (6) drops routine but security-relevant events
+    — interface state changes, ACL denies, login successes and failures — before they ever reach the syslog
+    server.
+  remediation:
+  - logging trap informational
+  params_required: []
+  refs:
+  - &id001
+    authority: Cisco
+    id: guide-to-harden-cisco-ios-devices
+    version: null
+    url: https://www.cisco.com/c/en/us/support/docs/ip/access-lists/13608-21.html
+- id: CSC-LOG-0004
+  title: '`service timestamps log datetime msec localtime show-timezone` absent'
+  severity: medium
+  category: reliability
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: absent
+  subject:
+  - service timestamps log
+  rationale: Log entries without a full, timezone-qualified timestamp are difficult to correlate against
+    other systems during an investigation, especially across daylight-saving transitions or when servers
+    and network gear are not in the same timezone.
+  remediation:
+  - service timestamps log datetime msec localtime show-timezone
+  params_required: []
+  refs:
+  - *id001
+- id: CSC-LOG-0005
+  title: '`logging buffered` absent or below 16 KB'
+  severity: low
+  category: reliability
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: value
+  subject:
+  - logging buffered
+  rationale: A small local buffer wraps within minutes on a busy switch, so by the time an operator opens
+    a session to investigate, the events that would explain what happened have already been overwritten.
+  remediation:
+  - logging buffered 32768 informational
+  params_required: []
+  refs:
+  - &id002
+    authority: Cisco
+    id: catalyst-3850-3650-best-practices-guide
+    version: null
+    url: https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst3850/software/release/16-1/best_practices_guide/BP_Cat3850/BP_overview.html
+- id: CSC-LOG-0006
+  title: '`logging source-interface` not set to a stable interface'
+  severity: low
+  category: reliability
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: absent
+  subject:
+  - logging source-interface
+  rationale: Without a fixed source interface, the address a syslog message appears to come from can change
+    with the active uplink or routing table, which breaks source-address filtering and per-device grouping
+    on the log-collection side.
+  remediation:
+  - logging source-interface Loopback0
+  params_required: []
+  refs:
+  - *id002
+- id: CSC-LOG-0007
+  title: '`archive` / `log config` not enabled'
+  severity: medium
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: absent
+  subject:
+  - archive
+  - log config
+  rationale: Without configuration-change logging, there is no record of who changed what and when on
+    the device itself; the archive feature timestamps and attributes each change as it happens.
+  remediation:
+  - archive
+  - ' log config'
+  - '  logging enable'
+  - '  notify syslog'
+  params_required: []
+  refs:
+  - authority: DISA-STIG
+    id: CISC-ND-001410
+    version: V3R5
+    url: https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5
+- id: CSC-LOG-0008
+  title: '`archive log config` missing `hidekeys`'
+  severity: high
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: absent
+  subject:
+  - log config
+  - hidekeys
+  rationale: Without `hidekeys`, the change-logging archive stores the literal secret values typed during
+    a configuration change, which turns an audit feature into a second place secrets leak from.
+  remediation:
+  - archive
+  - ' log config'
+  - '  hidekeys'
+  params_required: []
+  refs:
+  - authority: DISA-STIG
+    id: CISC-ND-001410
+    version: V3R5
+    url: https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5
+- id: CSC-LOG-0009
+  title: '`logging console` left enabled at a verbose level'
+  severity: low
+  category: reliability
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: not-effectively-set
+  subject:
+  - logging console
+  rationale: Console logging at `debugging` can flood an active terminal session with output during a
+    busy period, to the point that typed commands are hard to see and CPU spent formatting console messages
+    competes with the operator's own troubleshooting.
+  remediation:
+  - logging console critical
+  params_required: []
+  refs:
+  - *id002
+  defaults_key: logging.console

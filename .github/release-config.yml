@@ -1,0 +1,29 @@
+# The release input contract, read by .github/workflows/release.yml and validate-skill.yml.
+#
+# Pinned against templates/workflows/{release.yml,validate-skill.yml,ci.yml} at
+# template-version 4 (see the header comment of each copied workflow file). This exact pin
+# passes the template-version-4 check-release-evidence.mjs validator for all applicable
+# [skl] gates.
+schema_version: 1
+tool_slug:      "cisco-switch-config"      # = the repo name, hansstudy/cisco-switch-config
+product_name:   "Study Cisco Switch Config"
+artifact_kind:  skl
+artifact_kinds:
+  - skl
+runtime:        "claude-skill"
+landing_url:    "https://hans.study/tools/cisco-switch-config/"
+dist_dir:       "dist"
+build_command:  "python3 packaging/build_skill_zip.py --out dist"
+test_command:   "python3 -m venv .venv && .venv/bin/python -m pip install -r requirements-dev.txt && .venv/bin/python -m pytest -q"
+licence:        "Apache-2.0"
+lint_command:   ""
+sbom:
+  generator:    "manual"
+  manual_path:  "packaging/sbom/cisco-switch-config.cdx.json"
+publish:
+  psgallery:        false
+  scoop:            false
+  winget:           false
+  elgato_pack:      false
+  claude_validate:  true
+  claude_skill_dir: "skills/cisco-switch-config"

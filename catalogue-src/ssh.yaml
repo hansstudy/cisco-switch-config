@@ -1,0 +1,221 @@
+- id: CSC-SSH-0001
+  title: '`ip ssh version 2` not enforced'
+  severity: high
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: not-effectively-set
+  subject:
+  - ip ssh version
+  rationale: SSHv1 has known cryptographic weaknesses (including a CRC-32 integrity flaw) that were fixed
+    by the SSHv2 redesign; leaving version negotiation open lets an older or downgrade-capable client
+    fall back to the weaker protocol.
+  remediation:
+  - ip ssh version 2
+  params_required: []
+  refs:
+  - authority: DISA-STIG
+    id: CISC-ND-000470
+    version: V3R5
+    url: https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5
+  defaults_key: ip.ssh.version
+- id: CSC-SSH-0002
+  title: No RSA/EC key generated (`crypto key` / `ip domain-name` prerequisites absent)
+  severity: high
+  category: reliability
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: absent
+  subject:
+  - crypto key generate
+  - ip domain-name
+  rationale: SSH cannot start at all without a host key, and generating one requires `ip domain-name`
+    to already be set; a switch missing either prerequisite falls back to an unencrypted management transport
+    by default without an obvious error to the operator.
+  remediation:
+  - ip domain-name <REPLACE-ME:domain-name>
+  - crypto key generate rsa modulus 2048
+  params_required: []
+  refs:
+  - &id002
+    authority: Cisco
+    id: guide-to-harden-cisco-ios-devices
+    version: null
+    url: https://www.cisco.com/c/en/us/support/docs/ip/access-lists/13608-21.html
+- id: CSC-SSH-0003
+  title: '`ip ssh dh min size` below 2048'
+  severity: medium
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: not-effectively-set
+  subject:
+  - ip ssh dh min size
+  rationale: A Diffie-Hellman modulus below 2048 bits is within reach of well-resourced offline attacks
+    against the key-exchange, weakening the confidentiality the SSH session is supposed to provide.
+  remediation:
+  - ip ssh dh min size 2048
+  params_required: []
+  refs:
+  - &id003
+    authority: Cisco
+    id: ios-xe-software-hardening-guide
+    version: null
+    url: https://sec.cloudapps.cisco.com/security/center/resources/IOS_XE_hardening
+  defaults_key: ip.ssh.dh-min-size
+- id: CSC-SSH-0004
+  title: '`ip ssh server algorithm encryption` permits a CBC or weak cipher'
+  severity: high
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: not-effectively-set
+  subject:
+  - ip ssh server algorithm encryption
+  rationale: CBC-mode ciphers are vulnerable to padding-oracle style attacks against SSH and have been
+    superseded by AEAD/CTR modes; restricting the offered cipher list to modern algorithms removes the
+    weaker options from ever being negotiated.
+  remediation:
+  - ip ssh server algorithm encryption aes256-ctr aes192-ctr aes128-ctr
+  params_required: []
+  refs:
+  - &id001
+    authority: NSA
+    id: ctr-network-infrastructure-security-guide
+    version: null
+    url: https://media.defense.gov/2022/Jun/15/2003018261/-1/-1/0/CTR_NSA_NETWORK_INFRASTRUCTURE_SECURITY_GUIDE_20220615.PDF
+  defaults_key: null
+- id: CSC-SSH-0005
+  title: '`ip ssh server algorithm mac` permits HMAC-SHA1 or MD5'
+  severity: medium
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: not-effectively-set
+  subject:
+  - ip ssh server algorithm mac
+  rationale: HMAC-MD5 and, to a lesser extent, HMAC-SHA1 offer weaker collision resistance than the SHA2-based
+    MAC options IOS also supports, so permitting them widens the set of algorithms an attacker can try
+    to downgrade a session to.
+  remediation:
+  - ip ssh server algorithm mac hmac-sha2-256 hmac-sha2-512
+  params_required: []
+  refs:
+  - *id001
+  defaults_key: null
+- id: CSC-SSH-0006
+  title: '`ip ssh server algorithm kex` permits a group-1/group-14-sha1 exchange'
+  severity: medium
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: not-effectively-set
+  subject:
+  - ip ssh server algorithm kex
+  rationale: The 1024-bit group-1 exchange is considered breakable by a sufficiently resourced attacker,
+    and group-14-sha1 pairs an adequate group with an outdated hash; restricting to group-14-sha256 or
+    group-exchange forms avoids both weaknesses.
+  remediation:
+  - ip ssh server algorithm kex diffie-hellman-group14-sha256 diffie-hellman-group-exchange-sha256
+  params_required: []
+  refs:
+  - *id001
+  defaults_key: null
+- id: CSC-SSH-0007
+  title: '`ip ssh authentication-retries` above 3'
+  severity: low
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: not-effectively-set
+  subject:
+  - ip ssh authentication-retries
+  rationale: A high retry count gives a password-guessing attempt more tries per connection before the
+    session is dropped, which is a small but free improvement to close.
+  remediation:
+  - ip ssh authentication-retries 3
+  params_required: []
+  refs:
+  - *id002
+  defaults_key: ip.ssh.authentication-retries
+- id: CSC-SSH-0008
+  title: '`ip ssh time-out` above 60 seconds'
+  severity: low
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: not-effectively-set
+  subject:
+  - ip ssh time-out
+  rationale: A long negotiation timeout lets a client hold open a half-established SSH session longer
+    than necessary, which is a minor but easily avoided contributor to session-table exhaustion under
+    a connection flood.
+  remediation:
+  - ip ssh time-out 60
+  params_required: []
+  refs:
+  - *id002
+  defaults_key: ip.ssh.time-out
+- id: CSC-SSH-0009
+  title: Self-signed or expired-issuer trustpoint used for management
+  severity: info
+  category: security
+  confidence: manual-review
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: present
+  subject:
+  - crypto pki trustpoint
+  - crypto pki certificate chain
+  rationale: A running-config audit can see that a trustpoint exists and enumerate its declared enrollment
+    method, but it cannot validate certificate chain trust or expiry from configuration text alone; that
+    requires an interactive `show crypto pki certificate` on the device.
+  remediation:
+  - Run `show crypto pki certificate <trustpoint>` and confirm the issuer chain is trusted and unexpired.
+  params_required: []
+  refs:
+  - *id003

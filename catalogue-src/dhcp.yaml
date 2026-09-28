@@ -1,0 +1,227 @@
+- id: CSC-DHCP-0001
+  title: '`ip dhcp snooping` not enabled globally'
+  severity: high
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: absent
+  subject:
+  - ip dhcp snooping
+  rationale: DHCP snooping is the prerequisite for Dynamic ARP Inspection and IP Source Guard alike; without
+    it enabled globally, a rogue DHCP server anywhere on the access layer can hand out addresses, gateways
+    and DNS servers of its choosing to any client.
+  remediation:
+  - ip dhcp snooping
+  params_required: []
+  refs:
+  - authority: DISA-STIG
+    id: CISC-L2-000130
+    version: V2R5
+    url: https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_L2S/2/5
+- id: CSC-DHCP-0002
+  title: DHCP snooping enabled but no VLAN list
+  severity: high
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: absent
+  subject:
+  - ip dhcp snooping vlan
+  rationale: Globally enabling snooping without naming any VLANs leaves every VLAN unprotected in practice,
+    since the feature only inspects traffic on the VLANs explicitly listed.
+  remediation:
+  - ip dhcp snooping vlan {vlan}
+  params_required:
+  - vlan
+  refs:
+  - authority: DISA-STIG
+    id: CISC-L2-000130
+    version: V2R5
+    url: https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_L2S/2/5
+- id: CSC-DHCP-0003
+  title: An access VLAN is not covered by the snooping VLAN list
+  severity: high
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: referential
+  subject:
+  - ip dhcp snooping vlan
+  - switchport access vlan
+  rationale: A VLAN carrying end-host traffic that is missing from the snooping VLAN list gets none of
+    the rogue-server protection the feature is meant to provide on exactly the segment where end hosts
+    request addresses.
+  remediation:
+  - ip dhcp snooping vlan {vlan}
+  params_required:
+  - vlan
+  refs:
+  - authority: DISA-STIG
+    id: CISC-L2-000130
+    version: V2R5
+    url: https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_L2S/2/5
+- id: CSC-DHCP-0004
+  title: '`ip dhcp snooping trust` missing on an uplink'
+  severity: high
+  category: reliability
+  confidence: heuristic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: absent
+  subject:
+  - ip dhcp snooping trust
+  rationale: Every port is untrusted by default once snooping is enabled, including the uplink toward
+    the real DHCP server; without marking that uplink trusted, legitimate DHCP server replies arriving
+    on it are dropped and clients cannot get addresses at all.
+  remediation:
+  - interface {interface}
+  - ' ip dhcp snooping trust'
+  params_required:
+  - interface
+  refs:
+  - authority: DISA-STIG
+    id: CISC-L2-000130
+    version: V2R5
+    url: https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_L2S/2/5
+- id: CSC-DHCP-0005
+  title: '`ip dhcp snooping limit rate` not set on access ports'
+  severity: low
+  category: reliability
+  confidence: heuristic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: absent
+  subject:
+  - ip dhcp snooping limit rate
+  rationale: Without a rate limit, a single misbehaving or malicious host can flood DHCP messages fast
+    enough to consume CPU on the snooping process, affecting every other port on the switch.
+  remediation:
+  - interface {interface}
+  - ' ip dhcp snooping limit rate 15'
+  params_required:
+  - interface
+  refs:
+  - &id001
+    authority: Cisco
+    id: catalyst-3850-3650-best-practices-guide
+    version: null
+    url: https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst3850/software/release/16-1/best_practices_guide/BP_Cat3850/BP_overview.html
+- id: CSC-DHCP-0006
+  title: '`ip dhcp snooping database` not configured'
+  severity: low
+  category: reliability
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: absent
+  subject:
+  - ip dhcp snooping database
+  rationale: Without a persistent bindings database, every DHCP snooping and IP Source Guard binding is
+    lost on reload, leaving legitimate hosts without confirmed IP-to-port bindings until each one renews
+    its lease.
+  remediation:
+  - ip dhcp snooping database flash:dhcp-snooping.db
+  params_required: []
+  refs:
+  - *id001
+- id: CSC-DHCP-0007
+  title: '`ip dhcp snooping information option` left enabled without `allow-untrusted` handling'
+  severity: low
+  category: reliability
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: value
+  subject:
+  - ip dhcp snooping information option
+  rationale: Option 82 insertion on an untrusted port that a downstream relay or switch also inserts into
+    can cause the switch to drop the double-tagged packet outright unless `allow-untrusted` is explicitly
+    reasoned about, silently breaking DHCP for hosts behind that device.
+  remediation:
+  - Confirm whether any untrusted port faces a relay that also inserts option 82, and set `ip dhcp snooping
+    information option allow-untrusted` there if so.
+  params_required: []
+  refs:
+  - *id001
+- id: CSC-DHCP-0008
+  title: Dynamic ARP Inspection not enabled on snooped VLANs
+  severity: high
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: absent
+  subject:
+  - ip arp inspection vlan
+  rationale: Without DAI, ARP spoofing within a VLAN is unopposed even though DHCP snooping is already
+    tracking legitimate IP-to-MAC bindings; DAI is what actually uses that data to reject forged ARP replies.
+  remediation:
+  - ip arp inspection vlan {vlan}
+  params_required:
+  - vlan
+  refs:
+  - authority: DISA-STIG
+    id: CISC-L2-000150
+    version: V2R5
+    url: https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_L2S/2/5
+- id: CSC-DHCP-0009
+  title: DAI `validate src-mac dst-mac ip` not configured, or trust misplaced
+  severity: medium
+  category: security
+  confidence: heuristic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: value
+  subject:
+  - ip arp inspection validate
+  - ip arp inspection trust
+  rationale: Without the additional `validate` checks, DAI only confirms the IP-to-MAC binding itself
+    and not that the Ethernet and ARP header MACs agree, and a trusted port set on an access-facing interface
+    exempts exactly the traffic DAI exists to inspect.
+  remediation:
+  - ip arp inspection validate src-mac dst-mac ip
+  params_required: []
+  refs:
+  - authority: DISA-STIG
+    id: CISC-L2-000150
+    version: V2R5
+    url: https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_L2S/2/5

@@ -1,0 +1,12 @@
+{
+  "fixture": "synthetic/traps/trap-c-ranges.cfg",
+  "platform": "iosxe",
+  "role_map": null,
+  "must_fire": [],
+  "must_not_fire": [],
+  "must_note": ["CSC-SELF-0004"],
+  "evidence_hints": {},
+  "max_critical": null,
+  "max_high": null,
+  "notes": "CSC-SELF-0004 fires for the `interface range macro NO-SUCH-MACRO` reference, which resolves to zero members. `interfaces()` over this fixture must expand every dash-list and comma-list range (spaced and unspaced around `-`) and must merge the Gi1/0/41-44 range with the standalone Gi1/0/42 block, the standalone node winning on conflict -- asserted directly by test_model_conformance.py and test_parser_traps.py, not by this manifest's finding-id fields."
+}

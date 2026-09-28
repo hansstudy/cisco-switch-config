@@ -1,0 +1,9 @@
+# Optional development-time cross-check libraries. NEVER required: nothing under
+# skills/ imports either of these, and no test may skip except for the two packages named here.
+# Their only use is as an independent oracle in a test that behaves usefully with or
+# without them installed - e.g. comparing this project's parser output against ciscoconfparse2-
+# adjacent tooling in dev only, never as a runtime or shipped dependency.
+#
+# Confirm these are current, non-yanked releases before cutting a release.
+netutils==1.10.0
+hier_config==2.4.0

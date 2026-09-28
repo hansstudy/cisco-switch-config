@@ -1,0 +1,30 @@
+# gitleaks config for cisco-switch-config (release gate G02).
+#
+# This repo's test fixtures and eval prompts necessarily contain secret-shaped strings - the
+# masking test suite would be untestable otherwise. Every one of them uses the
+# documented canary vocabulary, which is obviously synthetic and must never be mistaken for a
+# real credential. This allowlist covers exactly the two directories that hold them -
+# tests/fixtures/** and evals/** - plus the canary patterns themselves, so the
+# first push raises no alert and nobody is tempted to "fix" the tests by stripping their teeth.
+#
+# This file does not replace review: a canary that accidentally matches a real secret shape
+# outside these two directories is still caught, because the allowlist paths are narrow.
+
+title = "cisco-switch-config gitleaks allowlist"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Synthetic canary fixtures and eval prompts embedding the same vocabulary - never real credentials"
+paths = [
+  '''^tests/fixtures/.*''',
+  '''^evals/.*''',
+]
+
+regexes = [
+  # Canary vocabulary: obviously synthetic hashes, communities, and keys.
+  '''CANARY[-A-Z0-9]*''',
+  '''\$9\$CANARY[0-9A-Za-z]*''',
+  '''\$1\$CANARY[0-9A-Za-z]*''',
+]

@@ -1,0 +1,23 @@
+{
+  "fixture": "synthetic/deliberately-bad.cfg",
+  "platform": "iosxe",
+  "role_map": null,
+  "must_fire": [
+    "CSC-MGT-0001", "CSC-MGT-0010", "CSC-AAA-0001", "CSC-AAA-0002", "CSC-AAA-0010",
+    "CSC-AAA-0011", "CSC-VTY-0001", "CSC-VTY-0002", "CSC-SNMP-0001", "CSC-SNMP-0002",
+    "CSC-SNMP-0003", "CSC-SNMP-0004", "CSC-SSH-0001", "CSC-L2-0001", "CSC-L2-0003",
+    "CSC-L2-0013", "CSC-DHCP-0001", "CSC-STP-0001", "CSC-STP-0007"
+  ],
+  "must_not_fire": [],
+  "must_note": ["CSC-SELF-0001"],
+  "evidence_hints": {
+    "CSC-SNMP-0002": ["snmp-server community [REDACTED snmp-community, 22 chars] RW"],
+    "CSC-VTY-0001": ["transport input telnet"]
+  },
+  "max_critical": null,
+  "max_high": null,
+  "min_total_findings": 25,
+  "min_security_findings": 1,
+  "min_reliability_findings": 1,
+  "notes": "CSC-SNMP-0002's evidence_hint must not be the raw secret substring `snmp-server community CANARY-COMMUNITY-BAD01 RW`, since that can never appear in evidence.text under the mask-on-ingest invariant -- evidence is always masked before a Finding exists. It is set to the actual masked form instead. test_corpus.py also asserts, for every finding in every fixture, that evidence.text carries no raw canary value at all."
+}

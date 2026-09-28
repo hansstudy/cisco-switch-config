@@ -1,0 +1,12 @@
+{
+  "fixture": "third-party/batfish/ios-snmp-community-string.cfg",
+  "platform": "ios",
+  "role_map": null,
+  "must_fire": ["CSC-SNMP-0001"],
+  "must_not_fire": [],
+  "must_note": [],
+  "evidence_hints": {},
+  "max_critical": null,
+  "max_high": null,
+  "notes": "Single-feature grammar snippet (SNMP v2c community-string lines). must_fire CSC-SNMP-0001 (a v1/v2c community exists) is the one assertion confident enough to make from a bare snippet."
+}

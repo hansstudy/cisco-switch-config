@@ -1,0 +1,12 @@
+{
+  "fixture": "third-party/batfish/ios-aaa-group-server.cfg",
+  "platform": "ios",
+  "role_map": null,
+  "must_fire": [],
+  "must_not_fire": [],
+  "must_note": [],
+  "evidence_hints": {},
+  "max_critical": null,
+  "max_high": null,
+  "notes": "Single-feature grammar snippet (AAA new-model, TACACS+ server-group with an inline key). No finding-count assertion; exists to prove the masker and parser handle independently-authored AAA/TACACS syntax without crashing or leaking `MySecretKey1` or the type-7 server-private key."
+}

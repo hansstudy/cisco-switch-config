@@ -1,0 +1,47 @@
+Study Cisco Switch Config
+Copyright 2026 Hans Study (https://hans.study)
+
+This product is licensed under the Apache License, Version 2.0. See the LICENSE file for the
+full licence text.
+
+Third-party attributions
+-------------------------
+
+This repository embeds a small number of verbatim, Apache-2.0-licensed configuration and
+show-command files as test fixtures only. They live under tests/fixtures/third-party/<source>/,
+each directory carrying the upstream LICENSE and a SOURCE.md naming the pinned commit and the
+exact upstream path; tests/fixtures/ATTRIBUTION.md lists them file by file. None of them is
+shipped in the skill package (skills/cisco-switch-config/), whose worked examples are
+hand-authored for this project. See docs/content-provenance.md for the full policy.
+
+1. Batfish
+   Source:  https://github.com/batfish/batfish (commit 5e8ecd02b080467470509710a7fe4be50b72bd46)
+   Path:    projects/batfish/src/test/resources/org/batfish/grammar/cisco/testconfigs/
+            ios_banner, ios-line, ios-aaa-group-server, ios-crypto, ios-ntp,
+            ios-snmp-community-string
+   Licence: Apache License, Version 2.0 (tests/fixtures/third-party/batfish/LICENSE)
+   Used as: banner, line con/aux/vty, AAA TACACS+ server-group, ISAKMP/crypto keyring, NTP and
+            SNMP community-string fixtures, embedded verbatim without modification.
+
+2. ntc-templates
+   Source:  https://github.com/networktocode/ntc-templates
+            (commit d86d09fa105ee2a432795022e7df04737c65dd28)
+   Path:    tests/cisco_ios/show_crypto_pki_certificates/cisco_ios_show_crypto_pki_certificates_1.raw
+   Licence: Apache License, Version 2.0, Copyright 2015 Jason Edelman, Network to Code, LLC
+            (tests/fixtures/third-party/ntc-templates/LICENSE)
+   Used as: `show crypto pki certificates` operational output, embedded verbatim, kept only as a
+            PKI field-shape reference; it is not parsed as configuration.
+
+3. NAPALM
+   Source:  https://github.com/napalm-automation/napalm
+            (commit d98ddfe746aff94bca41f51e1604266d4e181a7e)
+   Path:    test/ios/mocked_data/test_get_config/normal/show_running_config.txt
+   Licence: Apache License, Version 2.0 (tests/fixtures/third-party/napalm/LICENSE)
+   Used as: a full IOS-XE (CSR1000v) `show running-config` capture, embedded verbatim, exercising
+            the parser and rules against an independently authored configuration.
+
+None of the material above is CIS Benchmark content, and no CIS Benchmark prose appears anywhere
+in this project. The catalogue schema permits a CIS cross-reference only as an authority ID,
+section number and version, never a title or prose; the 1.0.0 catalogue carries no CIS
+reference at all. Rule text rests on DISA STIG, NSA/CISA (public domain) and cited Cisco
+documentation. See docs/content-provenance.md for the full source-class policy.

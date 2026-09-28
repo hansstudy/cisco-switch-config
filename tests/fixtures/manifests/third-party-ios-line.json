@@ -1,0 +1,12 @@
+{
+  "fixture": "third-party/batfish/ios-line.cfg",
+  "platform": "ios",
+  "role_map": null,
+  "must_fire": ["CSC-VTY-0005"],
+  "must_not_fire": [],
+  "must_note": [],
+  "evidence_hints": {},
+  "max_critical": null,
+  "max_high": null,
+  "notes": "Single-feature grammar snippet (line con/aux/vty forms, type-7 line passwords). must_fire CSC-VTY-0005 (local password instead of AAA) is the one assertion confident enough to make from a snippet with no AAA context at all."
+}

@@ -1,0 +1,140 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cisco-switch-config/schema/catalogue.schema.json",
+  "title": "cisco-switch-config catalogue entry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "title",
+    "severity",
+    "category",
+    "confidence",
+    "platforms",
+    "profiles",
+    "test_kind",
+    "subject",
+    "rationale",
+    "params_required",
+    "refs"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^CSC-[A-Z0-9]{2,5}-[0-9]{4}$",
+      "not": { "pattern": "^CSC-SELF-" }
+    },
+    "title": { "type": "string", "minLength": 1 },
+    "severity": { "enum": ["critical", "high", "medium", "low", "info"] },
+    "category": { "enum": ["security", "reliability"] },
+    "confidence": { "enum": ["deterministic", "heuristic", "manual-review"] },
+    "platforms": {
+      "type": "array",
+      "items": { "enum": ["ios", "iosxe"] },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "profiles": {
+      "type": "array",
+      "items": { "enum": ["campus", "stig"] },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "test_kind": {
+      "enum": ["absent", "present", "value", "not-effectively-set", "referential"]
+    },
+    "defaults_key": {
+      "comment": "null means: test_kind is not-effectively-set but no matching key exists yet in defaults.json (e.g. an offered-algorithm-list check with no single on/off/value default to point at).",
+      "anyOf": [{ "type": "string", "minLength": 1 }, { "type": "null" }]
+    },
+    "subject": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "minItems": 1
+    },
+    "rationale": { "type": "string", "minLength": 1 },
+    "remediation_intent": { "type": "string", "minLength": 1 },
+    "remediation": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "params_required": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "interface", "vlan", "acl_name", "acl_number",
+          "host", "group", "key_id", "line_range"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "severity_by_profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "campus": { "enum": ["critical", "high", "medium", "low", "info"] },
+        "stig": { "enum": ["critical", "high", "medium", "low", "info"] }
+      }
+    },
+    "severity_allowed_overrides": {
+      "type": "array",
+      "items": { "enum": ["critical", "high", "medium", "low", "info"] },
+      "uniqueItems": true
+    },
+    "min_release": { "type": "string", "minLength": 1 },
+    "notes": { "type": "string", "minLength": 1 },
+    "refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["authority", "id"],
+        "properties": {
+          "authority": {
+            "enum": ["DISA-STIG", "CIS", "Cisco", "NSA", "CISA", "NIST"]
+          },
+          "id": { "type": "string", "minLength": 1 },
+          "version": { "type": ["string", "null"] },
+          "url": { "type": ["string", "null"] }
+        },
+        "oneOf": [
+          {
+            "properties": { "authority": { "const": "CIS" } },
+            "required": ["authority", "id", "version"],
+            "not": { "required": ["title"] }
+          },
+          {
+            "properties": {
+              "authority": { "enum": ["DISA-STIG", "Cisco", "NSA", "CISA", "NIST"] }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "allOf": [
+    {
+      "comment": "Exactly one of remediation_intent / remediation is non-null (present).",
+      "oneOf": [
+        {
+          "required": ["remediation_intent"],
+          "not": { "required": ["remediation"] }
+        },
+        {
+          "required": ["remediation"],
+          "not": { "required": ["remediation_intent"] }
+        }
+      ]
+    },
+    {
+      "comment": "defaults_key required iff test_kind == not-effectively-set.",
+      "if": {
+        "properties": { "test_kind": { "const": "not-effectively-set" } },
+        "required": ["test_kind"]
+      },
+      "then": { "required": ["defaults_key"] },
+      "else": { "not": { "required": ["defaults_key"] } }
+    }
+  ]
+}

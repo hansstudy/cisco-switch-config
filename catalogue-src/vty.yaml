@@ -1,0 +1,302 @@
+- id: CSC-VTY-0001
+  title: A vty line accepts a non-SSH transport
+  severity: critical
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: present
+  subject:
+  - line vty
+  - transport input
+  rationale: Telnet and rlogin carry credentials and session content in clear text over the network. A
+    vty that permits anything other than SSH gives any on-path observer a working set of administrative
+    credentials the next time someone logs in.
+  remediation:
+  - transport input ssh
+  params_required: []
+  refs:
+  - authority: DISA-STIG
+    id: CISC-ND-000470
+    version: V3R5
+    url: https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5
+- id: CSC-VTY-0002
+  title: A vty line has no `access-class` restriction
+  severity: high
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: absent
+  subject:
+  - line vty
+  - access-class
+  rationale: An unrestricted vty accepts SSH connection attempts from any address that can route to the
+    switch, turning every reachable host on the network into a potential source of credential-guessing
+    or exploit traffic against the management plane.
+  remediation:
+  - line vty {line_range}
+  - access-class {acl_name} in
+  params_required:
+  - line_range
+  - acl_name
+  refs:
+  - authority: DISA-STIG
+    id: CISC-ND-000470
+    version: V3R5
+    url: https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5
+- id: CSC-VTY-0003
+  title: '`access-class` names an undefined ACL'
+  severity: high
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: referential
+  subject:
+  - access-class
+  rationale: IOS does not reject a reference to a nonexistent ACL; it simply has nothing to enforce, so
+    a vty line that appears to be restricted is in fact open to any source address.
+  remediation:
+  - ip access-list standard {acl_name}
+  - ' permit <REPLACE-ME:management-subnet>'
+  params_required:
+  - acl_name
+  refs:
+  - authority: DISA-STIG
+    id: CISC-ND-000470
+    version: V3R5
+    url: https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5
+- id: CSC-VTY-0004
+  title: A vty line has `exec-timeout 0 0` or a timeout above 10 minutes
+  severity: medium
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: value
+  subject:
+  - line vty
+  - exec-timeout
+  rationale: '`exec-timeout 0 0` disables session idle timeout entirely, and a long timeout leaves an
+    unattended privileged session open far longer than an operator is likely to be present to notice it
+    being misused.'
+  remediation:
+  - line vty {line_range}
+  - exec-timeout 10 0
+  params_required:
+  - line_range
+  refs:
+  - authority: DISA-STIG
+    id: CISC-ND-000720
+    version: V3R5
+    url: https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5
+- id: CSC-VTY-0005
+  title: A line carries a local `password` instead of using AAA
+  severity: high
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: present
+  subject:
+  - line vty
+  - line con
+  - password
+  rationale: A line-level password is shared by everyone who logs in through that line, which means there
+    is no per-user identity, no way to revoke one person's access without changing it for everyone, and
+    no accounting trail of who actually connected. This applies equally to a vty line and to the console
+    line - either one left on a shared local password has the same accountability gap.
+  remediation:
+  - Under the affected line (see the evidence line above for the exact `line vty <range>` or `line con 0`
+    selector), replace the local password with AAA
+  - no password
+  - login authentication default
+  params_required: []
+  refs:
+  - &id001
+    authority: Cisco
+    id: guide-to-harden-cisco-ios-devices
+    version: null
+    url: https://www.cisco.com/c/en/us/support/docs/ip/access-lists/13608-21.html
+- id: CSC-VTY-0006
+  title: '`line aux 0` not disabled (`no exec` / `transport input none`)'
+  severity: high
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: absent
+  subject:
+  - line aux 0
+  rationale: The AUX port is rarely used on a campus access switch but stays live by default, accepting
+    an EXEC session over whatever is plugged into it. Disabling EXEC and input removes a management path
+    nobody is expecting to be there.
+  remediation:
+  - line aux 0
+  - no exec
+  - transport input none
+  params_required: []
+  refs:
+  - *id001
+- id: CSC-VTY-0007
+  title: '`line con 0` has no `exec-timeout` or `logging synchronous`'
+  severity: medium
+  category: reliability
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: absent
+  subject:
+  - line con 0
+  rationale: Without an idle timeout the console stays logged in indefinitely if an operator walks away,
+    and without `logging synchronous` asynchronous log output interleaves with typed commands, which is
+    a routine source of fat-fingered changes during a live incident.
+  remediation:
+  - line con 0
+  - exec-timeout 10 0
+  - logging synchronous
+  params_required: []
+  refs:
+  - authority: Cisco
+    id: catalyst-3850-3650-best-practices-guide
+    version: null
+    url: https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst3850/software/release/16-1/best_practices_guide/BP_Cat3850/BP_overview.html
+- id: CSC-VTY-0008
+  title: '`transport output` not restricted'
+  severity: low
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: not-effectively-set
+  subject:
+  - line vty
+  - transport output
+  rationale: An unrestricted `transport output` lets a session on the switch be used to originate outbound
+    Telnet/SSH connections from the device itself, which is occasionally used to pivot into segments the
+    operator's own workstation cannot reach directly.
+  remediation:
+  - line vty {line_range}
+  - transport output ssh
+  params_required:
+  - line_range
+  refs:
+  - *id001
+  defaults_key: line.transport-output
+- id: CSC-VTY-0009
+  title: '`login block-for` / `login quiet-mode` not configured'
+  severity: medium
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: absent
+  subject:
+  - login block-for
+  - login on-failure
+  - login on-success
+  rationale: Without a block-for quiet period, an attacker can attempt logins at whatever rate the CPU
+    allows; pairing it with `login on-failure log` and `login on-success log` also gives the operator
+    a record of the attempt once it is blocked.
+  remediation:
+  - login block-for 120 attempts 5 within 60
+  - login on-failure log
+  - login on-success log
+  params_required: []
+  refs:
+  - authority: DISA-STIG
+    id: CISC-ND-000150
+    version: V3R5
+    url: https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5
+- id: CSC-VTY-0010
+  title: Login banner absent
+  severity: medium
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: absent
+  subject:
+  - banner login
+  - banner motd
+  rationale: Absent a login banner, an unauthorized user who reaches a login prompt can later argue they
+    had no notice that access was restricted or monitored, which weakens the legal position of any subsequent
+    action taken against them.
+  remediation:
+  - banner login ^C
+  - <REPLACE-ME:authorized-use-notice>
+  - ^C
+  params_required: []
+  refs:
+  - authority: DISA-STIG
+    id: CISC-ND-000470
+    version: V3R5
+    url: https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5
+- id: CSC-VTY-0011
+  title: Login banner content is trivial or omits the required elements
+  severity: low
+  category: security
+  confidence: heuristic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: value
+  subject:
+  - banner login
+  - banner motd
+  rationale: A banner that only says something like "Welcome" carries none of the notice, consent or monitoring
+    language that gives an authorized-use banner its legal weight; the keywords the extractor looks for
+    (authorized, monitor, consent, prosecute) are a proxy for that content, not a guarantee of it.
+  remediation:
+  - Rewrite the banner to state that access is restricted to authorized users, that use is monitored,
+    and that unauthorized use may be prosecuted.
+  params_required: []
+  refs:
+  - authority: DISA-STIG
+    id: CISC-ND-000470
+    version: V3R5
+    url: https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5

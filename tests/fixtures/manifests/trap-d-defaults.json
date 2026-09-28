@@ -1,0 +1,12 @@
+{
+  "fixture": "synthetic/traps/trap-d-defaults.cfg",
+  "platform": "iosxe",
+  "role_map": null,
+  "must_fire": ["CSC-L2-0007", "CSC-VTY-0001", "CSC-MGT-0010"],
+  "must_not_fire": [],
+  "must_note": ["CSC-SELF-0001", "CSC-SELF-0006"],
+  "evidence_hints": { "CSC-L2-0007": ["GigabitEthernet1/0/1"] },
+  "max_critical": 2,
+  "max_high": 21,
+  "notes": "max_critical is 2, and CSC-VTY-0001 and CSC-MGT-0010 are both in must_fire, matching the real ruleset. This fixture configures `line vty 0 4` with `transport input ssh` (compliant), but never mentions `vty 5 15`; that sub-range is assumed (CSC-SELF-0006 fires) and evaluated against the platform default, per the rule that a check passes only when every returned range passes. The IOS-XE default vty transport is not SSH-only, so CSC-VTY-0001 ('A vty line accepts a non-SSH transport') correctly fires at `critical` on the assumed 5-15 range even though 0-4 is hardened. max_high is 21 (the real count, 16, plus a small headroom): this trap fixture exercises implicit defaults broadly, so many families' absence checks fire on a minimal config. This fixture also has no `version` line: with no version line, iosxe is treated as having vstack ON as a fail-safe, since an ambiguous or 3.x version cannot prove Smart Install is safely absent, unless `no vstack` is present -- which this fixture correctly does not have -- so CSC-MGT-0010 also correctly fires as critical. This is not fixed by adding a version line or `no vstack`: the no-version case is exactly what the fail-safe exists to catch."
+}

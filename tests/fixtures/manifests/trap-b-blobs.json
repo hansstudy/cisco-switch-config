@@ -1,0 +1,12 @@
+{
+  "fixture": "synthetic/traps/trap-b-blobs.cfg",
+  "platform": "iosxe",
+  "role_map": null,
+  "must_fire": [],
+  "must_not_fire": [],
+  "must_note": ["CSC-SELF-0005"],
+  "evidence_hints": {},
+  "max_critical": null,
+  "max_high": null,
+  "notes": "Exactly one CSC-SELF-0005 fires, for the truncated `crypto pki certificate chain TP-TRUNCATED` block that never reaches `quit`. The earlier, properly-closed `TP-GOOD` chain, `certificate self-signed` block and `crypto key pubkey-chain rsa` block must NOT produce a CSC-SELF-0005 note, and parsing must resume normally between blocks (proven by the `interface Loopback0` node existing in the parsed tree)."
+}

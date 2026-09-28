@@ -1,0 +1,167 @@
+{
+  "version": 1,
+  "sections": [
+    {
+      "name": "00-header",
+      "order": 0,
+      "template": "00-header.tmpl",
+      "when": null,
+      "parts": {}
+    },
+    {
+      "name": "05-services",
+      "order": 5,
+      "template": "05-services.tmpl",
+      "when": null,
+      "parts": {}
+    },
+    {
+      "name": "10-users-aaa",
+      "order": 10,
+      "template": "10-users-aaa.tmpl",
+      "when": null,
+      "parts": {
+        "tacacs-server": "10-users-aaa.tacacs-server.tmpl",
+        "radius-server": "10-users-aaa.radius-server.tmpl",
+        "group": "10-users-aaa.group.tmpl",
+        "member": "10-users-aaa.member.tmpl"
+      }
+    },
+    {
+      "name": "15-lines",
+      "order": 15,
+      "template": "15-lines.tmpl",
+      "when": null,
+      "parts": {}
+    },
+    {
+      "name": "20-ssh",
+      "order": 20,
+      "template": "20-ssh.tmpl",
+      "when": null,
+      "parts": {}
+    },
+    {
+      "name": "25-snmp",
+      "order": 25,
+      "template": "25-snmp.tmpl",
+      "when": null,
+      "parts": {
+        "user": "25-snmp.user.tmpl"
+      }
+    },
+    {
+      "name": "30-ntp",
+      "order": 30,
+      "template": "30-ntp.tmpl",
+      "when": null,
+      "parts": {
+        "server": "30-ntp.server.tmpl"
+      }
+    },
+    {
+      "name": "35-logging",
+      "order": 35,
+      "template": "35-logging.tmpl",
+      "when": null,
+      "parts": {
+        "host": "35-logging.host.tmpl"
+      }
+    },
+    {
+      "name": "40-vlans",
+      "order": 40,
+      "template": "40-vlans.tmpl",
+      "when": null,
+      "parts": {
+        "vlan": "40-vlans.vlan.tmpl"
+      }
+    },
+    {
+      "name": "45-stp",
+      "order": 45,
+      "template": "45-stp.tmpl",
+      "when": null,
+      "parts": {}
+    },
+    {
+      "name": "50-l2-security",
+      "order": 50,
+      "template": "50-l2-security.tmpl",
+      "when": null,
+      "parts": {
+        "dhcp-snooping": "50-l2-security.dhcp-snooping.tmpl",
+        "dai": "50-l2-security.dai.tmpl"
+      }
+    },
+    {
+      "name": "55-uplinks",
+      "order": 55,
+      "template": "55-uplinks.tmpl",
+      "when": "uplinks",
+      "parts": {
+        "uplink": "55-uplinks.uplink.tmpl",
+        "port-channel": "55-uplinks.port-channel.tmpl"
+      }
+    },
+    {
+      "name": "60-access-ports",
+      "order": 60,
+      "template": "60-access-ports.tmpl",
+      "when": "access_ports",
+      "parts": {
+        "range": "60-access-ports.range.tmpl",
+        "port-security": "60-access-ports.port-security.tmpl",
+        "storm-control": "60-access-ports.storm-control.tmpl"
+      }
+    },
+    {
+      "name": "65-unused-ports",
+      "order": 65,
+      "template": "65-unused-ports.tmpl",
+      "when": "unused_ports",
+      "parts": {
+        "range": "65-unused-ports.range.tmpl"
+      }
+    },
+    {
+      "name": "70-management",
+      "order": 70,
+      "template": "70-management.tmpl",
+      "when": null,
+      "parts": {
+        "gateway-access": "70-management.gateway-access.tmpl",
+        "gateway-distribution": "70-management.gateway-distribution.tmpl"
+      }
+    },
+    {
+      "name": "75-mgmt-acl",
+      "order": 75,
+      "template": "75-mgmt-acl.tmpl",
+      "when": null,
+      "parts": {
+        "host": "75-mgmt-acl.host.tmpl",
+        "network": "75-mgmt-acl.network.tmpl"
+      }
+    },
+    {
+      "name": "80-boot-resilience",
+      "order": 80,
+      "template": "80-boot-resilience.tmpl",
+      "when": null,
+      "parts": {
+        "redundancy": "80-boot-resilience.redundancy.tmpl"
+      }
+    },
+    {
+      "name": "99-footer",
+      "order": 99,
+      "template": "99-footer.tmpl",
+      "when": null,
+      "parts": {
+        "placeholder": "99-footer.placeholder.tmpl",
+        "operator-note": "99-footer.operator-note.tmpl"
+      }
+    }
+  ]
+}

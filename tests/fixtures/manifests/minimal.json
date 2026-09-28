@@ -1,0 +1,11 @@
+{
+  "fixture": "synthetic/minimal.cfg",
+  "platform": "iosxe",
+  "role_map": null,
+  "must_fire": [],
+  "must_not_fire": ["CSC-SNMP-0002", "CSC-AAA-0010"],
+  "must_note": ["CSC-SELF-0001"],
+  "evidence_hints": {},
+  "max_critical": 5,
+  "max_high": 20
+}

@@ -1,0 +1,12 @@
+{
+  "fixture": "synthetic/canary-flat-noexit.cfg",
+  "platform": "iosxe",
+  "role_map": null,
+  "must_fire": [],
+  "must_not_fire": [],
+  "must_note": ["CSC-SELF-0009"],
+  "evidence_hints": {},
+  "max_critical": null,
+  "max_high": null,
+  "notes": "Repro fixture: a wholly unindented file with one `exit` and one mode-opening head (`interface`), so mask_lines() must switch to exit-driven nesting (CSC-SELF-0009 names it). The global commands after `exit` must resolve to mode_path=() -- not stay nested under the interface -- so global-mode secret-bearing rows (snmp-server host/community, enable secret, tacacs-server host) mask correctly rather than leaking (host form, no trigger keyword) or losing structure to default-deny (the others). This is a masking-invariant repro, not a corpus/manifest-assertion fixture; the real check belongs in test_masking_invariant.py."
+}

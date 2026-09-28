@@ -1,0 +1,212 @@
+- id: CSC-IFC-0001
+  title: Hard-coded `speed` or `duplex` on a copper access port
+  severity: medium
+  category: reliability
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: present
+  subject:
+  - speed
+  - duplex
+  rationale: Hard-coding speed or duplex on one end of a link while the other end auto-negotiates is a
+    classic cause of a duplex mismatch, which shows up as slow, intermittently-lossy traffic that is disproportionately
+    hard to diagnose compared to how simple the fix is.
+  remediation:
+  - interface {interface}
+  - ' speed auto'
+  - ' duplex auto'
+  params_required:
+  - interface
+  refs:
+  - &id001
+    authority: Cisco
+    id: catalyst-3850-3650-best-practices-guide
+    version: null
+    url: https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst3850/software/release/16-1/best_practices_guide/BP_Cat3850/BP_overview.html
+- id: CSC-IFC-0002
+  title: Trunk or uplink has no `description`
+  severity: low
+  category: reliability
+  confidence: heuristic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: absent
+  subject:
+  - description
+  rationale: An undocumented trunk or uplink forces whoever is troubleshooting a topology issue months
+    or years later to reverse-engineer what the other end of the link is from CDP/LLDP or physical tracing
+    instead of reading it directly off the interface.
+  remediation:
+  - interface {interface}
+  - ' description <REPLACE-ME:link-purpose>'
+  params_required:
+  - interface
+  refs:
+  - *id001
+- id: CSC-IFC-0003
+  title: '`ip proxy-arp` not disabled on a routed interface'
+  severity: medium
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: not-effectively-set
+  subject:
+  - ip proxy-arp
+  rationale: Proxy ARP lets the switch answer ARP requests on behalf of hosts on a different subnet, which
+    can be abused to redirect traffic through the device and also leaks internal topology information
+    to anything on the local segment.
+  remediation:
+  - interface {interface}
+  - ' no ip proxy-arp'
+  params_required:
+  - interface
+  refs:
+  - &id002
+    authority: Cisco
+    id: ios-xe-software-hardening-guide
+    version: null
+    url: https://sec.cloudapps.cisco.com/security/center/resources/IOS_XE_hardening
+  defaults_key: ip.proxy-arp
+- id: CSC-IFC-0004
+  title: '`ip redirects` / `ip unreachables` not disabled on a routed interface'
+  severity: low
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: not-effectively-set
+  subject:
+  - ip redirects
+  - ip unreachables
+  rationale: ICMP redirects and unreachables both hand an off-path attacker information about the network's
+    routing and addressing, and redirects specifically can be used to alter a host's forwarding path without
+    the host's administrator ever touching its routing table.
+  remediation:
+  - interface {interface}
+  - ' no ip redirects'
+  - ' no ip unreachables'
+  params_required:
+  - interface
+  refs:
+  - *id002
+  defaults_key: ip.redirects
+- id: CSC-IFC-0005
+  title: '`ip directed-broadcast` enabled'
+  severity: high
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: present
+  subject:
+  - ip directed-broadcast
+  rationale: Directed broadcast forwarding lets a packet sent to a subnet's broadcast address from outside
+    that subnet be flooded to every host on it, historically the mechanism behind smurf-style amplification
+    attacks.
+  remediation:
+  - interface {interface}
+  - ' no ip directed-broadcast'
+  params_required:
+  - interface
+  refs:
+  - *id002
+- id: CSC-IFC-0006
+  title: '`ip verify unicast source reachable-via rx` absent on a routed edge'
+  severity: low
+  category: security
+  confidence: heuristic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: absent
+  subject:
+  - ip verify unicast source
+  rationale: Without unicast RPF, the switch will happily forward a packet whose source address could
+    not have arrived via the interface it actually came in on, which is exactly the spoofed-source traffic
+    pattern used in reflection and amplification attacks.
+  remediation:
+  - interface {interface}
+  - ' ip verify unicast source reachable-via rx'
+  params_required:
+  - interface
+  refs:
+  - *id002
+- id: CSC-IFC-0007
+  title: CDP left enabled globally
+  severity: low
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: not-effectively-set
+  subject:
+  - cdp run
+  rationale: CDP announces the device's platform, IOS version and hostname to anything on the connected
+    segment, which is reconnaissance value handed to an attacker for free on any port that does not specifically
+    need CDP for phone provisioning.
+  remediation:
+  - no cdp run
+  params_required: []
+  refs:
+  - authority: Cisco
+    id: guide-to-harden-cisco-ios-devices
+    version: null
+    url: https://www.cisco.com/c/en/us/support/docs/ip/access-lists/13608-21.html
+  defaults_key: cdp.run
+  notes: Does not fire when any interface carries `switchport voice vlan`; see CSC-IFC-0008, which covers
+    that case instead.
+- id: CSC-IFC-0008
+  title: CDP disabled on a switch carrying `switchport voice vlan`
+  severity: medium
+  category: reliability
+  confidence: heuristic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: present
+  subject:
+  - switchport voice vlan
+  - cdp enable
+  rationale: Cisco IP phones use CDP (or LLDP-MED) to learn their voice VLAN and power negotiation parameters
+    from the switch; disabling CDP globally on a switch that also serves voice ports breaks phone provisioning
+    rather than just reducing reconnaissance exposure.
+  remediation:
+  - interface <REPLACE-ME:non-voice-interface>
+  - ' no cdp enable'
+  params_required: []
+  refs:
+  - *id001
+  notes: Fires instead of CSC-IFC-0007 when voice VLANs are present; the correct posture is per-interface
+    `no cdp enable` on non-voice ports, not a global `no cdp run`.

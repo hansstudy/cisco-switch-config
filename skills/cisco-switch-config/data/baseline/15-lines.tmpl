@@ -1,0 +1,22 @@
+!
+login block-for 120 attempts 3 within 60
+login on-failure log
+login on-success log
+banner motd ^C
+$banner_body
+^C
+!
+line con 0
+ exec-timeout 10 0
+ logging synchronous
+ login authentication default
+line aux 0
+ no exec
+ transport input none
+ transport output none
+line vty 0 15
+ access-class $acl_name in
+ exec-timeout 10 0
+ login authentication default
+ transport input ssh
+ transport output ssh

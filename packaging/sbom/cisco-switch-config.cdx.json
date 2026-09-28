@@ -1,0 +1,29 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.5",
+  "serialNumber": "urn:uuid:00000000-0000-4000-8000-000000000000",
+  "version": 1,
+  "metadata": {
+    "component": {
+      "type": "application",
+      "name": "cisco-switch-config",
+      "version": "1.0.0",
+      "description": "Audits Cisco IOS and IOS-XE switch running-configurations for security and reliability defects and generates hardened baseline configurations.",
+      "licenses": [
+        { "license": { "id": "Apache-2.0" } }
+      ]
+    }
+  },
+  "components": [
+    {
+      "type": "application",
+      "name": "cisco-switch-config",
+      "version": "1.0.0",
+      "description": "Audits Cisco IOS and IOS-XE switch running-configurations for security and reliability defects and generates hardened baseline configurations.",
+      "licenses": [
+        { "license": { "id": "Apache-2.0" } }
+      ],
+      "purl": "pkg:generic/hansstudy/cisco-switch-config@1.0.0"
+    }
+  ]
+}

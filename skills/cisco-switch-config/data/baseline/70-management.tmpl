@@ -1,0 +1,12 @@
+!
+interface Vlan1
+ no ip address
+ shutdown
+interface Vlan$mgmt_vlan
+ description MANAGEMENT
+ ip address $mgmt_address $mgmt_mask
+ no ip redirects
+ no ip unreachables
+ no ip proxy-arp
+ no shutdown
+$gateway

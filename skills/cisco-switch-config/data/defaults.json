@@ -1,0 +1,1347 @@
+{
+  "version": 1,
+  "cisco_heads": [
+    "aaa",
+    "access-list",
+    "access-session",
+    "alias",
+    "archive",
+    "arp",
+    "authentication",
+    "auto",
+    "avb",
+    "banner",
+    "bfd",
+    "boot",
+    "bridge",
+    "call-home",
+    "cdp",
+    "cef",
+    "class-map",
+    "clock",
+    "control-plane",
+    "controller",
+    "crypto",
+    "cts",
+    "default",
+    "define",
+    "device-sensor",
+    "device-tracking",
+    "dhcp",
+    "diagnostic",
+    "dial-peer",
+    "dot1x",
+    "enable",
+    "end",
+    "energywise",
+    "epm",
+    "errdisable",
+    "ethernet",
+    "event",
+    "exception",
+    "exit",
+    "file",
+    "flow",
+    "gnxi",
+    "hostname",
+    "hw-module",
+    "identity",
+    "interface",
+    "ip",
+    "ipv6",
+    "key",
+    "kron",
+    "l2",
+    "lacp",
+    "license",
+    "line",
+    "lldp",
+    "location",
+    "logging",
+    "login",
+    "mac",
+    "macro",
+    "management",
+    "memory",
+    "mka",
+    "mls",
+    "module",
+    "monitor",
+    "mpls",
+    "multilink",
+    "netconf",
+    "netconf-yang",
+    "network-policy",
+    "no",
+    "ntp",
+    "object-group",
+    "parameter-map",
+    "parser",
+    "password",
+    "platform",
+    "pnp",
+    "policy-map",
+    "port-channel",
+    "power",
+    "privilege",
+    "process",
+    "ptp",
+    "qos",
+    "radius",
+    "radius-server",
+    "redundancy",
+    "restconf",
+    "rmon",
+    "route-map",
+    "router",
+    "sampler",
+    "scheduler",
+    "sdm",
+    "secure",
+    "security",
+    "service",
+    "service-template",
+    "sip-ua",
+    "snmp",
+    "snmp-server",
+    "spanning-tree",
+    "stack-mac",
+    "stackwise-virtual",
+    "subscriber",
+    "switch",
+    "system",
+    "table-map",
+    "tacacs",
+    "tacacs-server",
+    "telemetry",
+    "template",
+    "threat-visibility",
+    "track",
+    "transceiver",
+    "udld",
+    "username",
+    "version",
+    "vlan",
+    "vrf",
+    "vstack",
+    "vtp",
+    "wlan",
+    "wsma",
+    "wireless",
+    "zone",
+    "zone-pair",
+    "ap",
+    "fhrp",
+    "source",
+    "policy",
+    "class",
+    "match",
+    "set",
+    "permit",
+    "deny",
+    "remark",
+    "description",
+    "shutdown",
+    "switchport",
+    "channel-group",
+    "speed",
+    "duplex",
+    "mtu",
+    "storm-control",
+    "negotiation",
+    "load-interval",
+    "keepalive",
+    "exec-timeout",
+    "transport",
+    "access-class",
+    "session-timeout",
+    "stopbits",
+    "length",
+    "width",
+    "media-type",
+    "carrier-delay",
+    "bandwidth",
+    "delay",
+    "encapsulation",
+    "standby",
+    "vrrp",
+    "glbp",
+    "neighbor",
+    "network",
+    "redistribute",
+    "passive-interface",
+    "router-id",
+    "area",
+    "address-family",
+    "exit-address-family",
+    "af-interface",
+    "bgp",
+    "maximum-paths",
+    "distance",
+    "default-information",
+    "auto-summary",
+    "summary-address",
+    "timers",
+    "log-adjacency-changes",
+    "rd",
+    "route-target",
+    "address",
+    "server",
+    "server-private",
+    "client",
+    "key-string",
+    "accept-lifetime",
+    "send-lifetime",
+    "cryptographic-algorithm",
+    "enrollment",
+    "subject-name",
+    "revocation-check",
+    "rsakeypair",
+    "certificate",
+    "quit",
+    "action",
+    "destination",
+    "contact-email-addr",
+    "profile",
+    "active",
+    "reporting",
+    "http-proxy",
+    "path",
+    "maximum",
+    "write-memory",
+    "time-period",
+    "policy-list",
+    "cli",
+    "occurs",
+    "trigger",
+    "attach",
+    "vlan-list",
+    "feature",
+    "tunnel",
+    "authorization",
+    "accounting",
+    "autocommand",
+    "history",
+    "pbr",
+    "nat",
+    "peer",
+    "pre-shared-key",
+    "keyring",
+    "lifetime",
+    "group",
+    "hash",
+    "dpd",
+    "ppp",
+    "isis",
+    "metric",
+    "spf-interval",
+    "name",
+    "state",
+    "private-vlan",
+    "logging-event",
+    "service-policy",
+    "power-inline",
+    "mls-qos",
+    "trust",
+    "priority-queue",
+    "queue-set",
+    "lldp-med",
+    "mab",
+    "dot1q",
+    "tx-ring-limit",
+    "stack"
+  ],
+  "mode_heads": {
+    "interface": [
+      ""
+    ],
+    "line": [
+      ""
+    ],
+    "router": [
+      ""
+    ],
+    "vlan %num": [
+      ""
+    ],
+    "key chain": [
+      ""
+    ],
+    "key %num": [
+      "key chain"
+    ],
+    "ip access-list": [
+      ""
+    ],
+    "ipv6 access-list": [
+      ""
+    ],
+    "mac access-list": [
+      ""
+    ],
+    "class-map": [
+      ""
+    ],
+    "policy-map": [
+      ""
+    ],
+    "class": [
+      "policy-map"
+    ],
+    "route-map": [
+      ""
+    ],
+    "address-family": [
+      "router"
+    ],
+    "af-interface": [
+      "address-family"
+    ],
+    "topology": [
+      "address-family"
+    ],
+    "tacacs server": [
+      ""
+    ],
+    "radius server": [
+      ""
+    ],
+    "aaa group server": [
+      ""
+    ],
+    "aaa server radius dynamic-author": [
+      ""
+    ],
+    "crypto pki trustpoint": [
+      ""
+    ],
+    "crypto pki certificate chain": [
+      ""
+    ],
+    "crypto ikev2 keyring": [
+      ""
+    ],
+    "crypto ikev2 profile": [
+      ""
+    ],
+    "crypto ikev2 proposal": [
+      ""
+    ],
+    "crypto ikev2 policy": [
+      ""
+    ],
+    "crypto keyring": [
+      ""
+    ],
+    "crypto isakmp policy": [
+      ""
+    ],
+    "crypto isakmp profile": [
+      ""
+    ],
+    "crypto ipsec profile": [
+      ""
+    ],
+    "crypto map": [
+      ""
+    ],
+    "crypto key pubkey-chain rsa": [
+      ""
+    ],
+    "named-key": [
+      "crypto key pubkey-chain rsa"
+    ],
+    "addressed-key": [
+      "crypto key pubkey-chain rsa"
+    ],
+    "peer": [
+      "crypto ikev2 keyring",
+      "crypto keyring"
+    ],
+    "ip ssh pubkey-chain": [
+      ""
+    ],
+    "parser view": [
+      ""
+    ],
+    "dot1x credentials": [
+      ""
+    ],
+    "archive": [
+      ""
+    ],
+    "log config": [
+      "archive"
+    ],
+    "kron policy-list": [
+      ""
+    ],
+    "kron occurrence": [
+      ""
+    ],
+    "call-home": [
+      ""
+    ],
+    "profile": [
+      "call-home"
+    ],
+    "event manager applet": [
+      ""
+    ],
+    "wlan": [
+      ""
+    ],
+    "control-plane": [
+      ""
+    ],
+    "redundancy": [
+      ""
+    ],
+    "sip-ua": [
+      ""
+    ],
+    "pnp profile": [
+      ""
+    ],
+    "vrf definition": [
+      ""
+    ],
+    "ip vrf": [
+      ""
+    ],
+    "spanning-tree mst configuration": [
+      ""
+    ],
+    "device-tracking policy": [
+      ""
+    ],
+    "ip dhcp pool": [
+      ""
+    ],
+    "flow record": [
+      ""
+    ],
+    "flow exporter": [
+      ""
+    ],
+    "flow monitor": [
+      ""
+    ],
+    "track": [
+      ""
+    ],
+    "object-group": [
+      ""
+    ],
+    "wireless mobility group": [
+      ""
+    ],
+    "ip sla": [
+      ""
+    ],
+    "monitor session": [
+      ""
+    ],
+    "username": [
+      "ip ssh pubkey-chain"
+    ],
+    "key-string": [
+      "username",
+      "named-key",
+      "addressed-key"
+    ]
+  },
+  "line_universe": {
+    "con": [
+      0,
+      0
+    ],
+    "aux": null
+  },
+  "platforms": {
+    "iosxe": {
+      "vty_universe": [
+        0,
+        15
+      ],
+      "keys": {
+        "cdp.run": {
+          "state": "on",
+          "value": null,
+          "shown_when_default": false,
+          "intent": "cdp.global"
+        },
+        "lldp.run": {
+          "state": "off",
+          "value": null,
+          "shown_when_default": false,
+          "form": "lldp run"
+        },
+        "ip.http.server": {
+          "state": "on",
+          "value": null,
+          "shown_when_default": true
+        },
+        "ip.http.secure-server": {
+          "state": "on",
+          "value": null,
+          "shown_when_default": true
+        },
+        "service.pad": {
+          "state": "on",
+          "value": null,
+          "shown_when_default": false
+        },
+        "service.tcp-small-servers": {
+          "state": "off",
+          "value": null,
+          "shown_when_default": false
+        },
+        "service.udp-small-servers": {
+          "state": "off",
+          "value": null,
+          "shown_when_default": false
+        },
+        "ip.bootp.server": {
+          "state": "on",
+          "value": null,
+          "shown_when_default": false
+        },
+        "ip.finger": {
+          "state": "off",
+          "value": null,
+          "shown_when_default": false,
+          "values": [
+            0,
+            1
+          ]
+        },
+        "ip.source-route": {
+          "state": "on",
+          "value": null,
+          "shown_when_default": false
+        },
+        "service.config": {
+          "state": "off",
+          "value": null,
+          "shown_when_default": false
+        },
+        "service.call-home": {
+          "state": "on",
+          "value": null,
+          "shown_when_default": false,
+          "note": "call-home is enabled for smart licensing on IOS-XE 16.x and later"
+        },
+        "ip.domain-lookup": {
+          "state": "on",
+          "value": null,
+          "shown_when_default": false,
+          "intent": "ip-domain-lookup"
+        },
+        "aaa.new-model": {
+          "state": "off",
+          "value": null,
+          "shown_when_default": false
+        },
+        "service.password-encryption": {
+          "state": "off",
+          "value": null,
+          "shown_when_default": false
+        },
+        "line.exec-timeout": {
+          "state": "on",
+          "value": "10 0",
+          "shown_when_default": false,
+          "form": "exec-timeout",
+          "values": [
+            1,
+            2
+          ]
+        },
+        "line.transport-input": {
+          "state": "on",
+          "value": "all",
+          "shown_when_default": false,
+          "form": "transport input",
+          "note": "release-dependent; the conservative value is assumed",
+          "values": [
+            1,
+            4
+          ]
+        },
+        "line.transport-output": {
+          "state": "on",
+          "value": "all",
+          "shown_when_default": false,
+          "form": "transport output",
+          "values": [
+            1,
+            4
+          ]
+        },
+        "line.logging-synchronous": {
+          "state": "off",
+          "value": null,
+          "shown_when_default": false,
+          "form": "logging synchronous",
+          "values": [
+            0,
+            4
+          ]
+        },
+        "logging.console": {
+          "state": "on",
+          "value": "debugging",
+          "shown_when_default": false,
+          "values": [
+            0,
+            1
+          ]
+        },
+        "logging.buffered": {
+          "state": "on",
+          "value": null,
+          "shown_when_default": false,
+          "values": [
+            0,
+            2
+          ]
+        },
+        "logging.trap": {
+          "state": "on",
+          "value": "informational",
+          "shown_when_default": false,
+          "values": [
+            0,
+            1
+          ]
+        },
+        "service.timestamps.log": {
+          "state": "on",
+          "value": "datetime msec",
+          "shown_when_default": true,
+          "form": "service timestamps log",
+          "values": [
+            0,
+            5
+          ]
+        },
+        "ip.ssh.version": {
+          "state": "on",
+          "value": "1.99",
+          "shown_when_default": false,
+          "form": "ip ssh version",
+          "values": [
+            1,
+            1
+          ]
+        },
+        "ip.ssh.dh-min-size": {
+          "state": "on",
+          "value": "2048",
+          "shown_when_default": false,
+          "form": "ip ssh dh min size",
+          "values": [
+            1,
+            1
+          ]
+        },
+        "ip.ssh.authentication-retries": {
+          "state": "on",
+          "value": "3",
+          "shown_when_default": false,
+          "form": "ip ssh authentication-retries",
+          "values": [
+            1,
+            1
+          ]
+        },
+        "ip.ssh.time-out": {
+          "state": "on",
+          "value": "120",
+          "shown_when_default": false,
+          "form": "ip ssh time-out",
+          "values": [
+            1,
+            1
+          ]
+        },
+        "spanning-tree.mode": {
+          "state": "on",
+          "value": "pvst",
+          "shown_when_default": true,
+          "form": "spanning-tree mode",
+          "values": [
+            1,
+            1
+          ]
+        },
+        "spanning-tree.portfast.default": {
+          "state": "off",
+          "value": null,
+          "shown_when_default": false,
+          "intent": "stp.portfast.default"
+        },
+        "spanning-tree.portfast.bpduguard.default": {
+          "state": "off",
+          "value": null,
+          "shown_when_default": false,
+          "intent": "stp.bpduguard.default"
+        },
+        "spanning-tree.loopguard.default": {
+          "state": "off",
+          "value": null,
+          "shown_when_default": false,
+          "intent": "stp.loopguard.default"
+        },
+        "udld": {
+          "state": "off",
+          "value": null,
+          "shown_when_default": false,
+          "intent": "udld.global"
+        },
+        "switchport.mode": {
+          "state": "on",
+          "value": "dynamic auto",
+          "shown_when_default": false,
+          "form": "switchport mode",
+          "values": [
+            1,
+            2
+          ]
+        },
+        "switchport.nonegotiate": {
+          "state": "off",
+          "value": null,
+          "shown_when_default": false,
+          "form": "switchport nonegotiate"
+        },
+        "vtp.mode": {
+          "state": "on",
+          "value": "server",
+          "shown_when_default": false,
+          "form": "vtp mode",
+          "values": [
+            1,
+            1
+          ]
+        },
+        "ip.dhcp.snooping": {
+          "state": "off",
+          "value": null,
+          "shown_when_default": false,
+          "form": "ip dhcp snooping"
+        },
+        "ip.dhcp.snooping.information.option": {
+          "state": "on",
+          "value": null,
+          "shown_when_default": false,
+          "form": "ip dhcp snooping information option"
+        },
+        "ip.arp.inspection": {
+          "state": "off",
+          "value": null,
+          "shown_when_default": false,
+          "form": "ip arp inspection vlan",
+          "values": [
+            1,
+            1
+          ]
+        },
+        "ip.proxy-arp": {
+          "state": "on",
+          "value": null,
+          "shown_when_default": false
+        },
+        "ip.redirects": {
+          "state": "on",
+          "value": null,
+          "shown_when_default": false
+        },
+        "ip.unreachables": {
+          "state": "on",
+          "value": null,
+          "shown_when_default": false
+        },
+        "ip.directed-broadcast": {
+          "state": "off",
+          "value": null,
+          "shown_when_default": false,
+          "values": [
+            0,
+            1
+          ]
+        },
+        "snmp.ifindex.persist": {
+          "state": "off",
+          "value": null,
+          "shown_when_default": false,
+          "form": "snmp ifmib ifindex persist"
+        },
+        "errdisable.recovery.interval": {
+          "state": "on",
+          "value": "300",
+          "shown_when_default": false,
+          "form": "errdisable recovery interval",
+          "values": [
+            1,
+            1
+          ]
+        },
+        "ntp.authenticate": {
+          "state": "off",
+          "value": null,
+          "shown_when_default": false
+        },
+        "login.block-for": {
+          "state": "off",
+          "value": null,
+          "shown_when_default": false,
+          "form": "login block-for",
+          "values": [
+            1,
+            5
+          ]
+        },
+        "archive.log.config": {
+          "state": "off",
+          "value": null,
+          "shown_when_default": false,
+          "form": "log config"
+        },
+        "ip.device-tracking": {
+          "state": "unset",
+          "value": null,
+          "shown_when_default": false,
+          "form": "ip device tracking"
+        },
+        "vstack": {
+          "state": "on",
+          "value": null,
+          "shown_when_default": false,
+          "form": "vstack",
+          "state_from_release": {
+            "16": "off"
+          },
+          "note": "fail-safe default: IOS-XE 3.x shipped with the Smart Install client enabled. The base state is on, so a 3.x config, or one with no `version` line, is treated as on unless `no vstack` is present. From 16.x the client is off by default. Per-release defaults are modeled with the additive `state_from_release` field, read by DefaultsTable.effective() from the config's `version` line."
+        },
+        "redundancy.mode": {
+          "state": "unset",
+          "value": null,
+          "shown_when_default": false,
+          "form": "mode",
+          "values": [
+            1,
+            1
+          ]
+        }
+      }
+    },
+    "ios": {
+      "vty_universe": [
+        0,
+        15
+      ],
+      "keys": {
+        "cdp.run": {
+          "state": "on",
+          "value": null,
+          "shown_when_default": false,
+          "intent": "cdp.global"
+        },
+        "lldp.run": {
+          "state": "off",
+          "value": null,
+          "shown_when_default": false,
+          "form": "lldp run"
+        },
+        "ip.http.server": {
+          "state": "on",
+          "value": null,
+          "shown_when_default": true
+        },
+        "ip.http.secure-server": {
+          "state": "off",
+          "value": null,
+          "shown_when_default": true
+        },
+        "service.pad": {
+          "state": "on",
+          "value": null,
+          "shown_when_default": false
+        },
+        "service.tcp-small-servers": {
+          "state": "off",
+          "value": null,
+          "shown_when_default": false
+        },
+        "service.udp-small-servers": {
+          "state": "off",
+          "value": null,
+          "shown_when_default": false
+        },
+        "ip.bootp.server": {
+          "state": "on",
+          "value": null,
+          "shown_when_default": false
+        },
+        "ip.finger": {
+          "state": "off",
+          "value": null,
+          "shown_when_default": false,
+          "values": [
+            0,
+            1
+          ]
+        },
+        "ip.source-route": {
+          "state": "on",
+          "value": null,
+          "shown_when_default": false
+        },
+        "service.config": {
+          "state": "off",
+          "value": null,
+          "shown_when_default": false
+        },
+        "service.call-home": {
+          "state": "off",
+          "value": null,
+          "shown_when_default": false
+        },
+        "ip.domain-lookup": {
+          "state": "on",
+          "value": null,
+          "shown_when_default": false,
+          "intent": "ip-domain-lookup"
+        },
+        "aaa.new-model": {
+          "state": "off",
+          "value": null,
+          "shown_when_default": false
+        },
+        "service.password-encryption": {
+          "state": "off",
+          "value": null,
+          "shown_when_default": false
+        },
+        "line.exec-timeout": {
+          "state": "on",
+          "value": "10 0",
+          "shown_when_default": false,
+          "form": "exec-timeout",
+          "values": [
+            1,
+            2
+          ]
+        },
+        "line.transport-input": {
+          "state": "on",
+          "value": "all",
+          "shown_when_default": false,
+          "form": "transport input",
+          "note": "release-dependent; the conservative value is assumed",
+          "values": [
+            1,
+            4
+          ]
+        },
+        "line.transport-output": {
+          "state": "on",
+          "value": "all",
+          "shown_when_default": false,
+          "form": "transport output",
+          "values": [
+            1,
+            4
+          ]
+        },
+        "line.logging-synchronous": {
+          "state": "off",
+          "value": null,
+          "shown_when_default": false,
+          "form": "logging synchronous",
+          "values": [
+            0,
+            4
+          ]
+        },
+        "logging.console": {
+          "state": "on",
+          "value": "debugging",
+          "shown_when_default": false,
+          "values": [
+            0,
+            1
+          ]
+        },
+        "logging.buffered": {
+          "state": "on",
+          "value": null,
+          "shown_when_default": false,
+          "values": [
+            0,
+            2
+          ]
+        },
+        "logging.trap": {
+          "state": "on",
+          "value": "informational",
+          "shown_when_default": false,
+          "values": [
+            0,
+            1
+          ]
+        },
+        "service.timestamps.log": {
+          "state": "on",
+          "value": "datetime msec",
+          "shown_when_default": true,
+          "form": "service timestamps log",
+          "values": [
+            0,
+            5
+          ]
+        },
+        "ip.ssh.version": {
+          "state": "on",
+          "value": "1.99",
+          "shown_when_default": false,
+          "form": "ip ssh version",
+          "values": [
+            1,
+            1
+          ]
+        },
+        "ip.ssh.dh-min-size": {
+          "state": "on",
+          "value": "1024",
+          "shown_when_default": false,
+          "form": "ip ssh dh min size",
+          "values": [
+            1,
+            1
+          ]
+        },
+        "ip.ssh.authentication-retries": {
+          "state": "on",
+          "value": "3",
+          "shown_when_default": false,
+          "form": "ip ssh authentication-retries",
+          "values": [
+            1,
+            1
+          ]
+        },
+        "ip.ssh.time-out": {
+          "state": "on",
+          "value": "120",
+          "shown_when_default": false,
+          "form": "ip ssh time-out",
+          "values": [
+            1,
+            1
+          ]
+        },
+        "spanning-tree.mode": {
+          "state": "on",
+          "value": "pvst",
+          "shown_when_default": true,
+          "form": "spanning-tree mode",
+          "values": [
+            1,
+            1
+          ]
+        },
+        "spanning-tree.portfast.default": {
+          "state": "off",
+          "value": null,
+          "shown_when_default": false,
+          "intent": "stp.portfast.default"
+        },
+        "spanning-tree.portfast.bpduguard.default": {
+          "state": "off",
+          "value": null,
+          "shown_when_default": false,
+          "intent": "stp.bpduguard.default"
+        },
+        "spanning-tree.loopguard.default": {
+          "state": "off",
+          "value": null,
+          "shown_when_default": false,
+          "intent": "stp.loopguard.default"
+        },
+        "udld": {
+          "state": "off",
+          "value": null,
+          "shown_when_default": false,
+          "intent": "udld.global"
+        },
+        "switchport.mode": {
+          "state": "on",
+          "value": "dynamic auto",
+          "shown_when_default": false,
+          "form": "switchport mode",
+          "values": [
+            1,
+            2
+          ]
+        },
+        "switchport.nonegotiate": {
+          "state": "off",
+          "value": null,
+          "shown_when_default": false,
+          "form": "switchport nonegotiate"
+        },
+        "vtp.mode": {
+          "state": "on",
+          "value": "server",
+          "shown_when_default": false,
+          "form": "vtp mode",
+          "values": [
+            1,
+            1
+          ]
+        },
+        "ip.dhcp.snooping": {
+          "state": "off",
+          "value": null,
+          "shown_when_default": false,
+          "form": "ip dhcp snooping"
+        },
+        "ip.dhcp.snooping.information.option": {
+          "state": "on",
+          "value": null,
+          "shown_when_default": false,
+          "form": "ip dhcp snooping information option"
+        },
+        "ip.arp.inspection": {
+          "state": "off",
+          "value": null,
+          "shown_when_default": false,
+          "form": "ip arp inspection vlan",
+          "values": [
+            1,
+            1
+          ]
+        },
+        "ip.proxy-arp": {
+          "state": "on",
+          "value": null,
+          "shown_when_default": false
+        },
+        "ip.redirects": {
+          "state": "on",
+          "value": null,
+          "shown_when_default": false
+        },
+        "ip.unreachables": {
+          "state": "on",
+          "value": null,
+          "shown_when_default": false
+        },
+        "ip.directed-broadcast": {
+          "state": "off",
+          "value": null,
+          "shown_when_default": false,
+          "values": [
+            0,
+            1
+          ]
+        },
+        "snmp.ifindex.persist": {
+          "state": "off",
+          "value": null,
+          "shown_when_default": false,
+          "form": "snmp ifmib ifindex persist"
+        },
+        "errdisable.recovery.interval": {
+          "state": "on",
+          "value": "300",
+          "shown_when_default": false,
+          "form": "errdisable recovery interval",
+          "values": [
+            1,
+            1
+          ]
+        },
+        "ntp.authenticate": {
+          "state": "off",
+          "value": null,
+          "shown_when_default": false
+        },
+        "login.block-for": {
+          "state": "off",
+          "value": null,
+          "shown_when_default": false,
+          "form": "login block-for",
+          "values": [
+            1,
+            5
+          ]
+        },
+        "archive.log.config": {
+          "state": "off",
+          "value": null,
+          "shown_when_default": false,
+          "form": "log config"
+        },
+        "ip.device-tracking": {
+          "state": "unset",
+          "value": null,
+          "shown_when_default": false,
+          "form": "ip device tracking"
+        },
+        "vstack": {
+          "state": "on",
+          "value": null,
+          "shown_when_default": false,
+          "form": "vstack"
+        },
+        "redundancy.mode": {
+          "state": "unset",
+          "value": null,
+          "shown_when_default": false,
+          "form": "mode",
+          "values": [
+            1,
+            1
+          ]
+        }
+      }
+    }
+  },
+  "global_prefixes": [
+    "hostname",
+    "enable",
+    "username",
+    "snmp-server",
+    "tacacs-server",
+    "radius-server",
+    "ntp",
+    "aaa",
+    "service",
+    "no service",
+    "boot",
+    "version",
+    "vtp",
+    "license",
+    "alias",
+    "clock",
+    "errdisable",
+    "vstack",
+    "no vstack",
+    "sdm",
+    "stack-mac",
+    "switch",
+    "scheduler",
+    "privilege",
+    "key config-key",
+    "crypto isakmp key",
+    "crypto key",
+    "crypto pki",
+    "crypto ikev2 keyring",
+    "event manager environment",
+    "event manager applet",
+    "login block-for",
+    "login quiet-mode",
+    "login on-failure",
+    "login on-success",
+    "security passwords",
+    "password encryption",
+    "ip domain-name",
+    "ip domain",
+    "ip name-server",
+    "ip http",
+    "no ip http",
+    "ip ssh",
+    "ip route",
+    "ip routing",
+    "ip scp",
+    "ip ftp",
+    "ip tftp",
+    "ip default-gateway",
+    "ip source-route",
+    "no ip source-route",
+    "ip finger",
+    "ip bootp",
+    "no ip bootp",
+    "ip forward-protocol",
+    "ip multicast-routing",
+    "ip device tracking",
+    "ip dhcp database",
+    "ip dhcp snooping database",
+    "ip dhcp snooping vlan",
+    "ip arp inspection vlan",
+    "ip dhcp snooping information",
+    "no ip domain-lookup",
+    "ip domain-lookup",
+    "spanning-tree mode",
+    "spanning-tree portfast default",
+    "spanning-tree portfast edge default",
+    "spanning-tree portfast bpduguard",
+    "spanning-tree portfast edge bpduguard",
+    "spanning-tree loopguard",
+    "spanning-tree extend",
+    "spanning-tree vlan",
+    "cdp run",
+    "no cdp run",
+    "lldp run",
+    "udld enable",
+    "udld aggressive",
+    "scripting",
+    "archive",
+    "call-home",
+    "logging host",
+    "logging trap",
+    "logging buffered",
+    "logging console",
+    "logging source-interface",
+    "logging facility",
+    "cts sxp",
+    "mpls ldp neighbor",
+    "ip msdp",
+    "wsma",
+    "ap dot1x",
+    "ap mgmtuser"
+  ],
+  "exec_heads": [
+    "show",
+    "copy",
+    "write",
+    "wr",
+    "clear",
+    "reload",
+    "configure",
+    "conf",
+    "terminal",
+    "term",
+    "dir",
+    "more",
+    "ping",
+    "traceroute",
+    "exit",
+    "end",
+    "do",
+    "send",
+    "delete",
+    "verify",
+    "test",
+    "debug",
+    "undebug",
+    "request",
+    "enable",
+    "disable",
+    "squeeze",
+    "format",
+    "rename",
+    "mkdir",
+    "rmdir",
+    "archive",
+    "event",
+    "monitor",
+    "tclsh",
+    "guestshell",
+    "install"
+  ]
+}

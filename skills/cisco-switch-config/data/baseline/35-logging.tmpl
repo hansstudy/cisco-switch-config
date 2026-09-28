@@ -1,0 +1,17 @@
+!
+service timestamps debug datetime msec localtime show-timezone
+service timestamps log datetime msec localtime show-timezone
+logging buffered 64000 informational
+logging console critical
+logging trap $trap_level
+logging source-interface Vlan$mgmt_vlan
+$logging_hosts
+!
+archive
+ log config
+  logging enable
+  logging size 500
+  notify syslog contenttype plaintext
+  hidekeys
+ path $archive_path
+ write-memory

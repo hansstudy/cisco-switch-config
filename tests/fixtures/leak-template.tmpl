@@ -1,0 +1,15 @@
+! AC15 assertion 13(b) fixture ONLY.
+! Not a real baseline section template and never wired into gen_baseline.py's real
+! `data/baseline/*.tmpl` set. Its one job is to prove the egress guard fails the build
+! when a template accidentally carries a real-shaped secret in a placeholder position
+! instead of a `<REPLACE-ME:...>` token or an absent value.
+!
+! A correct template never reaches this state: the spec schema forbids secret fields
+! and every real template in data/baseline/*.tmpl substitutes only
+! `<REPLACE-ME:...>` placeholders or plain non-secret values. This file is the seeded
+! defect `tests/test_masking_invariant.py` renders through `ciscobaseline.render` (with the
+! stub catalogue / a hand-built render call) to assert that `mask.scrub()` reports a hit on
+! the canary below, `report.emit()` raises `EgressGuardError`, and the process exits 5 --
+! never a rewrite, never a silent pass.
+!
+tacacs-server key 7 CANARY-LEAK-TEMPLATE-01

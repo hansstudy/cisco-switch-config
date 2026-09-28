@@ -1,0 +1,13 @@
+{
+  "name": "cisco-switch-config",
+  "displayName": "Study Cisco Switch Config",
+  "version": "1.0.0",
+  "description": "Audits Cisco IOS and IOS-XE switch running-configurations for security and reliability defects and generates hardened baseline configurations.",
+  "author": { "name": "Hans Study", "email": "bugs@hans.study", "url": "https://hans.study" },
+  "homepage": "https://hans.study/tools/cisco-switch-config/",
+  "repository": "https://github.com/hansstudy/cisco-switch-config",
+  "license": "Apache-2.0",
+  "keywords": ["cisco", "ios-xe", "switch", "network-security", "hardening", "audit",
+               "running-config", "catalyst", "stig", "claude-skill"],
+  "experimental": { "evals": "evals/" }
+}

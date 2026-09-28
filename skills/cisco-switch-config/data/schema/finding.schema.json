@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cisco-switch-config/schema/finding.schema.json",
+  "title": "cisco-switch-config Finding (JSON report element)",
+  "description": "Mirrors model.Finding field for field.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "check_id",
+    "severity",
+    "category",
+    "confidence",
+    "catalogue_confidence",
+    "title",
+    "rationale",
+    "evidence",
+    "remediation",
+    "refs",
+    "params",
+    "platform",
+    "platform_source",
+    "profile",
+    "skill_version",
+    "catalogue_version"
+  ],
+  "properties": {
+    "check_id": { "type": "string", "pattern": "^CSC-[A-Z0-9]{2,5}-[0-9]{4}$" },
+    "severity": { "enum": ["critical", "high", "medium", "low", "info"] },
+    "category": { "enum": ["security", "reliability"] },
+    "confidence": { "enum": ["deterministic", "heuristic", "manual-review"] },
+    "catalogue_confidence": { "enum": ["deterministic", "heuristic", "manual-review"] },
+    "title": { "type": "string" },
+    "rationale": { "type": "string" },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["line_no", "source_line_no", "text", "masked", "redactions", "anchor"],
+      "properties": {
+        "line_no": { "type": ["integer", "null"] },
+        "source_line_no": { "type": ["integer", "null"] },
+        "text": { "type": "string" },
+        "masked": { "type": "boolean" },
+        "redactions": { "type": "integer", "minimum": 0 },
+        "anchor": { "enum": ["line", "range-line", "absent"] }
+      }
+    },
+    "remediation": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "refs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["authority", "id", "version", "url"],
+        "properties": {
+          "authority": {
+            "enum": ["DISA-STIG", "CIS", "Cisco", "NSA", "CISA", "NIST"]
+          },
+          "id": { "type": "string" },
+          "version": { "type": ["string", "null"] },
+          "url": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "params": {
+      "type": "object",
+      "additionalProperties": { "type": "string" }
+    },
+    "platform": { "enum": ["ios", "iosxe"] },
+    "platform_source": { "type": "string" },
+    "profile": { "enum": ["campus", "stig"] },
+    "skill_version": { "type": "string" },
+    "catalogue_version": { "type": "string" }
+  }
+}

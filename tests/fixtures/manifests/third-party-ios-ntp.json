@@ -1,0 +1,12 @@
+{
+  "fixture": "third-party/batfish/ios-ntp.cfg",
+  "platform": "ios",
+  "role_map": null,
+  "must_fire": [],
+  "must_not_fire": [],
+  "must_note": [],
+  "evidence_hints": {},
+  "max_critical": null,
+  "max_high": null,
+  "notes": "Single-feature grammar snippet (NTP configuration including authentication). No finding-count assertion; exists to prove the parser and masker handle independently-authored NTP syntax without crashing or leaking."
+}

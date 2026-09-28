@@ -1,0 +1,178 @@
+- id: CSC-NTP-0001
+  title: No `ntp server` configured
+  severity: medium
+  category: reliability
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: absent
+  subject:
+  - ntp server
+  rationale: Without an external time source, the switch's clock drifts freely, which breaks certificate
+    validity checks, log correlation and any time-based ACL or scheduling feature in use.
+  remediation:
+  - ntp server {host}
+  params_required:
+  - host
+  refs:
+  - authority: DISA-STIG
+    id: CISC-ND-001030
+    version: V3R5
+    url: https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5
+- id: CSC-NTP-0002
+  title: Fewer than two NTP sources
+  severity: low
+  category: reliability
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: value
+  subject:
+  - ntp server
+  rationale: A single time source cannot be cross-checked for sanity by the NTP algorithm and is a single
+    point of failure for the device's clock if that source becomes unreachable or starts serving bad time.
+  remediation:
+  - ntp server {host}
+  params_required:
+  - host
+  refs:
+  - authority: DISA-STIG
+    id: CISC-ND-001030
+    version: V3R5
+    url: https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5
+- id: CSC-NTP-0003
+  title: '`ntp authenticate` not enabled'
+  severity: medium
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: absent
+  subject:
+  - ntp authenticate
+  rationale: Without authentication, the switch accepts time updates from any host that can reach it on
+    UDP/123, which lets an attacker skew the clock to undermine certificate validation and confuse log
+    timelines.
+  remediation:
+  - ntp authenticate
+  params_required: []
+  refs:
+  - authority: DISA-STIG
+    id: CISC-ND-001150
+    version: V3R5
+    url: https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5
+- id: CSC-NTP-0004
+  title: An `ntp server` has no `key` binding
+  severity: medium
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: absent
+  subject:
+  - ntp server
+  rationale: An `ntp server` line with no `key` clause accepts unauthenticated time from that peer even
+    when `ntp authenticate` is globally enabled, which quietly defeats the authentication for that specific
+    source.
+  remediation:
+  - ntp server {host} key {key_id}
+  params_required:
+  - host
+  - key_id
+  refs:
+  - authority: DISA-STIG
+    id: CISC-ND-001150
+    version: V3R5
+    url: https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5
+- id: CSC-NTP-0005
+  title: An `ntp server ... key N` has no matching `ntp trusted-key N`
+  severity: medium
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: referential
+  subject:
+  - ntp trusted-key
+  rationale: A key id referenced by a server line but never marked trusted is never actually used to validate
+    that peer's packets, so the association behaves as if authentication were off for it.
+  remediation:
+  - ntp trusted-key {key_id}
+  params_required:
+  - key_id
+  refs:
+  - authority: DISA-STIG
+    id: CISC-ND-001150
+    version: V3R5
+    url: https://cyber.trackr.live/stig/Cisco_IOS_XE_Switch_NDM/3/5
+- id: CSC-NTP-0006
+  title: NTP authentication key uses MD5 rather than SHA1/SHA2
+  severity: low
+  category: security
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: value
+  subject:
+  - ntp authentication-key
+  rationale: MD5 is cryptographically broken for collision resistance and is markedly weaker than the
+    SHA1/SHA2 options IOS also supports for the same command; a stronger algorithm costs nothing extra
+    to configure.
+  remediation:
+  - ntp authentication-key {key_id} sha1 <REPLACE-ME:ntp-key>
+  params_required:
+  - key_id
+  refs:
+  - authority: Cisco
+    id: guide-to-harden-cisco-ios-devices
+    version: null
+    url: https://www.cisco.com/c/en/us/support/docs/ip/access-lists/13608-21.html
+- id: CSC-NTP-0007
+  title: '`ntp source` not set to a stable interface'
+  severity: low
+  category: reliability
+  confidence: deterministic
+  platforms:
+  - ios
+  - iosxe
+  profiles:
+  - campus
+  - stig
+  test_kind: absent
+  subject:
+  - ntp source
+  rationale: Without a fixed source interface, the address NTP packets originate from can change with
+    the active uplink, which breaks any authentication-key or ACL scoping keyed to a specific source address
+    on the server side.
+  remediation:
+  - ntp source Loopback0
+  params_required: []
+  refs:
+  - authority: Cisco
+    id: catalyst-3850-3650-best-practices-guide
+    version: null
+    url: https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst3850/software/release/16-1/best_practices_guide/BP_Cat3850/BP_overview.html

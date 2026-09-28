@@ -1,0 +1,12 @@
+{
+  "fixture": "third-party/napalm/show_running_config.txt",
+  "platform": "iosxe",
+  "role_map": null,
+  "must_fire": ["CSC-AAA-0011"],
+  "must_not_fire": ["CSC-VTY-0005"],
+  "must_note": ["CSC-SELF-0001"],
+  "evidence_hints": { "CSC-AAA-0011": ["enable password [REDACTED enable-password-weak, 5 chars]"] },
+  "max_critical": null,
+  "max_high": null,
+  "notes": "Full IOS-XE CSR1000v show running-config capture from a router, not a switch: no spanning-tree/port-security/storm-control/VTP/DHCP-snooping content exists to assert on. must_fire CSC-AAA-0011 fires on `enable password cisco` (NAPALM's own placeholder lab credential), a bare cleartext enable password. The evidence_hint must not be the raw value, since that can never appear in evidence.text under the mask-on-ingest invariant; it is set to the actual masked form -- `cisco` matches the known-weak-value list, so the class is `enable-password-weak` rather than plain `enable-password`, and the value is masked either way. must_not_fire CSC-VTY-0005: its catalogue title is 'A line carries a local `password` instead of using AAA' and its test_kind is `present` -- it fires only when a `password` command actually exists under the line. This capture's `line vty 0 4` has zero children (line 148 of the fixture: no `password` line at all), so there is nothing present for the rule to find; it correctly does not fire."
+}

@@ -1,0 +1,265 @@
+{
+  "version": 1,
+  "intents": {
+    "stp.portfast.access": {
+      "ios": [
+        "spanning-tree portfast"
+      ],
+      "iosxe": [
+        "spanning-tree portfast edge",
+        "spanning-tree portfast"
+      ],
+      "remediation": {
+        "ios": [
+          "spanning-tree portfast"
+        ],
+        "iosxe": [
+          "spanning-tree portfast edge"
+        ]
+      }
+    },
+    "stp.portfast.default": {
+      "ios": [
+        "spanning-tree portfast default"
+      ],
+      "iosxe": [
+        "spanning-tree portfast edge default",
+        "spanning-tree portfast default"
+      ],
+      "remediation": {
+        "ios": [
+          "spanning-tree portfast default"
+        ],
+        "iosxe": [
+          "spanning-tree portfast edge default"
+        ]
+      }
+    },
+    "stp.bpduguard.default": {
+      "ios": [
+        "spanning-tree portfast bpduguard default"
+      ],
+      "iosxe": [
+        "spanning-tree portfast edge bpduguard default",
+        "spanning-tree portfast bpduguard default"
+      ],
+      "remediation": {
+        "ios": [
+          "spanning-tree portfast bpduguard default"
+        ],
+        "iosxe": [
+          "spanning-tree portfast edge bpduguard default"
+        ]
+      }
+    },
+    "stp.bpduguard.port": {
+      "ios": [
+        "spanning-tree bpduguard enable"
+      ],
+      "iosxe": [
+        "spanning-tree bpduguard enable"
+      ],
+      "remediation": {
+        "ios": [
+          "spanning-tree bpduguard enable"
+        ],
+        "iosxe": [
+          "spanning-tree bpduguard enable"
+        ]
+      }
+    },
+    "stp.guard.root": {
+      "ios": [
+        "spanning-tree guard root"
+      ],
+      "iosxe": [
+        "spanning-tree guard root"
+      ],
+      "remediation": {
+        "ios": [
+          "spanning-tree guard root"
+        ],
+        "iosxe": [
+          "spanning-tree guard root"
+        ]
+      }
+    },
+    "stp.loopguard.default": {
+      "ios": [
+        "spanning-tree loopguard default"
+      ],
+      "iosxe": [
+        "spanning-tree loopguard default"
+      ],
+      "remediation": {
+        "ios": [
+          "spanning-tree loopguard default"
+        ],
+        "iosxe": [
+          "spanning-tree loopguard default"
+        ]
+      }
+    },
+    "stp.mode.rapid": {
+      "ios": [
+        "spanning-tree mode rapid-pvst",
+        "spanning-tree mode mst"
+      ],
+      "iosxe": [
+        "spanning-tree mode rapid-pvst",
+        "spanning-tree mode mst"
+      ],
+      "remediation": {
+        "ios": [
+          "spanning-tree mode rapid-pvst"
+        ],
+        "iosxe": [
+          "spanning-tree mode rapid-pvst"
+        ]
+      }
+    },
+    "sisf.device-tracking": {
+      "ios": [
+        "ip device tracking"
+      ],
+      "iosxe": [
+        "device-tracking policy",
+        "device-tracking attach-policy"
+      ],
+      "remediation": {
+        "ios": [
+          "ip device tracking probe delay 10"
+        ],
+        "iosxe": [
+          "device-tracking policy DT-POLICY",
+          " tracking enable"
+        ]
+      }
+    },
+    "udld.global": {
+      "ios": [
+        "udld enable",
+        "udld aggressive"
+      ],
+      "iosxe": [
+        "udld enable",
+        "udld aggressive"
+      ],
+      "remediation": {
+        "ios": [
+          "udld enable"
+        ],
+        "iosxe": [
+          "udld enable"
+        ]
+      }
+    },
+    "udld.port": {
+      "ios": [
+        "udld port aggressive",
+        "udld port"
+      ],
+      "iosxe": [
+        "udld port aggressive",
+        "udld port"
+      ],
+      "remediation": {
+        "ios": [
+          "udld port aggressive"
+        ],
+        "iosxe": [
+          "udld port aggressive"
+        ]
+      }
+    },
+    "boot.system": {
+      "ios": [
+        "boot system"
+      ],
+      "iosxe": [
+        "boot system"
+      ],
+      "remediation": {
+        "ios": [
+          "boot system flash:<REPLACE-ME:image-file>"
+        ],
+        "iosxe": [
+          "boot system flash:packages.conf"
+        ]
+      }
+    },
+    "ssh.algorithms": {
+      "ios": [
+        "ip ssh server algorithm"
+      ],
+      "iosxe": [
+        "ip ssh server algorithm"
+      ],
+      "remediation": {
+        "ios": [
+          "ip ssh server algorithm encryption aes256-ctr aes192-ctr aes128-ctr"
+        ],
+        "iosxe": [
+          "ip ssh server algorithm encryption aes256-gcm aes256-ctr",
+          "ip ssh server algorithm mac hmac-sha2-512 hmac-sha2-256",
+          "ip ssh server algorithm kex ecdh-sha2-nistp384 ecdh-sha2-nistp256"
+        ]
+      },
+      "min_release": {
+        "iosxe": "16.9"
+      }
+    },
+    "cdp.global": {
+      "ios": [
+        "cdp run"
+      ],
+      "iosxe": [
+        "cdp run"
+      ],
+      "remediation": {
+        "ios": [
+          "no cdp run"
+        ],
+        "iosxe": [
+          "no cdp run"
+        ]
+      }
+    },
+    "ip-domain-name": {
+      "ios": [
+        "ip domain-name",
+        "ip domain name"
+      ],
+      "iosxe": [
+        "ip domain name",
+        "ip domain-name"
+      ],
+      "remediation": {
+        "ios": [
+          "ip domain-name <REPLACE-ME:domain-name>"
+        ],
+        "iosxe": [
+          "ip domain name <REPLACE-ME:domain-name>"
+        ]
+      }
+    },
+    "ip-domain-lookup": {
+      "ios": [
+        "ip domain-lookup",
+        "ip domain lookup"
+      ],
+      "iosxe": [
+        "ip domain lookup",
+        "ip domain-lookup"
+      ],
+      "remediation": {
+        "ios": [
+          "no ip domain-lookup"
+        ],
+        "iosxe": [
+          "no ip domain lookup"
+        ]
+      }
+    }
+  }
+}

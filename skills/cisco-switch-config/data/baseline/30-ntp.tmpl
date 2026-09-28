@@ -1,0 +1,6 @@
+!
+ntp authenticate
+ntp authentication-key $key_id $ntp_algorithm <REPLACE-ME:ntp-key-$key_id>
+ntp trusted-key $key_id
+ntp source Vlan$mgmt_vlan
+$ntp_servers
