@@ -1,7 +1,10 @@
 # Study Cisco Switch Config
 
-Audits Cisco IOS / IOS-XE switch running-configurations for security and reliability defects,
-entirely offline, and generates hardened baseline configurations from a short spec.
+A Claude skill that audits Cisco IOS / IOS-XE switch running-configurations for security and
+reliability defects, entirely offline, and generates hardened baseline configurations from a
+short spec.
+
+*by Hans Study — [hans.study/tools/cisco-switch-config/](https://hans.study/tools/cisco-switch-config/)*
 
 [![Release](https://img.shields.io/github/v/release/hansstudy/cisco-switch-config)](https://github.com/hansstudy/cisco-switch-config/releases/latest)
 [![Licence](https://img.shields.io/github/license/hansstudy/cisco-switch-config)](https://github.com/hansstudy/cisco-switch-config/blob/main/LICENSE)
