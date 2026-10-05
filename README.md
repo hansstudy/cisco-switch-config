@@ -18,7 +18,7 @@ Reviewing a Cisco switch running-config by eye is slow and inconsistent, and pas
 general-purpose chat model gets you plausible-sounding advice with no repeatable basis. This
 skill runs a deterministic, stdlib-only Python engine over the pasted text: every finding carries
 a severity, the masked evidence line, paste-ready remediation, and a citation to DISA STIG, NSA,
-CISA or Cisco guidance (CIS Benchmarks are cited by ID only, never copied). It can also generate a
+CISA or Cisco guidance (the catalogue carries no CIS Benchmark citations, and no CIS text is copied). It can also generate a
 hardened baseline configuration from a short spec, and diff two configs to show what changed and
 which hardening controls a change crossed.
 
@@ -93,8 +93,8 @@ CISA. Findings are advisory and do not constitute a compliance attestation. See
 This repo's licence covers only material Hans Study authored. See
 [`docs/content-provenance.md`](docs/content-provenance.md) for what third-party content this
 project references and under what terms — in short: DISA STIG / NSA / CISA rule text may be
-quoted verbatim (public domain), CIS Benchmark content is cited by ID and section only and never
-copied, and a handful of Apache-2.0 fixture configs are embedded verbatim with attribution.
+quoted verbatim (public domain), no CIS Benchmark content is used (the catalogue has no CIS
+cross-references), and a handful of Apache-2.0 fixture configs are embedded verbatim with attribution.
 
 ## Telemetry
 
@@ -106,7 +106,7 @@ produces stays on the machine (or the session) it ran in.
 
 This is published as working software, not as a supported product. Issues and pull requests are
 read and are usually answered within a week. There is no SLA. If you need this run, tuned, or
-backed by a person, that is consulting work - [start here](https://hans.study/start-an-engagement/).
+backed by a person, that is consulting work - see the [switch config audit](https://hans.study/switch-config-audit/) service or [start here](https://hans.study/start-an-engagement/).
 
 ## Licence
 
