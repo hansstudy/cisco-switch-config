@@ -26,6 +26,35 @@ action below has happened. It is not the evidence itself and not a claim about t
    match). The prerelease N/A entries become `pass` against the live landing page and the
    published release.
 
+## v1.0.0 re-cut
+
+The `v1.0.0` tag pushed on 2026-10-05 stopped at step 0, because this repo had no
+`docs/releases/v1.0.0/release-evidence.json`. Its GitHub Release was created without any asset.
+The prerelease `v1.0.0-rc.1` was never tagged. `v1.0.0` is re-cut on a new commit: the empty
+release and the old tag are deleted first, then the same version is tagged again. Step 7 refuses
+to run while a release for the tag exists.
+
+- **CHANGELOG date.** `CHANGELOG.md` has `## [1.0.0] - 2026-11-21`. If the tag is cut on another
+  day, re-date that heading to the actual tag date in the commit that gets tagged.
+- **G14, G15, G16, G17 are recorded before the tag push**, following the release kit's worked
+  example. The evidence file names the release-asset URLs the run creates (the URLs are fixed
+  by the tag, the slug and the version):
+  - `https://github.com/hansstudy/cisco-switch-config/releases/download/v1.0.0/cisco-switch-config-1.0.0.zip`
+  - `https://github.com/hansstudy/cisco-switch-config/releases/download/v1.0.0/cisco-switch-config-1.0.0.cdx.json`
+  - `https://github.com/hansstudy/cisco-switch-config/releases/download/v1.0.0/SHA256SUMS`
+  - `https://github.com/hansstudy/cisco-switch-config/releases/download/v1.0.0/cisco-switch-config-1.0.0.intoto.jsonl`
+
+  This holds because `release.yml` fails closed: steps 3 to 6 stop the run if the build fails or leaves
+  `dist/` empty, or if the SBOM, `SHA256SUMS` or the attestation bundle is not produced, and step 7 creates the release only
+  after all of them exist. After the run, check that all four assets are on the release, that
+  `sha256sum -c SHA256SUMS` passes, and that `gh attestation verify cisco-switch-config-1.0.0.zip
+  --owner hansstudy` succeeds. The landing-page half of G16 (the zip hash shown on the page) is
+  a post-run site step by construction.
+- **Gates the repo cannot close.** G09 and G19 need a clean-profile install transcript, G26 the
+  published launch article and G27 a cross-post record or a recorded decision not to cross-post.
+  Only Hans can supply these. G11 also needs a site change: on 2026-11-21 the live landing page
+  shows no version for the tool.
+
 ## Gate table
 
 | Gate id | Tags | Applies to `[skl]` | Planned status | Evidence | Owner |
