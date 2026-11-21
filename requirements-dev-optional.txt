@@ -6,4 +6,4 @@
 #
 # Confirm these are current, non-yanked releases before cutting a release.
 netutils==1.10.0
-hier_config==2.4.0
+hier_config==3.7.1
